@@ -4,9 +4,10 @@ import Head from "next/head";
 import Image from "next/image";
 import React from "react";
 import Layout from "../components/common/Layout";
+import { StartPage } from "../components/StartPage";
 
 const Home: NextPage = () => {
-  return <div>Main</div>;
+  return <StartPage />;
 };
 
 export default Home;
