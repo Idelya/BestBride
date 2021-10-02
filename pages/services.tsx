@@ -5,8 +5,8 @@ import Image from "next/image";
 import React from "react";
 import Layout from "../components/common/Layout";
 
-const Home: NextPage = () => {
-  return <div>Main</div>;
+const Services: NextPage = () => {
+  return <div>Services</div>;
 };
 
-export default Home;
+export default Services;
