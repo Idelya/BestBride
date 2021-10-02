@@ -7,4 +7,7 @@ export const theme = {
           main: "#E19A80",
         },
       },
+    typography: {
+      "fontFamily": `"Segoe UI", "Helvetica", "Arial", sans-serif`,
+   }
 }
