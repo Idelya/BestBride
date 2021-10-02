@@ -13,7 +13,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <ThemeProvider theme={cTheme}>
       <Nav />
-      {children}
+      <main>{children}</main>
     </ThemeProvider>
   );
 }
