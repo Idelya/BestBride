@@ -4,6 +4,7 @@ import React from "react";
 import { GUEST_ROUTES_NAV } from "../../config/configNav";
 import Logo from "../Logo";
 import Account from "./Account";
+import Nav from "./Nav";
 import NavLink from "./NavLink";
 
 const useStyles = makeStyles({
@@ -17,21 +18,22 @@ const useStyles = makeStyles({
   },
 });
 
-const Nav = () => {
+const Header = () => {
   const classes = useStyles();
   return (
-    <AppBar elevation={0} position="fixed" className={classes.root}>
+    <AppBar
+      elevation={0}
+      position="fixed"
+      className={classes.root}
+      color="inherit"
+    >
       <Toolbar variant="dense" className={classes.toolbar}>
         <Logo />
-        <nav>
-          {GUEST_ROUTES_NAV.map((route, i) => (
-            <NavLink key={i} route={route} />
-          ))}
-        </nav>
+        <Nav />
         <Account />
       </Toolbar>
     </AppBar>
   );
 };
 
-export default Nav;
+export default Header;

@@ -48,17 +48,17 @@ const Logo = ({
 }: LogoProps) => {
   const classes = useStyles();
   return (
-    <Box sx={{ display: "grid", gridTemplateRows: "2fr 1fr", rowGap: 0 }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Typography color="primary" variant={variantLogo}>
         Best Bride
       </Typography>
-      <div className={classes.companies}>
-        {isForCompanies && (
+      {isForCompanies && (
+        <div className={classes.companies}>
           <DecorationTypography variant={variantCompanies} color="primary">
             dla firm
           </DecorationTypography>
-        )}
-      </div>
+        </div>
+      )}
     </Box>
   );
 };

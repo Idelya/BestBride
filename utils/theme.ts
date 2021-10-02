@@ -1,4 +1,6 @@
-export const theme = {
+import { createMuiTheme } from "@mui/material";
+
+export const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#64150F",
@@ -10,4 +12,4 @@ export const theme = {
   typography: {
     fontFamily: `"Segoe UI", "Helvetica", "Arial", sans-serif`,
   },
-};
+});

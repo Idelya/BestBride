@@ -4,6 +4,8 @@ import { Typography, TypographyProps } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Route } from "../../config/types";
 import Link from "next/link";
+import { GUEST_ROUTES_NAV } from "../../config/configNav";
+import NavLink from "./NavLink";
 
 const useStyles = makeStyles({
   root: {
@@ -11,17 +13,13 @@ const useStyles = makeStyles({
   },
 });
 
-interface NavLinkProps {
-  route: Route;
-}
-
-export default function NavLink({ route }: NavLinkProps) {
+export default function Nav() {
   const classes = useStyles();
   return (
-    <Link href={route.link} passHref>
-      <Typography component="a" className={classes.root} color="primary">
-        {route.name}
-      </Typography>
-    </Link>
+    <nav>
+      {GUEST_ROUTES_NAV.map((route, i) => (
+        <NavLink key={i} route={route} />
+      ))}
+    </nav>
   );
 }
