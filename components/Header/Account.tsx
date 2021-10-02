@@ -1,30 +1,37 @@
 import React from "react";
 import { styled } from "@mui/system";
-import { Box, Typography, TypographyProps } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box, Typography, Button, Theme } from "@mui/material";
+import { createStyles, makeStyles } from "@mui/styles";
 import Link from "next/link";
 import { ROUTES } from "../../config/configNav";
+import NavLink from "./NavLink";
+import RectangularButton from "../Button";
 
-const useStyles = makeStyles({
-  root: {
-    textAlign: "center",
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      textAlign: "center",
+      margin: theme.spacing(2),
+      textTransform: "none",
+    },
+  })
+);
 
 export default function Account() {
   const classes = useStyles();
   const { signUpClient, signInClient } = ROUTES;
   return (
     <Box>
-      <Link href={signUpClient.link} passHref>
-        <Typography component="a" className={classes.root} color="primary">
-          {signUpClient.name}
-        </Typography>
-      </Link>
+      <NavLink route={signUpClient} />
       <Link href={signInClient.link} passHref>
-        <Typography component="a" className={classes.root} color="primary">
+        <RectangularButton
+          color="primary"
+          variant="outlined"
+          size="medium"
+          className={classes.root}
+        >
           {signInClient.name}
-        </Typography>
+        </RectangularButton>
       </Link>
     </Box>
   );
