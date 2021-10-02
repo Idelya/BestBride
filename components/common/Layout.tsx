@@ -1,19 +1,20 @@
-import { createTheme, ThemeProvider } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { createTheme, ThemeProvider } from "@mui/material";
+import React, { ReactNode } from "react";
 
-import { theme } from '../../styles/theme';
-import { Nav } from '../Nav';
+import { theme } from "../../styles/theme";
+import { Nav } from "../Nav";
 
 const cTheme = createTheme(theme);
 
 interface LayoutProps {
-    children: ReactNode
+  children: ReactNode;
 }
 function Layout({ children }: LayoutProps) {
-  return <ThemeProvider theme={cTheme}>
+  return (
+    <ThemeProvider theme={cTheme}>
       <Nav />
       {children}
-  </ThemeProvider>;
-
+    </ThemeProvider>
+  );
 }
-export default Layout
+export default Layout;

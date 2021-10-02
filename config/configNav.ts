@@ -1,10 +1,8 @@
-export const GUEST_NAV = [
-    
-];
+export const GUEST_NAV = [];
 
 export const ROUTES = {
-    AboutUs: {
-        name: "About Us",
-        link: '',
-    }
-}
+  AboutUs: {
+    name: "About Us",
+    link: "",
+  },
+};
