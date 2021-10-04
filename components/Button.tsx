@@ -4,8 +4,6 @@ import { Typography, Box, Button, ButtonProps } from "@mui/material";
 import DecorationTypography from "./DecorationTypography";
 import { makeStyles } from "@mui/styles";
 
-interface RectangularButtonProps {}
-
 const useStyles = makeStyles({
   companies: {
     marginTop: "-0.5rem",

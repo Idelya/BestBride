@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   banner: {
     position: "relative",
     height: "100vh",
-    width: "100vw",
+    width: "100%",
   },
   contentBanner: {
     position: "absolute",
