@@ -5,7 +5,7 @@ import { createStyles, makeStyles } from "@mui/styles";
 import Link from "next/link";
 import { ROUTES } from "../../config/configNav";
 import NavLink from "./NavLink";
-import RectangularButton from "../Button";
+import RectangularButton from "../RectangularButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
