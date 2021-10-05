@@ -4,9 +4,10 @@ import Head from "next/head";
 import Image from "next/image";
 import React from "react";
 import Layout from "../components/common/Layout";
+import { SignUpPage } from "../components/SignUpPage";
 
 const SignUp: NextPage = () => {
-  return <div>SignUp</div>;
+  return <SignUpPage />;
 };
 
 export default SignUp;
