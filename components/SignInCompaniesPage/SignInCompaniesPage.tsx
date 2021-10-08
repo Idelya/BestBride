@@ -1,13 +1,11 @@
 import React from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
-import start from "../../public/img/signup.jpg";
+import start from "../../public/img/signUpCompanies.jpg";
 import Logo from "../Logo";
-import { TextField, Theme, Typography } from "@mui/material";
-import RectangularButton from "../RectangularButton";
-import UnderlinedLink from "../UnderlinedLink";
+import { Link, TextField, Theme, Typography } from "@mui/material";
 import { ROUTES } from "../../config/configNav";
-import SignUpForm from "../SignUpForm";
+import SignInForm from "../SignInForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,10 +54,16 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(3),
       textTransform: "none",
     },
+    link: {
+      textDecoration: "none",
+      "& :hover": {
+        color: theme.palette.primary.main,
+      },
+    },
   })
 );
 
-export default function SignUpPage() {
+export default function SignInCompaniesPage() {
   const classes = useStyles();
   return (
     <div className={classes.banner}>
@@ -73,8 +77,8 @@ export default function SignUpPage() {
         />
       </div>
       <div className={classes.contentBanner}>
-        <Logo variantLogo="h3" />
-        <SignUpForm routeSignIn={ROUTES.signInClient} />
+        <Logo variantCompanies="h6" variantLogo="h3" isForCompanies />
+        <SignInForm routeSignUp={ROUTES.signUpCompanies} />
       </div>
     </div>
   );

@@ -81,10 +81,11 @@ export default function Banner() {
           variant="outlined"
           size="medium"
           className={classes.button}
+          href={ROUTES.signInCompanies.link}
         >
           Zaloguj się
         </RectangularButton>
-        <UnderlinedLink route={ROUTES.signUpClient} />
+        <UnderlinedLink route={ROUTES.signUpCompanies} />
       </div>
     </div>
   );

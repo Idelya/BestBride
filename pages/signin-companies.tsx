@@ -1,8 +1,9 @@
 import type { NextPage } from "next";
 import React from "react";
+import { SignInCompaniesPage } from "../components/SignInCompaniesPage";
 
 const SignInCompanies: NextPage = () => {
-  return <div>SignInCompanies</div>;
+  return <SignInCompaniesPage />;
 };
 
 export default SignInCompanies;

@@ -1,11 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
-import start from "../../public/img/signup.jpg";
+import start from "../../public/img/signUpCompanies.jpg";
 import Logo from "../Logo";
 import { TextField, Theme, Typography } from "@mui/material";
-import RectangularButton from "../RectangularButton";
-import UnderlinedLink from "../UnderlinedLink";
 import { ROUTES } from "../../config/configNav";
 import SignUpForm from "../SignUpForm";
 
@@ -59,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function SignUpPage() {
+export default function SignUpCompaniesPage() {
   const classes = useStyles();
   return (
     <div className={classes.banner}>
@@ -73,8 +71,8 @@ export default function SignUpPage() {
         />
       </div>
       <div className={classes.contentBanner}>
-        <Logo variantLogo="h3" />
-        <SignUpForm routeSignIn={ROUTES.signInClient} />
+        <Logo variantCompanies="h6" variantLogo="h3" isForCompanies />
+        <SignUpForm routeSignIn={ROUTES.signInCompanies} />
       </div>
     </div>
   );
