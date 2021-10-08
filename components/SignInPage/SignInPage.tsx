@@ -7,6 +7,7 @@ import { Link, TextField, Theme, Typography } from "@mui/material";
 import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import { ROUTES } from "../../config/configNav";
+import SignInForm from "../SignInForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,41 +80,7 @@ export default function SignInPage() {
       </div>
       <div className={classes.contentBanner}>
         <Logo variantLogo="h3" />
-        <div className={classes.form}>
-          <TextField
-            id="login"
-            label="E-mail"
-            size="small"
-            variant="outlined"
-            margin="normal"
-            type="email"
-          />
-          <TextField
-            id="password"
-            label="Hasło"
-            size="small"
-            variant="outlined"
-            margin="normal"
-            type="password"
-          />
-          <Link href="#" className={classes.link}>
-            <Typography color="GrayText" variant="body2">
-              Zapomniałem hasła
-            </Typography>
-          </Link>
-          <RectangularButton
-            color="primary"
-            variant="outlined"
-            size="medium"
-            className={classes.button}
-          >
-            Zaloguj się
-          </RectangularButton>
-          <Typography color="GrayText" variant="body2">
-            Chcesz założyć konto?
-          </Typography>
-          <UnderlinedLink route={ROUTES.signUpClient} />
-        </div>
+        <SignInForm routeSignUp={ROUTES.signUpClient} />
       </div>
     </div>
   );

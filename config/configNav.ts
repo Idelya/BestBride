@@ -19,6 +19,14 @@ export const ROUTES = {
     name: "Zaloguj się",
     link: "/signin",
   },
+  signUpCompanies: {
+    name: "Zarejestruj swoją firmę",
+    link: "/signup-companies",
+  },
+  signInCompanies: {
+    name: "Zaloguj się",
+    link: "/signin-companies",
+  },
 };
 
 export const GUEST_ROUTES_NAV = [

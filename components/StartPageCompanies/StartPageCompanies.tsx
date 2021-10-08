@@ -3,56 +3,36 @@ import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import startCompanies from "../../public/img/startCompanies.jpg";
 import Logo from "../Logo";
-import { flexbox } from "@mui/system";
-import { Link, Theme, Typography } from "@mui/material";
+import { Box, flexbox } from "@mui/system";
+import { Container, Grid, Link, Theme, Typography } from "@mui/material";
 import { ROUTES } from "../../config/configNav";
 import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
+import Banner from "./Banner";
+import photo1 from "../../public/img/companies1.jpg";
+import photo2 from "../../public/img/companies2.jpg";
+import ArticleBestBride from "./AboutBestBride";
+import SignInForm from "../SignInForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    joinUsForm: {
+      backgroundColor: "#FFF2EE",
+      padding: theme.spacing(8),
       textAlign: "center",
-    },
-    img: {
-      position: "relative",
-      height: "100vh",
-      width: "100%",
-    },
-    banner: {
-      position: "relative",
-      height: "100vh",
-      width: "100%",
-    },
-    contentBanner: {
-      position: "absolute",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#ffffffD3",
-      top: "50%",
-      left: "50%",
-      padding: theme.spacing(5),
-      border: "1px solid " + theme.palette.primary.main,
-      transform: " translate(-50%, -50%)",
-      width: "70%",
-      boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-    },
-    logo: {
-      backgroundColor: theme.palette.common.white,
-      border: "1px solid " + theme.palette.primary.main,
-      padding: theme.spacing(5) + " " + theme.spacing(20),
-      boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-    },
-    spacing: {
-      margin: theme.spacing(3),
-    },
-    button: {
-      textAlign: "center",
-      margin: theme.spacing(1),
-      textTransform: "none",
+      "& > div": {
+        margin: "auto",
+        [theme.breakpoints.down("md")]: {
+          width: "70%",
+        },
+        [theme.breakpoints.up("md")]: {
+          width: "50%",
+        },
+        [theme.breakpoints.up("lg")]: {
+          width: "20%",
+        },
+      },
     },
   })
 );
@@ -60,30 +40,15 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function StartPageCompanies() {
   const classes = useStyles();
   return (
-    <div className={classes.banner}>
-      <div className={classes.img}>
-        <Image src={startCompanies} alt="" layout="fill" objectFit="cover" />
-      </div>
-      <div className={classes.contentBanner}>
-        <div className={classes.logo}>
-          <Logo isForCompanies variantCompanies="subtitle1" variantLogo="h4" />
-        </div>
-        <Typography color="primary" variant="h6" className={classes.spacing}>
+    <div>
+      <Banner />
+      <ArticleBestBride />
+      <Box className={classes.joinUsForm}>
+        <Typography color="primary" variant="h6">
           Dołącz do nas i zareklamuj swoja firme na Best Bride!
         </Typography>
-        <DecorationTypography color="GrayText" variant="caption">
-          Logowanie dla firm:
-        </DecorationTypography>
-        <RectangularButton
-          color="primary"
-          variant="outlined"
-          size="medium"
-          className={classes.button}
-        >
-          Zaloguj się
-        </RectangularButton>
-        <UnderlinedLink route={ROUTES.signUpClient} />
-      </div>
+        <SignInForm routeSignUp={ROUTES.signUpCompanies} />
+      </Box>
     </div>
   );
 }
