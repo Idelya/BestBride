@@ -9,7 +9,6 @@ import { ROUTES } from "../../config/configNav";
 import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
-import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Banner() {
   const classes = useStyles();
-  const { t } = useTranslation();
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
