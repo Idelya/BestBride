@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
-import startCompanies from "../../public/img/startUser.jpg";
+import startUsers from "../../public/img/startUsers.jpg";
 import Logo from "../Logo";
 import { flexbox } from "@mui/system";
 import { Link, Theme, Typography } from "@mui/material";
@@ -72,11 +72,11 @@ export default function Banner() {
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
-        <Image src={startCompanies} alt="" layout="fill" objectFit="cover" />
+        <Image src={startUsers} alt="" layout="fill" objectFit="cover" />
       </div>
       <div className={classes.contentBanner}>
         <DecorationTypography variant="h5" className={classes.spacing}>
-          Alicja i Adam
+          Agnieszka i Mateusz
         </DecorationTypography>
         <Typography variant="h5" className={classes.spacing}>
           Do waszego ślubu zostało:

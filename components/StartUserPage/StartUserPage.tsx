@@ -4,6 +4,7 @@ import { makeStyles } from "@mui/styles";
 import start from "../../public/img/startUser.jpg";
 import Logo from "../Logo";
 import Banner from "./Banner";
+import CalendarSection from "./CalendarSection";
 
 const useStyles = makeStyles({
   root: {
@@ -16,6 +17,7 @@ export default function StartUserPage() {
   return (
     <div>
       <Banner />
+      <CalendarSection />
     </div>
   );
 }
