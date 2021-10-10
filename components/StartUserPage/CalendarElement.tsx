@@ -11,24 +11,31 @@ import { Event } from "../../config/types";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing(14, 0),
+      padding: theme.spacing(3, 0),
       border: "1px solid " + theme.palette.primary.main,
       boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
       display: "flex",
       flexDirection: "column",
       textAlign: "center",
-      justifyContent: "flex-start",
+      justifyContent: "space-around",
       position: "relative",
+      height: "250px",
     },
     header: {
-      position: "absolute",
-      top: 0,
-      transform: "translateY(-50%)",
       background: "white",
       padding: "10px",
     },
+    headerContainer: {
+      width: "100%",
+      position: "absolute",
+      top: 0,
+      transform: "translateY(-50%)",
+      textAlign: "center",
+      display: "flex",
+      justifyContent: "center",
+    },
     wrapper: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(5),
       width: "33%",
     },
   })
@@ -43,8 +50,18 @@ export default function CalendarElement({ event }: CalendarElementProps) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.container}>
-        <Typography variant="h6" color="primary" className={classes.header}>
-          {event.name}
+        <div className={classes.headerContainer}>
+          <Typography variant="h6" color="primary" className={classes.header}>
+            {event.name}
+          </Typography>
+        </div>
+        <Typography variant="h6">{event.date}</Typography>
+        <Typography variant="subtitle2">
+          Lokalizacja: {event.localization}
+        </Typography>
+        <Typography variant="subtitle2">
+          Przypisano:{" "}
+          {event.assigned?.map((user, i) => `${i > 0 ? ", " : ""} ${user}`)}
         </Typography>
       </div>
     </div>

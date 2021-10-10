@@ -6,6 +6,6 @@ export type Route = {
 export type Event = {
   name: string;
   date?: string;
-  lokalizacja?: string;
-  przypisano?: string[];
+  localization?: string;
+  assigned?: string[];
 };

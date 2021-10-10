@@ -1,42 +1,35 @@
 import React from "react";
-import Image from "next/image";
 import { chunk } from "lodash";
 import { createStyles, makeStyles } from "@mui/styles";
-import start from "../../public/img/startUser.jpg";
-import Logo from "../Logo";
-import Banner from "./Banner";
 import { IconButton, Container, Theme, Typography } from "@mui/material";
-import { theme } from "../../utils/theme";
 import CalendarElement from "./CalendarElement";
 import Carousel from "react-material-ui-carousel";
 import { Event } from "../../config/types";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const events = [
   {
     name: "Przymiarka sukni",
     date: "13:00 31.10.2021",
-    lokalizacja: "Wrocław Świdnicka 4",
-    przypisano: ["Agnieszka"],
+    localization: "Wrocław Świdnicka 4",
+    assigned: ["Agnieszka"],
   },
   {
     name: "Testowanie menu",
     date: "15:30 04.11.2021",
-    lokalizacja: "Wrocław ul. Śliczna 14",
-    przypisano: ["Agnieszka", "Mateusz"],
+    localization: "Wrocław ul. Śliczna 14",
+    assigned: ["Agnieszka", "Mateusz"],
   },
   {
-    name: "Rozmowa z forografem",
+    name: "Rozmowa z fotografem",
     date: "19:30 04.11.2021",
-    lokalizacja: "Wrocław ul. Ładna 14",
-    przypisano: ["Agnieszka"],
+    localization: "Wrocław ul. Ładna 14",
+    assigned: ["Agnieszka"],
   },
   {
     name: "Odbiór obrączek",
     date: "15:30 04.12.2021",
-    lokalizacja: "Wrocław ul. ",
-    przypisano: ["Agnieszka", "Mateusz"],
+    localization: "Wrocław ul. ",
+    assigned: ["Agnieszka", "Mateusz"],
   },
 ];
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
     },
     header: {
-      margin: theme.spacing(0, 2),
+      margin: theme.spacing(0, 5),
     },
   })
 );
