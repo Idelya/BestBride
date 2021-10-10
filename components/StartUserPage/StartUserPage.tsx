@@ -5,6 +5,7 @@ import start from "../../public/img/startUser.jpg";
 import Logo from "../Logo";
 import Banner from "./Banner";
 import CalendarSection from "./CalendarSection";
+import TasksSection from "./TasksSection";
 
 const useStyles = makeStyles({
   root: {
@@ -18,6 +19,7 @@ export default function StartUserPage() {
     <div>
       <Banner />
       <CalendarSection />
+      <TasksSection />
     </div>
   );
 }

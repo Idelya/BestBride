@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3, 7),
     },
     container: {
-      padding: theme.spacing(14, 0),
+      padding: theme.spacing(14, 0, 0),
     },
     carouselItem: {
       display: "flex",
