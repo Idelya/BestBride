@@ -10,6 +10,7 @@ import { ROUTES } from "../../config/configNav";
 import SignInForm from "../SignInForm";
 import Divider from "../Divider";
 import { spacing } from "@mui/system";
+import ProfilSection from "./ProfilSection";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,9 +24,7 @@ export default function ProfilPage() {
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <Divider>Profil</Divider>
-      <Divider textAlign="right">Dane ślubu</Divider>
-      <Divider textAlign="center">Generowanie linków</Divider>
+      <ProfilSection />
     </div>
   );
 }
