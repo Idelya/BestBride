@@ -20,6 +20,7 @@ interface LogoProps {
     | "body2"
     | "overline";
   textAlign?: "left" | "right" | "center";
+  component?: "h1" | "h2";
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,6 +55,7 @@ const Divider = ({
   children,
   variant = "h4",
   textAlign = "left",
+  component = "h1",
 }: LogoProps) => {
   const classes = useStyles();
   return (
@@ -69,9 +71,9 @@ const Divider = ({
       >
         <Typography
           variant={variant}
-          component="h1"
           color="primary"
           className={classes.text}
+          component={component}
         >
           {children}
         </Typography>

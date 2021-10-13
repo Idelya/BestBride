@@ -1,12 +1,13 @@
 import React from "react";
 import { createStyles, makeStyles } from "@mui/styles";
-import { Container, Link, TextField, Theme, Typography } from "@mui/material";
+import { Container, Theme } from "@mui/material";
 import Banner from "./Banner";
+import SummarySection from "./SummarySection";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      marginTop: theme.spacing(8),
+      marginTop: theme.spacing(10),
     },
   })
 );
@@ -16,6 +17,7 @@ export default function ProfilPage() {
   return (
     <Container className={classes.container}>
       <Banner />
+      <SummarySection />
     </Container>
   );
 }

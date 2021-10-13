@@ -1,13 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
-import Logo from "../Logo";
-import { flexbox } from "@mui/system";
-import { Grid, Link, Theme, Typography } from "@mui/material";
+import { Grid, Theme, Typography } from "@mui/material";
 import img from "../../public/img/guestList.jpg";
 import Heading from "../Heading";
 import DecorationTypography from "../DecorationTypography";
-import { textAlign } from "@mui/lab/node_modules/@mui/system";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
