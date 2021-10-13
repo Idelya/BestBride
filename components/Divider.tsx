@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     minHeight: "64px",
     position: "relative",
+    marginTop: theme.spacing(5),
   },
   border: {
     borderBottom: "2px solid " + theme.palette.primary.main,
@@ -37,17 +38,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "absolute",
     width: "100%",
     display: "flex",
-    margin: theme.spacing(0, 15),
   },
   text: {
     padding: theme.spacing(0.5, 2),
     backgroundColor: "white",
+    margin: theme.spacing(0, 20),
   },
-  alignLeft: {
-    width: "15%",
-  },
+  alignCenter: { justifyContent: "center" },
   alignRight: {
-    width: "85%",
+    justifyContent: "flex-end",
   },
 }));
 
@@ -59,7 +58,15 @@ const Divider = ({
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <div className={classes.content}>
+      <div
+        className={
+          classes.content +
+          " " +
+          (textAlign === "right" && classes.alignRight) +
+          " " +
+          (textAlign === "center" && classes.alignRight)
+        }
+      >
         <Typography
           variant={variant}
           component="h1"

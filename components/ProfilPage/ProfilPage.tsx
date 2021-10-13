@@ -11,6 +11,7 @@ import SignInForm from "../SignInForm";
 import Divider from "../Divider";
 import { spacing } from "@mui/system";
 import ProfilSection from "./ProfilSection";
+import WeddingSection from "./WeddingSection";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +26,7 @@ export default function ProfilPage() {
   return (
     <div className={classes.container}>
       <ProfilSection />
+      <WeddingSection />
     </div>
   );
 }
