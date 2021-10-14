@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from "@mui/styles";
 import { Container, Theme } from "@mui/material";
 import Banner from "./Banner";
 import SummarySection from "./SummarySection";
+import GuestSection from "./GuestSection";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,6 +19,7 @@ export default function ProfilPage() {
     <Container className={classes.container}>
       <Banner />
       <SummarySection />
+      <GuestSection />
     </Container>
   );
 }

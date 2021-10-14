@@ -4,7 +4,7 @@ import { Typography, Box, Theme } from "@mui/material";
 import DecorationTypography from "./DecorationTypography";
 import { makeStyles } from "@mui/styles";
 
-interface LogoProps {
+interface DividerProps {
   children?: string;
   variant?:
     | "h1"
@@ -56,7 +56,7 @@ const Divider = ({
   variant = "h4",
   textAlign = "left",
   component = "h1",
-}: LogoProps) => {
+}: DividerProps) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
