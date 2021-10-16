@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import useToggle from "../../utils/useToggle";
 import RectangularButton from "../RectangularButton";
 import Filters from "./Filters";
+import GuestList from "./GuestList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,6 +91,7 @@ export default function GuestSection() {
         </ButtonGroup>
       </div>
       <Filters />
+      <GuestList />
     </section>
   );
 }
