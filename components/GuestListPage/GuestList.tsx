@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import {
   Collapse,
   IconButton,
@@ -16,23 +17,12 @@ import ListSubheader from "@mui/material/ListSubheader";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-const header = [
-  { headerName: "Miasto" },
-  { headerName: "Imię" },
-  { headerName: "Nazwisko" },
-  { headerName: "Zaakceptowano" },
-  {
-    headerName: "Czy zaproszono",
-  },
-];
-
 const rows = [
   {
     name: "Wrocław",
     items: [
       {
         id: 1,
-        group: "Wrocław",
         surname: "Snow",
         name: "Jon",
         invitationAccepted: "Tak",
@@ -41,7 +31,6 @@ const rows = [
 
       {
         id: 4,
-        group: "Wrocław",
         surname: "Stark",
         name: "Arya",
         invitationAccepted: "Nie",
@@ -49,7 +38,6 @@ const rows = [
       },
       {
         id: 5,
-        group: "Wrocław",
         surname: "Targaryen",
         name: "Daenerys",
         invitationAccepted: "Tak",
@@ -62,7 +50,6 @@ const rows = [
     items: [
       {
         id: 2,
-        group: "Kielce",
         surname: "Lannister",
         name: "Cersei",
         invitationAccepted: "?",
@@ -70,11 +57,43 @@ const rows = [
       },
       {
         id: 3,
-        group: "Kielce",
         surname: "Lannister",
         name: "Jaime",
         invitationAccepted: "?",
         invitationSend: true,
+      },
+      {
+        id: 6,
+        surname: "Lannister",
+        name: "Tyrion",
+        invitationAccepted: "Tak",
+        invitationSend: true,
+      },
+    ],
+  },
+  {
+    name: "Winterfell",
+    items: [
+      {
+        id: 7,
+        surname: "Sansa",
+        name: "Stark",
+        invitationAccepted: "Tak",
+        invitationSend: true,
+      },
+      {
+        id: 8,
+        surname: "Arya",
+        name: "Stark",
+        invitationAccepted: "?",
+        invitationSend: false,
+      },
+      {
+        id: 9,
+        surname: "Robb",
+        name: "Stark",
+        invitationAccepted: "?",
+        invitationSend: false,
       },
     ],
   },
@@ -83,11 +102,39 @@ const rows = [
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
-      height: 400,
-      width: "100%",
+      border: "solid thin " + theme.palette.primary.main,
+      margin: theme.spacing(2),
+      borderRadius: "5px",
+      boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+      overflow: "auto",
+    },
+    list: {
+      height: 600,
+      overflow: "auto",
+      //scroll
+      "& .scrollbar": {
+        width: "5px",
+      },
+      "&::-webkit-scrollbar-track": {
+        borderRadius: "10px",
+        backgroundColor: " #F5F5F5",
+      },
+
+      "&::-webkit-scrollbar": {
+        width: "12px",
+        backgroundColor: "#F5F5F5",
+      },
+
+      "&::-webkit-scrollbar-thumb": {
+        borderRadius: "10px",
+        boxShadow: "inset 0 0 6px rgba(0,0,0,.3)",
+        backgroundColor: theme.palette.primary.main,
+      },
     },
     groupItem: {
       backgroundColor: "#FFEFE9",
+      boxShadow: "rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset",
+      padding: theme.spacing(1),
     },
     groupTxt: { width: "10%", display: "block", flex: "none" },
     nameTxt: { width: "25%", display: "block", flex: "none" },
@@ -106,7 +153,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     subheader: {
       display: "flex",
-      padding: 0,
+      padding: theme.spacing(1),
+    },
+    row: {
+      display: "flex",
+      padding: theme.spacing(1),
+      border: "solid thin #e8e8e8",
+    },
+    footer: {
+      display: "flex",
+      padding: theme.spacing(1),
+      justifyContent: "center",
     },
   })
 );
@@ -114,82 +171,93 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function GuestList() {
   const classes = useStyles();
   return (
-    <List
-      className={classes.main}
-      subheader={
-        <ListSubheader component="div" className={classes.subheader}>
-          <Typography color="primary" className={classes.groupTxt}>
-            Miasto
-          </Typography>
-          <Typography color="primary" className={classes.nameTxt}>
-            Imię
-          </Typography>
-          <Typography color="primary" className={classes.surnameTxt}>
-            Nazwisko
-          </Typography>
-          <Typography color="primary" className={classes.invitationTxt}>
-            Zaakceptowano
-          </Typography>
-          <Typography color="primary" className={classes.invitationSendTxt}>
-            Czy zaproszono
-          </Typography>
-        </ListSubheader>
-      }
-    >
-      {rows.map((group) => {
-        return (
-          <>
-            <ListItem
-              key={group.name}
-              secondaryAction={
-                <IconButton edge="end" aria-label="edit">
-                  <EditIcon />
-                </IconButton>
-              }
-              disablePadding
-              className={classes.groupItem}
-            >
-              <ListItemText primary={group.name} className={classes.groupTxt} />
-            </ListItem>
-            <Collapse in={true} timeout="auto">
-              <List component="div">
-                {group.items.map((item) => (
-                  <ListItemButton key={item.id} className={classes.subheader}>
-                    <ListItemText primary="" className={classes.groupTxt} />
-                    <ListItemText
-                      primary={item.name}
-                      className={classes.nameTxt}
-                    />
-                    <ListItemText
-                      primary={item.surname}
-                      className={classes.surnameTxt}
-                    />
-                    <ListItemText
-                      primary={item.invitationAccepted}
-                      sx={{
-                        color:
-                          item.invitationAccepted === "Tak"
-                            ? "#15B811"
-                            : item.invitationAccepted === "?"
-                            ? "#4A8DF4"
-                            : "#C13126;",
-                      }}
-                      className={classes.invitationTxt}
-                    />
-                    <ListItemIcon className={classes.invitationSendTxt}>
-                      {item.invitationSend ? (
-                        <CheckIcon color="primary" />
-                      ) : (
-                        <CloseIcon color="secondary" />
-                      )}
-                    </ListItemIcon>
-                  </ListItemButton>
-                ))}
-              </List>
-            </Collapse>
-          </>
-        );
-      })}
-    </List>
+    <div className={classes.main}>
+      <List
+        className={classes.list}
+        subheader={
+          <ListSubheader component="div" className={classes.subheader}>
+            <Typography color="primary" className={classes.groupTxt}>
+              Miasto
+            </Typography>
+            <Typography color="primary" className={classes.nameTxt}>
+              Imię
+            </Typography>
+            <Typography color="primary" className={classes.surnameTxt}>
+              Nazwisko
+            </Typography>
+            <Typography color="primary" className={classes.invitationTxt}>
+              Zaakceptowano
+            </Typography>
+            <Typography color="primary" className={classes.invitationSendTxt}>
+              Czy zaproszono
+            </Typography>
+          </ListSubheader>
+        }
+      >
+        {rows.map((group) => {
+          return (
+            <>
+              <ListItem
+                key={group.name}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="edit">
+                    <EditIcon color="primary" />
+                  </IconButton>
+                }
+                disablePadding
+                className={classes.groupItem}
+              >
+                <ListItemText
+                  primary={group.name}
+                  className={classes.groupTxt}
+                />
+              </ListItem>
+              <Collapse in={true} timeout="auto">
+                <List component="div" disablePadding>
+                  {group.items.map((item) => (
+                    <ListItemButton key={item.id} className={classes.row}>
+                      <ListItemText primary="" className={classes.groupTxt} />
+                      <ListItemText
+                        primary={item.name}
+                        className={classes.nameTxt}
+                      />
+                      <ListItemText
+                        primary={item.surname}
+                        className={classes.surnameTxt}
+                      />
+                      <ListItemText
+                        primary={item.invitationAccepted}
+                        sx={{
+                          color:
+                            item.invitationAccepted === "Tak"
+                              ? "#15B811"
+                              : item.invitationAccepted === "?"
+                              ? "#4A8DF4"
+                              : "#C13126;",
+                        }}
+                        className={classes.invitationTxt}
+                      />
+                      <ListItemIcon className={classes.invitationSendTxt}>
+                        {item.invitationSend ? (
+                          <CheckIcon color="success" />
+                        ) : (
+                          <CloseIcon color="error" />
+                        )}
+                      </ListItemIcon>
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            </>
+          );
+        })}
+      </List>
+
+      <div className={classes.footer}>
+        <IconButton aria-label="add">
+          <AddCircleRoundedIcon color="primary" />
+        </IconButton>
+      </div>
+    </div>
   );
 }
