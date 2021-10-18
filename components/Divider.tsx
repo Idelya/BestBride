@@ -20,7 +20,7 @@ interface DividerProps {
     | "body2"
     | "overline";
   textAlign?: "left" | "right" | "center";
-  component?: "h1" | "h2";
+  component?: "h1" | "h2" | "p";
 }
 
 const useStyles = makeStyles((theme: Theme) => ({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
@@ -16,6 +16,8 @@ import ListItem from "@mui/material/ListItem";
 import ListSubheader from "@mui/material/ListSubheader";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import GuestInfo from "./GuestInfo";
+import { Guest } from "../../config/types";
 
 const rows = [
   {
@@ -99,6 +101,16 @@ const rows = [
   },
 ];
 
+export const initialGuest = {
+  mail: "adres@mail.com",
+  phone: "999 000 543",
+  children: 0,
+  witness: false,
+  accommodation: false,
+  groups: [],
+  diets: [],
+};
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
@@ -170,94 +182,117 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function GuestList() {
   const classes = useStyles();
-  return (
-    <div className={classes.main}>
-      <List
-        className={classes.list}
-        subheader={
-          <ListSubheader component="div" className={classes.subheader}>
-            <Typography color="primary" className={classes.groupTxt}>
-              Miasto
-            </Typography>
-            <Typography color="primary" className={classes.nameTxt}>
-              Imię
-            </Typography>
-            <Typography color="primary" className={classes.surnameTxt}>
-              Nazwisko
-            </Typography>
-            <Typography color="primary" className={classes.invitationTxt}>
-              Zaakceptowano
-            </Typography>
-            <Typography color="primary" className={classes.invitationSendTxt}>
-              Czy zaproszono
-            </Typography>
-          </ListSubheader>
-        }
-      >
-        {rows.map((group) => {
-          return (
-            <>
-              <ListItem
-                key={group.name}
-                secondaryAction={
-                  <IconButton edge="end" aria-label="edit">
-                    <EditIcon color="primary" />
-                  </IconButton>
-                }
-                disablePadding
-                className={classes.groupItem}
-              >
-                <ListItemText
-                  primary={group.name}
-                  className={classes.groupTxt}
-                />
-              </ListItem>
-              <Collapse in={true} timeout="auto">
-                <List component="div" disablePadding>
-                  {group.items.map((item) => (
-                    <ListItemButton key={item.id} className={classes.row}>
-                      <ListItemText primary="" className={classes.groupTxt} />
-                      <ListItemText
-                        primary={item.name}
-                        className={classes.nameTxt}
-                      />
-                      <ListItemText
-                        primary={item.surname}
-                        className={classes.surnameTxt}
-                      />
-                      <ListItemText
-                        primary={item.invitationAccepted}
-                        sx={{
-                          color:
-                            item.invitationAccepted === "Tak"
-                              ? "#15B811"
-                              : item.invitationAccepted === "?"
-                              ? "#4A8DF4"
-                              : "#C13126;",
-                        }}
-                        className={classes.invitationTxt}
-                      />
-                      <ListItemIcon className={classes.invitationSendTxt}>
-                        {item.invitationSend ? (
-                          <CheckIcon color="success" />
-                        ) : (
-                          <CloseIcon color="error" />
-                        )}
-                      </ListItemIcon>
-                    </ListItemButton>
-                  ))}
-                </List>
-              </Collapse>
-            </>
-          );
-        })}
-      </List>
+  const [showGuest, setShowGuest] = useState<Guest | undefined>();
 
-      <div className={classes.footer}>
-        <IconButton aria-label="add">
-          <AddCircleRoundedIcon color="primary" />
-        </IconButton>
+  const handleClose = () => {
+    setShowGuest(undefined);
+  };
+
+  return (
+    <>
+      <GuestInfo
+        open={!!showGuest}
+        handleClose={handleClose}
+        guest={showGuest}
+      />
+      <div className={classes.main}>
+        <List
+          className={classes.list}
+          subheader={
+            <ListSubheader component="div" className={classes.subheader}>
+              <Typography color="primary" className={classes.groupTxt}>
+                Miasto
+              </Typography>
+              <Typography color="primary" className={classes.nameTxt}>
+                Imię
+              </Typography>
+              <Typography color="primary" className={classes.surnameTxt}>
+                Nazwisko
+              </Typography>
+              <Typography color="primary" className={classes.invitationTxt}>
+                Zaakceptowano
+              </Typography>
+              <Typography color="primary" className={classes.invitationSendTxt}>
+                Czy zaproszono
+              </Typography>
+            </ListSubheader>
+          }
+        >
+          {rows.map((group) => {
+            return (
+              <div key={group.name}>
+                <ListItem
+                  key={group.name}
+                  secondaryAction={
+                    <IconButton edge="end" aria-label="edit">
+                      <EditIcon color="primary" />
+                    </IconButton>
+                  }
+                  disablePadding
+                  className={classes.groupItem}
+                >
+                  <ListItemText
+                    primary={group.name}
+                    className={classes.groupTxt}
+                  />
+                </ListItem>
+                <Collapse in={true} timeout="auto">
+                  <List component="div" disablePadding>
+                    {group.items.map((item) => (
+                      <ListItemButton
+                        key={item.id}
+                        className={classes.row}
+                        onClick={() =>
+                          setShowGuest({
+                            city: group.name,
+                            ...item,
+                            ...initialGuest,
+                          })
+                        }
+                      >
+                        <ListItemText primary="" className={classes.groupTxt} />
+                        <ListItemText
+                          primary={item.name}
+                          className={classes.nameTxt}
+                        />
+                        <ListItemText
+                          primary={item.surname}
+                          className={classes.surnameTxt}
+                        />
+                        <ListItemText
+                          primary={item.invitationAccepted}
+                          sx={{
+                            color:
+                              item.invitationAccepted === "Tak"
+                                ? "#15B811"
+                                : item.invitationAccepted === "?"
+                                ? "#4A8DF4"
+                                : "#C13126;",
+                          }}
+                          className={classes.invitationTxt}
+                        />
+                        <ListItemIcon className={classes.invitationSendTxt}>
+                          {item.invitationSend ? (
+                            <CheckIcon color="success" />
+                          ) : (
+                            <CloseIcon color="error" />
+                          )}
+                        </ListItemIcon>
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Collapse>
+              </div>
+            );
+          })}
+        </List>
+
+        <div className={classes.footer}>
+          <IconButton aria-label="add">
+            <AddCircleRoundedIcon color="primary" />
+          </IconButton>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
