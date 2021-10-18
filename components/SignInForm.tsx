@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SignInFormProps {
-  routeSignUp: Route;
+  routeSignUp?: Route;
 }
 
 export default function SignInForm({ routeSignUp }: SignInFormProps) {
@@ -56,18 +56,22 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
           Zapomniałem hasła
         </Typography>
       </Link>
-      <RectangularButton
-        color="primary"
-        variant="outlined"
-        size="medium"
-        className={classes.button}
-      >
-        Zaloguj się
-      </RectangularButton>
-      <Typography color="GrayText" variant="body2">
-        Chcesz założyć konto?
-      </Typography>
-      <UnderlinedLink route={routeSignUp} />
+      {routeSignUp && (
+        <>
+          <RectangularButton
+            color="primary"
+            variant="outlined"
+            size="medium"
+            className={classes.button}
+          >
+            Zaloguj się
+          </RectangularButton>
+          <Typography color="GrayText" variant="body2">
+            Chcesz założyć konto?
+          </Typography>
+          <UnderlinedLink route={routeSignUp} />
+        </>
+      )}
     </div>
   );
 }
