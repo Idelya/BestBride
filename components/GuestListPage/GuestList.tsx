@@ -107,6 +107,7 @@ export const initialGuest = {
   children: 0,
   witness: false,
   accommodation: false,
+  transport: false,
   groups: [],
   diets: [],
 };

@@ -16,6 +16,8 @@ export type Guest = {
   witness: boolean;
   accompanyingPerson?: number;
   accommodation: boolean;
+  transport: boolean;
   groups: number[];
   diets: string[];
+  remarks?: string;
 };
