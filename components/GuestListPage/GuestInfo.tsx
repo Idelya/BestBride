@@ -134,7 +134,7 @@ export default function GuestInfo({
             </div>
           </Grid>
           <Grid item xs={12} md={6} pr={8} pl={8}>
-            <div className={classes.inline}>
+            <div className={classes.block}>
               <Typography color="GrayText" variant="h6">
                 Osoba towarzysząca:
               </Typography>

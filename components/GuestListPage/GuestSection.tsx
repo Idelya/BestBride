@@ -17,6 +17,7 @@ import useToggle from "../../utils/useToggle";
 import RectangularButton from "../RectangularButton";
 import Filters from "./Filters";
 import GuestList from "./GuestList";
+import GuestAdd from "./GuestAdd";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,14 +46,21 @@ export default function GuestSection() {
 
   const [groups, setGroups] = useState<boolean>(false);
   const [smallList, setSmallList] = useState<boolean>(false);
+  const [addGuest, setAddGuest] = useState<boolean>(false);
 
   return (
     <section className={classes.main}>
+      <GuestAdd open={addGuest} handleClose={() => setAddGuest(false)} />
       <Divider component="h2" textAlign="right">
         Lista gości
       </Divider>
       <div className={classes.optionsBox}>
-        <Button startIcon={<AddIcon />} className={classes.btn} size="large">
+        <Button
+          startIcon={<AddIcon />}
+          onClick={() => setAddGuest(true)}
+          className={classes.btn}
+          size="large"
+        >
           Dodaj gościa
         </Button>
         <ButtonGroup variant="text" aria-label="switch to group">
@@ -91,7 +99,7 @@ export default function GuestSection() {
         </ButtonGroup>
       </div>
       <Filters />
-      <GuestList />
+      <GuestList addGuest={() => setAddGuest(true)} />
     </section>
   );
 }

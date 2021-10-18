@@ -18,6 +18,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
 import { Guest } from "../../config/types";
+import GuestAdd from "./GuestAdd";
 
 const rows = [
   {
@@ -181,19 +182,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function GuestList() {
+export default function GuestList({ addGuest }: { addGuest: () => void }) {
   const classes = useStyles();
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
-
-  const handleClose = () => {
-    setShowGuest(undefined);
-  };
-
   return (
     <>
       <GuestInfo
         open={!!showGuest}
-        handleClose={handleClose}
+        handleClose={() => setShowGuest(undefined)}
         guest={showGuest}
       />
       <div className={classes.main}>
@@ -289,7 +285,7 @@ export default function GuestList() {
         </List>
 
         <div className={classes.footer}>
-          <IconButton aria-label="add">
+          <IconButton aria-label="add" onClick={addGuest}>
             <AddCircleRoundedIcon color="primary" />
           </IconButton>
         </div>
