@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: "30%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      padding: theme.spacing(5),
+      padding: theme.spacing(0, 5, 5),
       borderRadius: theme.spacing(5),
     },
   })
@@ -62,6 +62,8 @@ export default function GuestInfo({
         <Divider
           component="p"
           variant="h6"
+          secondary="Gość"
+          textMargin="64px"
         >{`${guest.name} ${guest.surname}`}</Divider>
       </Box>
     </Modal>
