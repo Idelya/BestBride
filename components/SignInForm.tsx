@@ -56,16 +56,16 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
           Zapomniałem hasła
         </Typography>
       </Link>
+      <RectangularButton
+        color="primary"
+        variant="outlined"
+        size="medium"
+        className={classes.button}
+      >
+        Zaloguj się
+      </RectangularButton>
       {routeSignUp && (
         <>
-          <RectangularButton
-            color="primary"
-            variant="outlined"
-            size="medium"
-            className={classes.button}
-          >
-            Zaloguj się
-          </RectangularButton>
           <Typography color="GrayText" variant="body2">
             Chcesz założyć konto?
           </Typography>
