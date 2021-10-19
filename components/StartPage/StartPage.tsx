@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { makeStyles } from "@mui/styles";
 import start from "../../public/img/start.jpg";
@@ -43,6 +43,30 @@ const useStyles = makeStyles({
 
 export default function StartPage() {
   const classes = useStyles();
+
+  useEffect(() => {
+    const url =
+      "https://b7qmjo4jy8.execute-api.us-east-2.amazonaws.com/api/ania";
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ApiKey: "43t3$H#V)0U83vnru#V)(NRU)#VRnu930)(URVN#(U@*YRV&@YR&",
+          },
+        });
+        const json = await response.json();
+        console.log(json);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
