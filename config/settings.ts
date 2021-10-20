@@ -1,6 +1,6 @@
 const SETTINGS = {
-  server: process.env.BACKEND_URL,
-  apikey: process.env.API_KEY,
+  server: process.env.NEXT_PUBLIC_BACKEND_URL,
+  apikey: process.env.NEXT_PUBLIC_API_KEY,
 };
 
 export default SETTINGS;

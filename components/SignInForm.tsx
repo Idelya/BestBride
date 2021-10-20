@@ -8,6 +8,7 @@ import { useRouter } from "next/dist/client/router";
 import { useFormik } from "formik";
 import { signInSchemaValidation, initialValues } from "../schema/SignInSchema";
 import request from "../config/requests";
+import SETTINGS from "../config/settings";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +40,6 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
   const classes = useStyles();
 
   const router = useRouter();
-
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: signInSchemaValidation,
