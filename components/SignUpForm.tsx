@@ -7,6 +7,8 @@ import { Route } from "../config/types";
 import { signUpSchemaValidation, initialValues } from "../schema/SignUpSchema";
 import { useFormik } from "formik";
 import { useRouter } from "next/dist/client/router";
+import request from "../config/requests";
+import SETTINGS from "../config/settings";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,29 +32,20 @@ interface SignUpFormProps {
 export default function SignUpForm({ routeSignIn }: SignUpFormProps) {
   const classes = useStyles();
   const router = useRouter();
-
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: signUpSchemaValidation,
     onSubmit: async ({ email, password }) => {
-      const res = await fetch(
-        "https://b7qmjo4jy8.execute-api.us-east-2.amazonaws.com/api/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ApiKey: "43t3$H#V)0U83vnru#V)(NRU)#VRnu930)(URVN#(U@*YRV&@YR&",
-          },
-          body: JSON.stringify({
-            name: "1234",
-            email,
-            password,
-          }),
-        }
-      );
+      const url = "/api/register";
+      const res = await request.post(url, {
+        name: "justyna",
+        email,
+        password,
+      });
+
       console.log(res);
 
-      await router.push("/login");
+      await router.push("/signin");
     },
   });
 

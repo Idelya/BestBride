@@ -7,6 +7,7 @@ import { Route } from "../config/types";
 import { useRouter } from "next/dist/client/router";
 import { useFormik } from "formik";
 import { signInSchemaValidation, initialValues } from "../schema/SignInSchema";
+import request from "../config/requests";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,28 +44,19 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
     initialValues: initialValues,
     validationSchema: signInSchemaValidation,
     onSubmit: async ({ email, password }) => {
-      const res = await fetch(
-        "https://b7qmjo4jy8.execute-api.us-east-2.amazonaws.com/api/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ApiKey: "43t3$H#V)0U83vnru#V)(NRU)#VRnu930)(URVN#(U@*YRV&@YR&",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
-      console.log(res);
+      console.log(email, password);
+      const url = "/api/login";
+      const res = await request.post(url, {
+        email,
+        password,
+      });
 
       await router.push("/profil");
     },
   });
 
   return (
-    <div className={classes.form}>
+    <form onSubmit={formik.handleSubmit} className={classes.form}>
       <TextField
         id="email"
         name="email"
@@ -96,6 +88,7 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
         color="primary"
         variant="outlined"
         size="medium"
+        type="submit"
         className={classes.button}
       >
         Zaloguj się
@@ -104,6 +97,6 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
         Chcesz założyć konto?
       </Typography>
       <UnderlinedLink route={routeSignUp} />
-    </div>
+    </form>
   );
 }
