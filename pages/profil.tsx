@@ -1,8 +1,11 @@
 import type { NextPage } from "next";
 import React from "react";
-import { AuthGuard } from "../components/Guards/AuthGuard";
 import { ProfilPage } from "../components/ProfilPage";
+import dynamic from "next/dynamic";
 
+const AuthGuard = dynamic<{}>(() =>
+  import("../components/Guards/AuthGuard").then((mod) => mod.AuthGuard)
+);
 const Profil: NextPage = () => {
   return (
     <AuthGuard>

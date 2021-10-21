@@ -1,4 +1,9 @@
-import { configureStore, combineReducers, AnyAction } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  combineReducers,
+  AnyAction,
+  Dispatch,
+} from "@reduxjs/toolkit";
 import { createWrapper, MakeStore, HYDRATE } from "next-redux-wrapper";
 import { authSlice } from "./slices/auth";
 
@@ -10,7 +15,7 @@ const combinedReducers = combineReducers({
 // Type that indicates our whole State will be used for useSelector and other things.
 export type OurStore = ReturnType<typeof combinedReducers>;
 
-const rootReducer: CombinedState<{ authReducer: unknown }> = (
+const rootReducer = (
   state: ReturnType<typeof combinedReducers>,
   action: AnyAction
 ) => {
@@ -25,11 +30,10 @@ const rootReducer: CombinedState<{ authReducer: unknown }> = (
 };
 
 export const store = configureStore<OurStore>({
+  // @ts-ignore
   reducer: rootReducer,
 });
 
 const makeStore = () => store;
 
 export const wrapper = createWrapper(makeStore, {});
-
-export type MyThunkDispatch = typeof store.dispatch;

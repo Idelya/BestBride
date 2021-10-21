@@ -26,7 +26,7 @@ const internalInitialState = {
   accessToken: "",
   loading: AuthStates.IDLE,
   me: undefined,
-  error: undefined,
+  error: {},
 };
 
 export const register = createAsyncThunk(
@@ -76,19 +76,28 @@ export const authSlice = createSlice({
     reset: () => internalInitialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(login.fulfilled, (state, action) => {
+    builder.addCase(login.fulfilled, (state, action: any) => {
       state.accessToken = action.payload.accessToken;
       state.me = action.payload.me;
       state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(login.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
     });
     builder.addCase(login.rejected, (state, action) => {
-      state = { ...internalInitialState, error: action.error };
+      state = {
+        ...internalInitialState,
+        error: action.error,
+      };
       throw new Error(action.error.message);
     });
-    builder.addCase(register.fulfilled, (state, action) => {
+    builder.addCase(register.fulfilled, (state, action: any) => {
       state.accessToken = action.payload.accessToken;
       state.me = action.payload.me;
       state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(register.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
     });
     builder.addCase(register.rejected, (state, action) => {
       state.error = action.error;

@@ -9,8 +9,9 @@ import { useFormik } from "formik";
 import { signInSchemaValidation, initialValues } from "../schema/SignInSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "react-notifications-component";
-import { login } from "../store/slices/auth";
-import { MyThunkDispatch, OurStore } from "../store/store";
+import { AuthStates, login } from "../store/slices/auth";
+import { OurStore } from "../store/store";
+import dynamic from "next/dynamic";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,20 +39,19 @@ interface SignInFormProps {
   routeSignUp: Route;
 }
 
+const Loading = dynamic(import("./Loading"));
 export default function SignInForm({ routeSignUp }: SignInFormProps) {
   const classes = useStyles();
 
-  const dispatch: MyThunkDispatch = useDispatch();
-  const { loading, me, error } = useSelector(
-    (state: OurStore) => state.authReducer
-  );
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state: OurStore) => state.authReducer);
   const router = useRouter();
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: signInSchemaValidation,
     onSubmit: async (values: { email: string; password: string }) => {
       try {
-        await dispatch(login(values));
+        dispatch(login(values));
         router.push("/profil");
       } catch (e) {
         store.addNotification({
@@ -70,6 +70,10 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
       }
     },
   });
+
+  if (loading === AuthStates.LOADING) {
+    return <Loading withMargin={false} />;
+  }
 
   return (
     <form onSubmit={formik.handleSubmit} className={classes.form}>

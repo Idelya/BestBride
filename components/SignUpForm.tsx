@@ -1,18 +1,16 @@
 import React from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { TextField, Theme, Typography } from "@mui/material";
+import { store } from "react-notifications-component";
+import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/dist/client/router";
+import { register } from "../store/slices/auth";
+import { OurStore } from "../store/store";
 import RectangularButton from "./RectangularButton";
 import UnderlinedLink from "./UnderlinedLink";
 import { Route } from "../config/types";
 import { signUpSchemaValidation, initialValues } from "../schema/SignUpSchema";
-import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/dist/client/router";
-import request from "../config/requests";
-import SETTINGS from "../config/settings";
-import { register } from "../store/slices/auth";
-import { MyThunkDispatch } from "../store/store";
-import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,13 +34,14 @@ interface SignUpFormProps {
 export default function SignUpForm({ routeSignIn }: SignUpFormProps) {
   const classes = useStyles();
   const router = useRouter();
-  const dispatch: MyThunkDispatch = useDispatch();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state: OurStore) => state.authReducer);
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: signUpSchemaValidation,
-    onSubmit: async (values: { email: string; password: string }) => {
+    onSubmit: (values: { email: string; password: string }) => {
       try {
-        await dispatch(register(values));
+        dispatch(register(values));
         router.push("/profil");
       } catch (e) {
         store.addNotification({
