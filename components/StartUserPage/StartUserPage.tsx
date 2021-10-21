@@ -7,6 +7,7 @@ import Banner from "./Banner";
 import CalendarSection from "./CalendarSection";
 import TasksSection from "./TasksSection";
 import BudgetSection from "./BudgetSection";
+import GuestSection from "./GuestSection";
 
 const useStyles = makeStyles({
   root: {
@@ -22,6 +23,7 @@ export default function StartUserPage() {
       <CalendarSection />
       <TasksSection />
       <BudgetSection />
+      <GuestSection />
     </div>
   );
 }

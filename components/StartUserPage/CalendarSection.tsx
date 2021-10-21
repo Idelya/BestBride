@@ -4,7 +4,6 @@ import { createStyles, makeStyles } from "@mui/styles";
 import { IconButton, Container, Theme, Typography } from "@mui/material";
 import CalendarElement from "./CalendarElement";
 import Carousel from "react-material-ui-carousel";
-import { Event } from "../../config/types";
 
 const events = [
   {
