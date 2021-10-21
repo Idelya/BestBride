@@ -6,9 +6,13 @@ import UnderlinedLink from "./UnderlinedLink";
 import { Route } from "../config/types";
 import { signUpSchemaValidation, initialValues } from "../schema/SignUpSchema";
 import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/dist/client/router";
 import request from "../config/requests";
 import SETTINGS from "../config/settings";
+import { register } from "../store/slices/auth";
+import { MyThunkDispatch } from "../store/store";
+import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,20 +36,29 @@ interface SignUpFormProps {
 export default function SignUpForm({ routeSignIn }: SignUpFormProps) {
   const classes = useStyles();
   const router = useRouter();
+  const dispatch: MyThunkDispatch = useDispatch();
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: signUpSchemaValidation,
-    onSubmit: async ({ email, password }) => {
-      const url = "/api/register";
-      const res = await request.post(url, {
-        name: "justyna",
-        email,
-        password,
-      });
-
-      console.log(res);
-
-      await router.push("/signin");
+    onSubmit: async (values: { email: string; password: string }) => {
+      try {
+        await dispatch(register(values));
+        router.push("/profil");
+      } catch (e) {
+        store.addNotification({
+          title: "Error",
+          message: "Nie można się zalogować",
+          type: "danger",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      }
     },
   });
 
