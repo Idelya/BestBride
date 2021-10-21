@@ -1,7 +1,7 @@
 import React from "react";
 import { chunk } from "lodash";
 import { createStyles, makeStyles } from "@mui/styles";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Sector, Cell, Legend } from "recharts";
 
 import {
   IconButton,
@@ -9,9 +9,10 @@ import {
   Theme,
   Typography,
   Divider,
+  Tooltip,
 } from "@mui/material";
-import { Event } from "../../config/types";
 import Task from "../Task";
+import UnderlinedLink from "../UnderlinedLink";
 
 const data = [
   { name: "Zapłacone", value: 10000 },
@@ -26,7 +27,7 @@ const stats = [
   { name: "Wolne środki", value: 37000 },
 ];
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+const COLORS = ["#64150F", "#C8291E", "#F2ABA6"];
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,24 +41,34 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2, 5, 4),
     },
     summary: {
-      border: "1px solid " + theme.palette.primary.main,
-      boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-      position: "relative",
+      position: "absolute",
+      boxShadow: "rgba(0, 0, 0, 0.26) 0px 1px 5px",
+      right: 0,
+      top: theme.spacing(12),
+      backgroundColor: "#FFEFE9",
       display: "flex",
-      alignItems: "center",
       flexDirection: "column",
-      padding: theme.spacing(3),
+      padding: theme.spacing(0, 15),
       height: "300px",
-      width: "500px",
+      width: "55%",
+      justifyContent: "center",
     },
     inline: {
       display: "flex",
       justifyContent: "space-between",
+      margin: theme.spacing(1),
     },
-    center: {
-      margin: "auto",
-      minWidth: "350px",
+    stats: {
+      width: "60%",
       minHeight: "300px",
+      boxShadow: "rgba(0, 0, 0, 0.26) 0px 1px 5px",
+      border: "1px solid " + theme.palette.primary.main,
+      backgroundColor: theme.palette.background.paper,
+      marginBottom: theme.spacing(3),
+      padding: theme.spacing(1, 6),
+    },
+    box: {
+      position: "relative",
     },
   })
 );
@@ -73,32 +84,39 @@ export default function BudgetSection() {
       >
         Budżet i wydatki
       </Typography>
-      <div>
-        <div className={classes.center}>
-          <ResponsiveContainer width="100%" height="350px">
-            <PieChart width={400} height={400}>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                outerRadius={80}
-                label={() => <text>label</text>}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+      <Container className={classes.box}>
+        <div className={classes.stats}>
+          <PieChart width={350} height={350} data={stats}>
+            <Legend />
+            <Pie
+              data={stats}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              labelLine
+              fill="#8884d8"
+              dataKey="value"
+              label
+              paddingAngle={5}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+          </PieChart>
         </div>
+        <UnderlinedLink
+          route={{
+            name: "Zobacz też inne statystyki twoich wydatków",
+            link: "",
+          }}
+        />
         <div className={classes.summary}>
-          <div className={classes.center}>
+          <div>
             <div className={classes.inline}>
               <Typography variant="h6" color="primary">
                 Zapłacone
@@ -135,7 +153,7 @@ export default function BudgetSection() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </Container>
   );
 }
