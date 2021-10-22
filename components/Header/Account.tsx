@@ -36,7 +36,6 @@ export default function Account() {
   const classes = useStyles();
   const { signUpClient, signInClient } = ROUTES;
   const { me } = useSelector((state: OurStore) => state.authReducer);
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

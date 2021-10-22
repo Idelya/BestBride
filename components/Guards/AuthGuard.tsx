@@ -14,10 +14,10 @@ export const AuthGuard: React.FC = ({ children }) => {
     async function redirect() {
       await router.push("/");
     }
-    if (!me) {
+    if (loading != AuthStates.LOADING && !me) {
       redirect();
     }
-  }, [me, router]);
+  }, [loading, me, router]);
 
   if (loading === AuthStates.LOADING || !me) {
     return (

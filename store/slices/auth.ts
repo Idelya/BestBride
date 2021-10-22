@@ -22,7 +22,7 @@ export interface AuthSliceState {
 }
 
 // That's what we will store in the auth slice.
-const internalInitialState = {
+const internalInitialState: AuthSliceState = {
   accessToken: "",
   loading: AuthStates.IDLE,
   me: undefined,
