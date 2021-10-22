@@ -10,8 +10,6 @@ interface LayoutProps {
   children: ReactNode;
 }
 function Layout({ children }: LayoutProps) {
-  const { loading } = useSelector((state: OurStore) => state.authReducer);
-  console.log(loading);
   return (
     <>
       <Header />
