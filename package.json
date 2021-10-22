@@ -12,7 +12,7 @@
     "@mui/icons-material": "^5.0.3",
     "lodash": "^4.17.21",
     "react-material-ui-carousel": "^2.3.5",
-    "recharts": "^2.1.5"
+    "recharts": "^2.1.5",
     "@mui/lab": "^5.0.0-alpha.50",
     "@mui/material": "^5.0.2",
     "@mui/styled-engine-sc": "^5.0.0",
