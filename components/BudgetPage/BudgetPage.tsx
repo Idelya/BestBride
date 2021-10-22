@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
 import Banner from "./Banner";
+import SummarySection from "./SummarySection";
+import { Container } from "@mui/material";
 
 const useStyles = makeStyles({
   root: {
@@ -13,6 +15,9 @@ export default function BudgetPage() {
   return (
     <div>
       <Banner />
+      <Container>
+        <SummarySection />
+      </Container>
     </div>
   );
 }
