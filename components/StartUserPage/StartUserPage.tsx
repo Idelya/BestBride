@@ -20,7 +20,6 @@ export default function StartUserPage() {
   return (
     <div>
       <Banner />
-      <CalendarSection />
       <TasksSection />
       <BudgetSection />
       <GuestSection />
