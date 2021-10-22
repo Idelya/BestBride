@@ -27,6 +27,10 @@ export const ROUTES = {
     name: "Zaloguj się",
     link: "/signin-companies",
   },
+  profil: {
+    name: "Profil",
+    link: "/profil",
+  },
 };
 
 export const GUEST_ROUTES_NAV = [
