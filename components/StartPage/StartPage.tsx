@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { makeStyles } from "@mui/styles";
 import start from "../../public/img/start.jpg";
@@ -43,6 +43,7 @@ const useStyles = makeStyles({
 
 export default function StartPage() {
   const classes = useStyles();
+
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
