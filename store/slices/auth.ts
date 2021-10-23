@@ -4,6 +4,7 @@ import {
   PayloadAction,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import axios from "axios";
 import request from "../../config/requests";
 
 export enum AuthStates {
@@ -34,7 +35,7 @@ export const register = createAsyncThunk(
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
       await request.post("api/register", credentials);
-      const response = await request.post("api/login", credentials);
+      const response = await axios.post("api/login", credentials);
 
       return {
         accesssToken: "123",
@@ -51,7 +52,6 @@ export const login = createAsyncThunk(
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
       const response = await request.post("api/login", credentials);
-
       return {
         accesssToken: "123",
         me: credentials,
