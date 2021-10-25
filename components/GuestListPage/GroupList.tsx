@@ -17,7 +17,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
-import { Guest } from "../../config/types";
+import { Group } from "../../config/types";
 import GuestAdd from "./GuestAdd";
 
 const rows = [
@@ -182,23 +182,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function GuestList({ addGuest }: { addGuest: () => void }) {
+export default function GuestList({ addGroup }: { addGroup: () => void }) {
   const classes = useStyles();
-  const [showGuest, setShowGuest] = useState<Guest | undefined>();
+  const [showGroup, setShowGroup] = useState<Group | undefined>();
   return (
     <>
-      <GuestInfo
-        open={!!showGuest}
-        handleClose={() => setShowGuest(undefined)}
-        guest={showGuest}
-      />
       <div className={classes.main}>
         <List
           className={classes.list}
           subheader={
             <ListSubheader component="div" className={classes.subheader}>
               <Typography color="primary" className={classes.groupTxt}>
-                Miasto
+                Grupa
               </Typography>
               <Typography color="primary" className={classes.nameTxt}>
                 Imię
@@ -220,6 +215,11 @@ export default function GuestList({ addGuest }: { addGuest: () => void }) {
               <div key={group.name}>
                 <ListItem
                   key={group.name}
+                  secondaryAction={
+                    <IconButton edge="end" aria-label="edit">
+                      <EditIcon color="primary" />
+                    </IconButton>
+                  }
                   disablePadding
                   className={classes.groupItem}
                 >
@@ -231,17 +231,7 @@ export default function GuestList({ addGuest }: { addGuest: () => void }) {
                 <Collapse in={true} timeout="auto">
                   <List component="div" disablePadding>
                     {group.items.map((item) => (
-                      <ListItemButton
-                        key={item.id}
-                        className={classes.row}
-                        onClick={() =>
-                          setShowGuest({
-                            city: group.name,
-                            ...item,
-                            ...initialGuest,
-                          })
-                        }
-                      >
+                      <ListItemButton key={item.id} className={classes.row}>
                         <ListItemText primary="" className={classes.groupTxt} />
                         <ListItemText
                           primary={item.name}
@@ -280,7 +270,7 @@ export default function GuestList({ addGuest }: { addGuest: () => void }) {
         </List>
 
         <div className={classes.footer}>
-          <IconButton aria-label="add" onClick={addGuest}>
+          <IconButton aria-label="add" onClick={addGroup}>
             <AddCircleRoundedIcon color="primary" />
           </IconButton>
         </div>

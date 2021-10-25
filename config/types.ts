@@ -21,3 +21,8 @@ export type Guest = {
   diets: string[];
   remarks?: string;
 };
+
+export type Group = {
+  name: string;
+  guests: Guest[];
+};

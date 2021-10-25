@@ -88,6 +88,34 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
           <Grid item xs={12} md={6} pr={8}>
             <div className={classes.inline}>
               <Typography component="label" color="GrayText" variant="h6">
+                Imię:
+              </Typography>
+              <TextField
+                id="name"
+                name="name"
+                size="small"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                helperText={formik.touched.name && formik.errors.name}
+              />
+            </div>
+            <div className={classes.inline}>
+              <Typography component="label" color="GrayText" variant="h6">
+                Nazwisko:
+              </Typography>
+              <TextField
+                id="surname"
+                name="surname"
+                size="small"
+                value={formik.values.surname}
+                onChange={formik.handleChange}
+                error={formik.touched.surname && Boolean(formik.errors.surname)}
+                helperText={formik.touched.surname && formik.errors.surname}
+              />
+            </div>
+            <div className={classes.inline}>
+              <Typography component="label" color="GrayText" variant="h6">
                 Mail:
               </Typography>
               <TextField
@@ -174,17 +202,6 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                 onChange={formik.handleChange}
               />
             </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText" variant="h6">
-                Jest świadkiem:
-              </Typography>
-              <Checkbox
-                id="witness"
-                name="witness"
-                value={formik.values.witness}
-                onChange={formik.handleChange}
-              />
-            </div>
           </Grid>
           <Grid item xs={12} md={6} pr={8} pl={8}>
             <div className={classes.block}>
@@ -200,6 +217,17 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                 renderInput={(params) => (
                   <TextField name="accompanyingPerson" {...params} />
                 )}
+              />
+            </div>
+            <div className={classes.inline}>
+              <Typography color="GrayText" variant="h6">
+                Jest świadkiem:
+              </Typography>
+              <Checkbox
+                id="witness"
+                name="witness"
+                value={formik.values.witness}
+                onChange={formik.handleChange}
               />
             </div>
             <div className={classes.inline}>

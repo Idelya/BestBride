@@ -18,6 +18,8 @@ import RectangularButton from "../RectangularButton";
 import Filters from "./Filters";
 import GuestList from "./GuestList";
 import GuestAdd from "./GuestAdd";
+import GroupAdd from "./GroupAdd";
+import GroupList from "./GroupList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,22 +49,37 @@ export default function GuestSection() {
   const [groups, setGroups] = useState<boolean>(false);
   const [smallList, setSmallList] = useState<boolean>(false);
   const [addGuest, setAddGuest] = useState<boolean>(false);
+  const [addGroup, setAddGroup] = useState<boolean>(false);
 
   return (
     <section className={classes.main}>
       <GuestAdd open={addGuest} handleClose={() => setAddGuest(false)} />
+      <GroupAdd open={addGroup} handleClose={() => setAddGroup(false)} />
       <Divider component="h2" textAlign="right">
         Lista gości
       </Divider>
       <div className={classes.optionsBox}>
-        <Button
-          startIcon={<AddIcon />}
-          onClick={() => setAddGuest(true)}
-          className={classes.btn}
-          size="large"
-        >
-          Dodaj gościa
-        </Button>
+        <div>
+          <Button
+            startIcon={<AddIcon />}
+            onClick={() => setAddGuest(true)}
+            className={classes.btn}
+            size="large"
+          >
+            Dodaj gościa
+          </Button>
+          {groups && (
+            <Button
+              startIcon={<AddIcon />}
+              onClick={() => setAddGroup(true)}
+              className={classes.btn}
+              sx={{ position: "absolute" }}
+              size="large"
+            >
+              Dodaj grupę
+            </Button>
+          )}
+        </div>
         <ButtonGroup variant="text" aria-label="switch to group">
           <Button
             className={classes.btn + " " + (groups && classes.btnInactive)}
@@ -99,7 +116,11 @@ export default function GuestSection() {
         </ButtonGroup>
       </div>
       <Filters />
-      <GuestList addGuest={() => setAddGuest(true)} />
+      {groups ? (
+        <GroupList addGroup={() => setAddGroup(true)} />
+      ) : (
+        <GuestList addGuest={() => setAddGuest(true)} />
+      )}
     </section>
   );
 }
