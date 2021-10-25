@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import btnImg from "../../public/btn.png";
 import { Expense } from "../../config/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpenseDetails from "./ExpenseDetails";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,11 +82,7 @@ export default function ExpensesList({ expenses }: ExpensesListProps) {
               </div>
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
+              <ExpenseDetails expense={expense} />
             </AccordionDetails>
           </Accordion>
         ))}
