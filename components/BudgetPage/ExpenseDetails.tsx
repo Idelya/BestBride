@@ -120,7 +120,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Uwagi:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.details || "Brak"}
+            {expense.remarks || "Brak"}
           </Typography>
         </div>
       </Grid>

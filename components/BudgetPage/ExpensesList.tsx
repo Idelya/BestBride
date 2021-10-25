@@ -18,6 +18,7 @@ import btnImg from "../../public/btn.png";
 import { Expense } from "../../config/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpenseDetails from "./ExpenseDetails";
+import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,11 +51,16 @@ interface ExpensesListProps {
 }
 export default function ExpensesList({ expenses }: ExpensesListProps) {
   const classes = useStyles();
+
   return (
     <div className={classes.list}>
       <List>
         {expenses.map((expense) => (
-          <Accordion key={expense.id} className={classes.listItem}>
+          <Accordion
+            key={expense.id}
+            className={classes.listItem}
+            id={"expense-" + expense.id}
+          >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               className={classes.summary}

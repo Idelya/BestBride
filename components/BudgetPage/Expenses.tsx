@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Heading from "../Heading";
 import { Theme } from "@mui/system";
@@ -8,6 +8,7 @@ import ExpenseSummary from "./ExpenseSummary";
 import AddIcon from "@mui/icons-material/Add";
 import ExpensesList from "./ExpensesList";
 import { Expense } from "../../config/types";
+import ExpenseAdd from "./ExpenseAdd";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,15 +50,19 @@ const data: Expense[] = [
 ];
 export default function Expenses() {
   const classes = useStyles();
+  const [addExpense, setAddExpense] = useState(false);
   return (
     <div className={classes.root}>
       <Divider textAlign="right">Wydatki</Divider>
+      <ExpenseAdd open={addExpense} handleClose={() => setAddExpense(false)} />
       <Grid container>
         <Grid item md={12} className={classes.summary}>
           <ExpenseSummary />
         </Grid>
         <Grid item md={12} className={classes.btn}>
-          <Button startIcon={<AddIcon />}>Dodaj wydatek</Button>
+          <Button startIcon={<AddIcon />} onClick={() => setAddExpense(true)}>
+            Dodaj wydatek
+          </Button>
         </Grid>
         <Grid item md={12}>
           <ExpensesList expenses={data} />

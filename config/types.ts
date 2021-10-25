@@ -38,7 +38,8 @@ export type Expense = {
   status: "opłacone" | "zaplanowane";
   estiamtedPrice?: number;
   type?: string;
-  details?: string;
+  remarks?: string;
   service?: number;
   task?: number;
 };
+export const OPTIONS_STATUS = ["opłacone", "zaplanowane"];
