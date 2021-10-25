@@ -29,8 +29,18 @@ const useStyles = makeStyles((theme: Theme) =>
     summary: {
       border: "1px solid " + theme.palette.primary.main,
       boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+      "& div": {
+        display: "flex",
+        justifyContent: "space-between",
+      },
     },
     details: {},
+    spacing: {
+      margin: theme.spacing(0, 2),
+    },
+    box: {
+      width: "250px",
+    },
   })
 );
 
@@ -48,7 +58,27 @@ export default function ExpensesList({ expenses }: ExpensesListProps) {
               expandIcon={<ExpandMoreIcon />}
               className={classes.summary}
             >
-              <Typography>{expense.name}</Typography>
+              <Typography color="primary" variant="h6">
+                {expense.name}
+              </Typography>
+              <div className={classes.box}>
+                <Typography
+                  color="primary"
+                  variant="subtitle1"
+                  className={classes.spacing}
+                >
+                  {expense.status}
+                </Typography>
+                <Typography
+                  color="primary"
+                  variant="subtitle1"
+                  className={classes.spacing}
+                >
+                  {`${expense.status === "opłacone" ? expense.price : 0}/${
+                    expense.price
+                  }`}
+                </Typography>
+              </div>
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
               <Typography>
