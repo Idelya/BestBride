@@ -17,19 +17,29 @@ import ListSubheader from "@mui/material/ListSubheader";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
-import { Group } from "../../config/types";
+import { Group, Guest } from "../../config/types";
 import GuestAdd from "./GuestAdd";
+import GroupEdit from "./GroupEdit";
+import { initialGuest } from "./GuestList";
 
 const rows = [
   {
     name: "Wrocław",
-    items: [
+    guests: [
       {
         id: 1,
         surname: "Snow",
         name: "Jon",
         invitationAccepted: "Tak",
         invitationSend: true,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
 
       {
@@ -38,6 +48,14 @@ const rows = [
         name: "Arya",
         invitationAccepted: "Nie",
         invitationSend: true,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
       {
         id: 5,
@@ -45,18 +63,34 @@ const rows = [
         name: "Daenerys",
         invitationAccepted: "Tak",
         invitationSend: true,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
     ],
   },
   {
     name: "Kielce",
-    items: [
+    guests: [
       {
         id: 2,
         surname: "Lannister",
         name: "Cersei",
         invitationAccepted: "?",
         invitationSend: false,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
       {
         id: 3,
@@ -64,6 +98,14 @@ const rows = [
         name: "Jaime",
         invitationAccepted: "?",
         invitationSend: true,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
       {
         id: 6,
@@ -71,18 +113,34 @@ const rows = [
         name: "Tyrion",
         invitationAccepted: "Tak",
         invitationSend: true,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
     ],
   },
   {
     name: "Winterfell",
-    items: [
+    guests: [
       {
         id: 7,
         surname: "Sansa",
         name: "Stark",
         invitationAccepted: "Tak",
         invitationSend: true,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
       {
         id: 8,
@@ -90,6 +148,14 @@ const rows = [
         name: "Stark",
         invitationAccepted: "?",
         invitationSend: false,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
       {
         id: 9,
@@ -97,21 +163,18 @@ const rows = [
         name: "Stark",
         invitationAccepted: "?",
         invitationSend: false,
+        mail: "adres@mail.com",
+        phone: "999 000 543",
+        children: 0,
+        witness: false,
+        accommodation: false,
+        transport: false,
+        groups: [],
+        diets: [],
       },
     ],
   },
 ];
-
-export const initialGuest = {
-  mail: "adres@mail.com",
-  phone: "999 000 543",
-  children: 0,
-  witness: false,
-  accommodation: false,
-  transport: false,
-  groups: [],
-  diets: [],
-};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -185,8 +248,21 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function GuestList({ addGroup }: { addGroup: () => void }) {
   const classes = useStyles();
   const [showGroup, setShowGroup] = useState<Group | undefined>();
+  const [showGuest, setShowGuest] = useState<Guest | undefined>();
   return (
     <>
+      <GuestInfo
+        open={!!showGuest}
+        handleClose={() => setShowGuest(undefined)}
+        guest={showGuest}
+      />
+      {showGroup && (
+        <GroupEdit
+          open={!!showGroup}
+          handleClose={() => setShowGroup(undefined)}
+          group={showGroup}
+        />
+      )}
       <div className={classes.main}>
         <List
           className={classes.list}
@@ -216,7 +292,11 @@ export default function GuestList({ addGroup }: { addGroup: () => void }) {
                 <ListItem
                   key={group.name}
                   secondaryAction={
-                    <IconButton edge="end" aria-label="edit">
+                    <IconButton
+                      edge="end"
+                      aria-label="edit"
+                      onClick={() => setShowGroup(group)}
+                    >
                       <EditIcon color="primary" />
                     </IconButton>
                   }
@@ -230,8 +310,18 @@ export default function GuestList({ addGroup }: { addGroup: () => void }) {
                 </ListItem>
                 <Collapse in={true} timeout="auto">
                   <List component="div" disablePadding>
-                    {group.items.map((item) => (
-                      <ListItemButton key={item.id} className={classes.row}>
+                    {group.guests.map((item) => (
+                      <ListItemButton
+                        key={item.id}
+                        className={classes.row}
+                        onClick={() =>
+                          setShowGuest({
+                            city: group.name,
+                            ...item,
+                            ...initialGuest,
+                          })
+                        }
+                      >
                         <ListItemText primary="" className={classes.groupTxt} />
                         <ListItemText
                           primary={item.name}
