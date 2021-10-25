@@ -28,3 +28,17 @@ export type Guest = {
   diets: string[];
   remarks?: string;
 };
+
+export type Expense = {
+  id: number;
+  name: string;
+  price: number;
+  paymentDate?: string;
+  finalDate?: string;
+  status: "opłacone" | "zaplanowane";
+  estiamtedPrice?: number;
+  type?: string;
+  details?: string;
+  service?: number;
+  task?: number;
+};

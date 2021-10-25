@@ -3,6 +3,7 @@ import { makeStyles } from "@mui/styles";
 import Banner from "./Banner";
 import SummarySection from "./SummarySection";
 import { Container } from "@mui/material";
+import Expenses from "./Expenses";
 
 const useStyles = makeStyles({
   root: {
@@ -17,6 +18,7 @@ export default function BudgetPage() {
       <Banner />
       <Container>
         <SummarySection />
+        <Expenses />
       </Container>
     </div>
   );
