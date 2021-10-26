@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.23.0",
     "cookie": "^0.4.1",
+    "cookies": "^0.8.0",
     "date-fns": "^2.25.0",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
@@ -33,6 +34,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/cookies": "^0.7.7",
     "@types/lodash": "^4.14.175",
     "@types/react": "17.0.26",
     "@types/react-notifications-component": "^3.1.1",
