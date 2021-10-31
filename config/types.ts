@@ -9,3 +9,10 @@ export type Event = {
   localization?: string;
   assigned?: string[];
 };
+
+export type User = {
+  name?: string;
+  email?: string;
+  id?: number;
+  role?: string;
+};

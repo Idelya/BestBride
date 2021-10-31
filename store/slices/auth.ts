@@ -4,7 +4,9 @@ import {
   PayloadAction,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import axios from "axios";
 import request from "../../config/requests";
+import { User } from "../../config/types";
 
 export enum AuthStates {
   IDLE = "idle",
@@ -14,10 +16,7 @@ export enum AuthStates {
 export interface AuthSliceState {
   accessToken: string;
   loading: AuthStates;
-  me?: {
-    name?: string;
-    email?: string;
-  };
+  me?: User | null;
   error?: SerializedError;
 }
 
@@ -25,20 +24,45 @@ export interface AuthSliceState {
 const internalInitialState: AuthSliceState = {
   accessToken: "",
   loading: AuthStates.IDLE,
-  me: undefined,
+  me: null,
   error: {},
 };
+
+export const fetchUser = createAsyncThunk("auth/user", async (_, thunkAPI) => {
+  try {
+    const response = await axios.get("localhost:3000/api/user");
+
+    return {
+      me: response,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ error: (error as Error).message });
+  }
+});
+
+export const setUser = createAsyncThunk(
+  "auth/setUser",
+  async (user: User | null, thunkAPI) => {
+    try {
+      return {
+        me: user,
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: (error as Error).message });
+    }
+  }
+);
 
 export const register = createAsyncThunk(
   "auth/register",
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
       await request.post("api/register", credentials);
-      const response = await request.post("api/login", credentials);
+      const response = await axios.post("api/login", credentials);
+      const user = await axios.get("api/user");
 
       return {
-        accesssToken: "123",
-        me: credentials,
+        me: user,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
@@ -50,17 +74,27 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
-      const response = await request.post("api/login", credentials);
-
+      const response = await axios.post("api/login", credentials);
+      const user = await axios.get("api/user");
       return {
-        accesssToken: "123",
-        me: credentials,
+        me: user?.data,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
     }
   }
 );
+
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+  try {
+    const res = await axios.post("api/logout");
+    return {
+      me: null,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ error: (error as Error).message });
+  }
+});
 
 export const authSlice = createSlice({
   name: "auth", // name of the slice that we will use.
@@ -101,6 +135,39 @@ export const authSlice = createSlice({
     });
     builder.addCase(register.rejected, (state, action) => {
       state.error = action.error;
+    });
+    builder.addCase(fetchUser.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(fetchUser.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(fetchUser.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
+    });
+    builder.addCase(setUser.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(setUser.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(setUser.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(logout.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(logout.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
     });
   },
 });
