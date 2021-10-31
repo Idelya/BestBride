@@ -51,7 +51,8 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
-      const response = await request.post("api/login", credentials);
+      const response = await axios.post("api/login", credentials);
+      console.log(response);
       return {
         accesssToken: "123",
         me: credentials,

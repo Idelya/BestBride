@@ -1,20 +1,24 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import request from "../../config/requests";
-import cookies from "cookies";
+import Cookies from "cookies";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { headers, body } = req;
+  const cookies = new Cookies(req, res);
 
   try {
-    const response = await request.post("api/login", body, {
-      // @ts-ignore
-      headers: headers,
-    });
+    const response = await request.post("api/login", body);
+    console.log(response);
     // @ts-ignore
-    if (response?.data.status === "success") {
+    if (response?.data.message === "OK") {
       // @ts-ignore
-      cookies.set("jwt", response.data.token, {
+      const regexp = new RegExp(`.*jwt=([^;]*)`);
+      // @ts-ignore
+      const token = regexp.exec(
+        response?.headers["set-cookie"]?.join() || ""
+      )[1];
+      cookies.set("jwt", token, {
         httpOnly: true,
         expires: new Date(
           // @ts-ignore
@@ -28,10 +32,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
     return null;
   } catch (e) {
+    console.log(e);
     return res.status(401).json({
       status: "fail",
       // @ts-ignore
-      message: e.response.data.message,
+      message: e.response?.data.message,
     });
   }
 };
