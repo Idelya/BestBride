@@ -77,13 +77,24 @@ export const login = createAsyncThunk(
       const response = await axios.post("api/login", credentials);
       const user = await axios.get("api/user");
       return {
-        me: user,
+        me: user?.data,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
     }
   }
 );
+
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+  try {
+    const res = await axios.post("api/logout");
+    return {
+      me: null,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ error: (error as Error).message });
+  }
+});
 
 export const authSlice = createSlice({
   name: "auth", // name of the slice that we will use.
@@ -145,6 +156,17 @@ export const authSlice = createSlice({
       state.loading = AuthStates.IDLE;
     });
     builder.addCase(setUser.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(logout.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(logout.pending, (state, action) => {
       state.loading = AuthStates.LOADING;
     });
   },

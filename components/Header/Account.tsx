@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { styled } from "@mui/system";
 import {
   Box,
@@ -12,15 +13,18 @@ import {
   Menu,
   MenuItem,
   Tooltip,
+  ListItemText,
 } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import Link from "next/link";
 import { ROUTES, USER_MENU } from "../../config/configNav";
 import NavLink from "./NavLink";
 import RectangularButton from "../RectangularButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { OurStore } from "../../store/store";
 import { PersonAdd, Settings, Logout } from "@mui/icons-material";
+import { useRouter } from "next/dist/client/router";
+import { AuthStates, logout } from "../../store/slices/auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Account() {
   const classes = useStyles();
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { signUpClient, signInClient } = ROUTES;
   const { me } = useSelector((state: OurStore) => state.authReducer);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -43,6 +49,15 @@ export default function Account() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    try {
+      dispatch(logout());
+      router.push("/");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -118,6 +133,13 @@ export default function Account() {
                 <MenuItem>{e.name}</MenuItem>
               </Link>
             ))}
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Wyloguj</ListItemText>
+            </MenuItem>
           </Menu>
         </>
       )}

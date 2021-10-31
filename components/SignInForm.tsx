@@ -52,7 +52,6 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
     onSubmit: async (values: { email: string; password: string }) => {
       try {
         dispatch(login(values));
-        router.push("/profil");
       } catch (e) {
         store.addNotification({
           title: "Error",

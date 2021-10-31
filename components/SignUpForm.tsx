@@ -42,7 +42,6 @@ export default function SignUpForm({ routeSignIn }: SignUpFormProps) {
     onSubmit: (values: { email: string; password: string }) => {
       try {
         dispatch(register(values));
-        router.push("/profil");
       } catch (e) {
         store.addNotification({
           title: "Error",

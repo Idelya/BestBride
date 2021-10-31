@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Layout from "../components/common/Layout";
 import { SignInPage } from "../components/SignInPage";
@@ -24,7 +24,9 @@ const SignIn: NextPage<{ user: User; children?: ReactNode }> = ({
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
-  dispatch(setUser(user));
+  useEffect(() => {
+    dispatch(setUser(user));
+  });
   return (
     <UnauthGuard>
       <SignInPage />

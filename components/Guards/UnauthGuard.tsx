@@ -1,6 +1,6 @@
 import { Container } from "@mui/material";
 import { useRouter } from "next/dist/client/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { AuthStates } from "../../store/slices/auth";
 import { OurStore } from "../../store/store";
@@ -9,18 +9,17 @@ import Loading from "../Loading";
 export const UnauthGuard: React.FC = ({ children }) => {
   const { loading, me } = useSelector((state: OurStore) => state.authReducer);
   const router = useRouter();
-
   useEffect(() => {
     async function redirect() {
       await router.push("/start");
     }
-    console.log(me);
-    if (loading != AuthStates.LOADING && me) {
+
+    if (loading != AuthStates.LOADING && !!me) {
       redirect();
     }
   }, [loading, me, router]);
 
-  if (loading === AuthStates.LOADING || me) {
+  if (loading === AuthStates.LOADING || !!me) {
     return (
       <Container sx={{ minHeight: "100vh", display: "flex", minWidth: "100%" }}>
         <Loading />
