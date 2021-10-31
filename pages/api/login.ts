@@ -9,7 +9,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const response = await request.post("api/login", body);
-    console.log(response);
     // @ts-ignore
     if (response?.data.message === "OK") {
       // @ts-ignore
@@ -32,7 +31,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
     return null;
   } catch (e) {
-    console.log(e);
     return res.status(401).json({
       status: "fail",
       // @ts-ignore

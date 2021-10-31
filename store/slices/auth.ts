@@ -18,6 +18,8 @@ export interface AuthSliceState {
   me?: {
     name?: string;
     email?: string;
+    id?: number;
+    role?: string;
   };
   error?: SerializedError;
 }
@@ -36,10 +38,10 @@ export const register = createAsyncThunk(
     try {
       await request.post("api/register", credentials);
       const response = await axios.post("api/login", credentials);
+      const user = await axios.get("api/user");
 
       return {
-        accesssToken: "123",
-        me: credentials,
+        me: user,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
@@ -52,10 +54,9 @@ export const login = createAsyncThunk(
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
       const response = await axios.post("api/login", credentials);
-      console.log(response);
+      const user = await axios.get("api/user");
       return {
-        accesssToken: "123",
-        me: credentials,
+        me: user,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
