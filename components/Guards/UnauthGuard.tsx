@@ -14,6 +14,7 @@ export const UnauthGuard: React.FC = ({ children }) => {
     async function redirect() {
       await router.push("/start");
     }
+    console.log(me);
     if (loading != AuthStates.LOADING && me) {
       redirect();
     }

@@ -9,7 +9,7 @@ import Layout from "../components/common/Layout";
 import { StartPage } from "../components/StartPage";
 import request from "../config/requests";
 import { User } from "../config/types";
-import { authPage, unauthPage } from "../store/auth";
+import { unauthPage } from "../store/auth";
 import { setUser } from "../store/slices/auth";
 
 const UnauthGuard = dynamic<{}>(() =>
@@ -17,14 +17,14 @@ const UnauthGuard = dynamic<{}>(() =>
 );
 
 export const getServerSideProps = unauthPage;
-const Home: NextPage<{ user?: User; children?: ReactNode }> = ({
+const Home: NextPage<{ user: User | null; children?: ReactNode }> = ({
   user,
 }: {
-  user?: User;
+  user: User | null;
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
-  dispatch(setUser(user || null));
+  dispatch(setUser(user));
   return (
     <UnauthGuard>
       <StartPage />
