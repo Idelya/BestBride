@@ -12,14 +12,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
 
-    console.log(response);
-
     return res.status(200).json({
       status: "success",
       user: response.data,
     });
   } catch (e: any) {
-    console.log(e);
     return res.status(401).json({
       status: "fail",
       response: e.response.data,

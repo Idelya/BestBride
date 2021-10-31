@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import request from "../../config/requests";
+import { User } from "../../config/types";
 
 export enum AuthStates {
   IDLE = "idle",
@@ -15,12 +16,7 @@ export enum AuthStates {
 export interface AuthSliceState {
   accessToken: string;
   loading: AuthStates;
-  me?: {
-    name?: string;
-    email?: string;
-    id?: number;
-    role?: string;
-  };
+  me?: User | null;
   error?: SerializedError;
 }
 
@@ -28,9 +24,34 @@ export interface AuthSliceState {
 const internalInitialState: AuthSliceState = {
   accessToken: "",
   loading: AuthStates.IDLE,
-  me: undefined,
+  me: null,
   error: {},
 };
+
+export const fetchUser = createAsyncThunk("auth/user", async (_, thunkAPI) => {
+  try {
+    const response = await axios.get("localhost:3000/api/user");
+
+    return {
+      me: response,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ error: (error as Error).message });
+  }
+});
+
+export const setUser = createAsyncThunk(
+  "auth/setUser",
+  async (user: User, thunkAPI) => {
+    try {
+      return {
+        me: user,
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: (error as Error).message });
+    }
+  }
+);
 
 export const register = createAsyncThunk(
   "auth/register",
@@ -103,6 +124,28 @@ export const authSlice = createSlice({
     });
     builder.addCase(register.rejected, (state, action) => {
       state.error = action.error;
+    });
+    builder.addCase(fetchUser.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(fetchUser.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(fetchUser.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
+    });
+    builder.addCase(setUser.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(setUser.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(setUser.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
     });
   },
 });
