@@ -8,14 +8,14 @@ import { useDispatch } from "react-redux";
 import Layout from "../components/common/Layout";
 import StartPageCompanies from "../components/StartPageCompanies/StartPageCompanies";
 import { User } from "../config/types";
-import { authPage } from "../store/auth";
+import { unauthPage } from "../store/auth";
 import { setUser } from "../store/slices/auth";
 
-const AuthGuard = dynamic<{}>(() =>
-  import("../components/Guards/AuthGuard").then((mod) => mod.AuthGuard)
+const UnauthGuard = dynamic<{}>(() =>
+  import("../components/Guards/UnauthGuard").then((mod) => mod.UnauthGuard)
 );
 
-export const getServerSideProps = authPage;
+export const getServerSideProps = unauthPage;
 const Companies: NextPage<{ user: User; children?: ReactNode }> = ({
   user,
 }: {
@@ -24,7 +24,11 @@ const Companies: NextPage<{ user: User; children?: ReactNode }> = ({
 }) => {
   const dispatch = useDispatch();
   dispatch(setUser(user));
-  return <StartPageCompanies />;
+  return (
+    <UnauthGuard>
+      <StartPageCompanies />
+    </UnauthGuard>
+  );
 };
 
 export default Companies;

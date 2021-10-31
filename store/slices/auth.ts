@@ -42,7 +42,7 @@ export const fetchUser = createAsyncThunk("auth/user", async (_, thunkAPI) => {
 
 export const setUser = createAsyncThunk(
   "auth/setUser",
-  async (user: User, thunkAPI) => {
+  async (user: User | null, thunkAPI) => {
     try {
       return {
         me: user,

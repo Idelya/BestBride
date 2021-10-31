@@ -62,7 +62,7 @@ export default function Account() {
           </Link>
         </>
       )}
-      {me && (
+      {!!me && (
         <>
           <Box
             sx={{ display: "flex", alignItems: "center", textAlign: "center" }}

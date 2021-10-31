@@ -8,14 +8,14 @@ import { useDispatch } from "react-redux";
 import Layout from "../components/common/Layout";
 import { SignInPage } from "../components/SignInPage";
 import { User } from "../config/types";
-import { authPage } from "../store/auth";
+import { authPage, unauthPage } from "../store/auth";
 import { setUser } from "../store/slices/auth";
 
 const UnauthGuard = dynamic<{}>(() =>
   import("../components/Guards/UnauthGuard").then((mod) => mod.UnauthGuard)
 );
 
-export const getServerSideProps = authPage;
+export const getServerSideProps = unauthPage;
 
 const SignIn: NextPage<{ user: User; children?: ReactNode }> = ({
   user,
