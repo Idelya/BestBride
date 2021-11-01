@@ -25,6 +25,7 @@ import { OurStore } from "../../store/store";
 import { PersonAdd, Settings, Logout } from "@mui/icons-material";
 import { useRouter } from "next/dist/client/router";
 import { AuthStates, logout } from "../../store/slices/auth";
+import { ROLE } from "../../config/types";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -128,11 +129,12 @@ export default function Account() {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            {USER_MENU.map((e, i) => (
-              <Link href={e.link} key={i} passHref>
-                <MenuItem>{e.name}</MenuItem>
-              </Link>
-            ))}
+            {me?.role === ROLE.USER &&
+              USER_MENU.map((e, i) => (
+                <Link href={e.link} key={i} passHref>
+                  <MenuItem>{e.name}</MenuItem>
+                </Link>
+              ))}
             <Divider />
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>

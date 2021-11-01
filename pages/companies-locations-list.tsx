@@ -1,13 +1,29 @@
-import { Button } from "@mui/material";
 import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import React from "react";
-import Layout from "../components/common/Layout";
+import dynamic from "next/dynamic";
+import React, { ReactNode } from "react";
+import { useDispatch } from "react-redux";
 import { CompaniesLocationsListPage } from "../components/CompaniesLocationsListPage";
+import { User } from "../config/types";
+import { setUser } from "../store/slices/auth";
+import { authPage } from "../store/auth";
 
-const CompaniesLocationslist: NextPage = () => {
-  return <CompaniesLocationsListPage />;
-};
+const CompanyAuthGuard = dynamic<{}>(() =>
+  import("../components/Guards/CompanyAuthGuard").then(
+    (mod) => mod.CompanyAuthGuard
+  )
+);
+
+export const getServerSideProps = authPage;
+
+const CompaniesLocationslist: NextPage<{ user: User; children?: ReactNode }> =
+  ({ user }: { user: User; children?: ReactNode }) => {
+    const dispatch = useDispatch();
+    dispatch(setUser(user));
+    return (
+      <CompanyAuthGuard>
+        <CompaniesLocationsListPage />
+      </CompanyAuthGuard>
+    );
+  };
 
 export default CompaniesLocationslist;
