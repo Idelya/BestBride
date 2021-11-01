@@ -1,15 +1,16 @@
 import * as yup from "yup";
+import { boolean } from "yup/lib/locale";
 
 export const initialValues = {
   surname: "",
   name: "",
   invitationAccepted: "?",
   invitationSend: false,
-  mail: "",
+  eMail: "",
   phone: "",
   city: "",
   children: 0,
-  witness: false,
+  isWithness: false,
   accompanyingPerson: undefined,
   accommodation: false,
   transport: false,
@@ -26,11 +27,11 @@ export const guestSchemaValidation: any = yup.object({
   name: yup.string(),
   invitationAccepted: yup.string(),
   invitationSend: yup.boolean(),
-  mail: yup.string(),
+  eMail: yup.string(),
   phone: yup.string(),
   city: yup.string(),
   children: yup.number(),
-  witness: yup.boolean(),
+  isWithness: yup.boolean(),
   accompanyingPerson: yup.number(),
   accommodation: yup.boolean(),
   transport: yup.boolean(),

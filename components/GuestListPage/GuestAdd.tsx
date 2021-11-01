@@ -3,38 +3,27 @@ import { createStyles, makeStyles } from "@mui/styles";
 import Modal from "@mui/material/Modal";
 import {
   Autocomplete,
-  Box,
   Button,
-  ButtonGroup,
   Checkbox,
   Grid,
   List,
-  ListItem,
-  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
   TextField,
   Theme,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import Divider from "../Divider";
-import AddIcon from "@mui/icons-material/Add";
-import useToggle from "../../utils/useToggle";
-import RectangularButton from "../RectangularButton";
-import Filters from "./Filters";
-import GuestList from "./GuestList";
-import { Guest } from "../../config/types";
-import { style } from "@mui/system";
-import { Form, useFormik } from "formik";
+import { useFormik } from "formik";
 import {
   dietsOptions,
   guestSchemaValidation,
   initialValues,
   invitationAcceptedsOptions,
 } from "../../schema/GuestSchema";
+import { store } from "react-notifications-component";
+import request from "../../config/requests";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,8 +62,44 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: guestSchemaValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        const url = "/api/guest/";
+        const x = await request.post(url, values);
+        if (x.data) {
+          store.addNotification({
+            title: "Success",
+            message: "Dodano nowego gościa.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+          handleClose();
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
@@ -119,13 +144,13 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                 Mail:
               </Typography>
               <TextField
-                id="mail"
-                name="mail"
+                id="eMail"
+                name="eMail"
                 size="small"
-                value={formik.values.mail}
+                value={formik.values.eMail}
                 onChange={formik.handleChange}
-                error={formik.touched.mail && Boolean(formik.errors.mail)}
-                helperText={formik.touched.mail && formik.errors.mail}
+                error={formik.touched.eMail && Boolean(formik.errors.eMail)}
+                helperText={formik.touched.eMail && formik.errors.eMail}
               />
             </div>
             <div className={classes.inline}>
@@ -175,7 +200,7 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
             </div>
             <div className={classes.inline}>
               <Typography color="GrayText" variant="h6">
-                Wysłano zaproszenie:
+                Zaakceptowano:
               </Typography>
               <TextField
                 id="invitationAccepted"
@@ -193,12 +218,12 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
             </div>
             <div className={classes.inline}>
               <Typography color="GrayText" variant="h6">
-                Zaakceptowano:
+                Wysłano zaproszenie:
               </Typography>
               <Checkbox
-                id="invitationAccepted"
-                name="invitationAccepted"
-                value={formik.values.invitationAccepted}
+                id="invitationSend"
+                name="invitationSend"
+                value={formik.values.invitationSend}
                 onChange={formik.handleChange}
               />
             </div>
@@ -224,9 +249,9 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                 Jest świadkiem:
               </Typography>
               <Checkbox
-                id="witness"
-                name="witness"
-                value={formik.values.witness}
+                id="isWithness"
+                name="isWithness"
+                value={formik.values.isWithness}
                 onChange={formik.handleChange}
               />
             </div>

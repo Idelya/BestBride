@@ -81,7 +81,7 @@ export default function GuestInfo({
                 Mail:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.mail}
+                {guest.eMail}
               </Typography>
             </div>
             <div className={classes.inline}>
@@ -129,7 +129,7 @@ export default function GuestInfo({
                 Jest świadkiem:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.witness ? "Tak" : "Nie"}
+                {guest.isWithness ? "Tak" : "Nie"}
               </Typography>
             </div>
           </Grid>

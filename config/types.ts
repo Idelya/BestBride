@@ -9,11 +9,11 @@ export type Guest = {
   name: string;
   invitationAccepted: string;
   invitationSend: boolean;
-  mail?: string;
+  eMail?: string;
   phone?: string;
   city?: string;
   children: number;
-  witness: boolean;
+  isWithness: boolean;
   accompanyingPerson?: number;
   accommodation: boolean;
   transport: boolean;

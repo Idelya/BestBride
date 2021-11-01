@@ -119,7 +119,7 @@ export default function GuestSection() {
       {groups ? (
         <GroupList addGroup={() => setAddGroup(true)} />
       ) : (
-        <GuestList addGuest={() => setAddGuest(true)} />
+        <GuestList addGuest={() => setAddGuest(true)} update={addGuest} />
       )}
     </section>
   );

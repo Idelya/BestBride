@@ -18,7 +18,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
 import { Group, Guest } from "../../config/types";
-import GuestAdd from "./GuestAdd";
 import GroupEdit from "./GroupEdit";
 import { initialGuest } from "./GuestList";
 
@@ -35,7 +34,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -51,7 +50,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -66,7 +65,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -86,7 +85,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -101,7 +100,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -116,7 +115,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -136,7 +135,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -151,7 +150,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -166,7 +165,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -245,7 +244,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function GuestList({ addGroup }: { addGroup: () => void }) {
+export default function GroupList({ addGroup }: { addGroup: () => void }) {
   const classes = useStyles();
   const [showGroup, setShowGroup] = useState<Group | undefined>();
   const [showGuest, setShowGuest] = useState<Guest | undefined>();

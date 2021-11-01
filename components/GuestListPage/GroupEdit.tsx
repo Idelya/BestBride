@@ -5,22 +5,14 @@ import without from "lodash";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
-  Box,
   Button,
-  ButtonGroup,
-  Checkbox,
   Grid,
   IconButton,
   List,
   ListItem,
   ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
   TextField,
   Theme,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import Divider from "../Divider";
@@ -41,7 +33,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -57,7 +49,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -72,7 +64,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -92,7 +84,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -107,7 +99,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -122,7 +114,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -142,7 +134,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -157,7 +149,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -172,7 +164,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -237,12 +229,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface GuestAddProps {
+interface GroupAddProps {
   open: boolean;
   handleClose: () => void;
   group: Group;
 }
-export default function GroupAdd({ open, handleClose, group }: GuestAddProps) {
+export default function GroupAdd({ open, handleClose, group }: GroupAddProps) {
   const classes = useStyles();
   const [guestInList, setGuestInList] = useState<Guest[]>(
     group ? group.guests : []
@@ -303,6 +295,7 @@ export default function GroupAdd({ open, handleClose, group }: GuestAddProps) {
                 getOptionLabel={(option) =>
                   option ? option.name + " " + option.surname : ""
                 }
+                //@ts-ignore
                 onChange={(e, v) => setSearchedGuest(v)}
                 renderInput={(params) => (
                   <TextField

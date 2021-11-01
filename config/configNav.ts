@@ -47,6 +47,10 @@ export const ROUTES = {
     name: "Dane ślubu",
     link: "/profil/#weddingSettings",
   },
+  guestList: {
+    name: "Lista gości",
+    link: "/guest-list",
+  },
 };
 
 export const GUEST_ROUTES_NAV = [
@@ -57,6 +61,7 @@ export const GUEST_ROUTES_NAV = [
 
 export const USER_ROUTES_NAV = [
   ROUTES.organizer,
+  ROUTES.guestList,
   ROUTES.services,
   ROUTES.budget,
   ROUTES.calendar,
