@@ -4,22 +4,19 @@ import { Typography, TypographyProps } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Route } from "../../config/types";
 import Link from "next/link";
-import { GUEST_ROUTES_NAV } from "../../config/configNav";
+import { GUEST_ROUTES_NAV, USER_ROUTES_NAV } from "../../config/configNav";
 import NavLink from "./NavLink";
-
-const useStyles = makeStyles({
-  root: {
-    textAlign: "center",
-  },
-});
+import { useSelector } from "react-redux";
+import { OurStore } from "../../store/store";
 
 export default function Nav() {
-  const classes = useStyles();
+  const { me } = useSelector((state: OurStore) => state.authReducer);
   return (
     <nav>
-      {GUEST_ROUTES_NAV.map((route, i) => (
-        <NavLink key={i} route={route} />
-      ))}
+      {!me &&
+        GUEST_ROUTES_NAV.map((route, i) => <NavLink key={i} route={route} />)}
+      {me &&
+        USER_ROUTES_NAV.map((route, i) => <NavLink key={i} route={route} />)}
     </nav>
   );
 }

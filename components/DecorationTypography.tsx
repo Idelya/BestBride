@@ -10,7 +10,16 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DecorationTypography(props: TypographyProps) {
+export default function DecorationTypography({
+  className,
+  ...props
+}: TypographyProps) {
   const classes = useStyles();
-  return <Typography component="span" className={classes.root} {...props} />;
+  return (
+    <Typography
+      component="span"
+      {...props}
+      className={classes.root + " " + className}
+    />
+  );
 }

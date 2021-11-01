@@ -77,7 +77,7 @@ export default function ProfilSection() {
     },
   });
   return (
-    <Container component="section">
+    <Container component="section" id="profil">
       <Divider>Profil</Divider>
       <form onSubmit={formik.handleSubmit} className={classes.form}>
         <div className={classes.fullWidth}>
