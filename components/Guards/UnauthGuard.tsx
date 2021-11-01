@@ -2,6 +2,7 @@ import { Container } from "@mui/material";
 import { useRouter } from "next/dist/client/router";
 import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { ROLE } from "../../config/types";
 import { AuthStates } from "../../store/slices/auth";
 import { OurStore } from "../../store/store";
 import Loading from "../Loading";
@@ -11,7 +12,11 @@ export const UnauthGuard: React.FC = ({ children }) => {
   const router = useRouter();
   useEffect(() => {
     async function redirect() {
-      await router.push("/start");
+      if (me && me.role === ROLE.COMPANY) {
+        await router.push("/companies-locations-list");
+      } else if (me && me.role === ROLE.USER) {
+        await router.push("/start");
+      }
     }
 
     if (loading != AuthStates.LOADING && !!me) {

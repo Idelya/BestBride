@@ -6,6 +6,7 @@ import Logo from "../Logo";
 import { TextField, Theme, Typography } from "@mui/material";
 import { ROUTES } from "../../config/configNav";
 import SignUpForm from "../SignUpForm";
+import { ROLE } from "../../config/types";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +73,7 @@ export default function SignUpCompaniesPage() {
       </div>
       <div className={classes.contentBanner}>
         <Logo variantCompanies="h6" variantLogo="h3" isForCompanies />
-        <SignUpForm routeSignIn={ROUTES.signInCompanies} />
+        <SignUpForm routeSignIn={ROUTES.signInCompanies} role={ROLE.COMPANY} />
       </div>
     </div>
   );

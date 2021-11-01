@@ -12,7 +12,14 @@ export type Event = {
 
 export type User = {
   name?: string;
-  email?: string;
+  email: string;
   id?: number;
-  role?: string;
+  role: string;
 };
+
+export const ROLE = {
+  USER: "user",
+  ADMIN: "admin",
+  COMPANY: "firm",
+};
+export type RoleType = "user" | "admin" | "firm";

@@ -64,7 +64,7 @@ const Divider = ({
           " " +
           (textAlign === "right" && classes.alignRight) +
           " " +
-          (textAlign === "center" && classes.alignRight)
+          (textAlign === "center" && classes.alignCenter)
         }
       >
         <Typography
