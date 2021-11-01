@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "@mui/system";
 import { Typography, TypographyProps } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Route } from "../../config/types";
+import { ROLE, Route } from "../../config/types";
 import Link from "next/link";
 import { GUEST_ROUTES_NAV, USER_ROUTES_NAV } from "../../config/configNav";
 import NavLink from "./NavLink";
@@ -15,7 +15,7 @@ export default function Nav() {
     <nav>
       {!me &&
         GUEST_ROUTES_NAV.map((route, i) => <NavLink key={i} route={route} />)}
-      {me &&
+      {me?.role === ROLE.USER &&
         USER_ROUTES_NAV.map((route, i) => <NavLink key={i} route={route} />)}
     </nav>
   );
