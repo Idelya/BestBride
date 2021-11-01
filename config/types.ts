@@ -1,3 +1,5 @@
+import { number, string } from "yup/lib/locale";
+
 export type Route = {
   name: string;
   link: string;
@@ -23,3 +25,10 @@ export const ROLE = {
   COMPANY: "firm",
 };
 export type RoleType = "user" | "admin" | "firm";
+
+export type Phase = {
+  id: number;
+  name?: string;
+  tasks: number;
+  doneTasks: number;
+};
