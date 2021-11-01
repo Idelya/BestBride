@@ -2,6 +2,7 @@ import React from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Container, Theme } from "@mui/material";
 import Banner from "./Banner";
+import Stages from "./Stages";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,6 +17,7 @@ export default function PlannerPage() {
   return (
     <Container className={classes.container}>
       <Banner />
+      <Stages />
     </Container>
   );
 }
