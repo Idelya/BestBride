@@ -29,7 +29,23 @@ export const ROUTES = {
   },
   profil: {
     name: "Profil",
-    link: "/profil",
+    link: "/profil/#profil",
+  },
+  organizer: {
+    name: "Orgaznizer",
+    link: "/organizer",
+  },
+  budget: {
+    name: "Budżet",
+    link: "/budget",
+  },
+  calendar: {
+    name: "Kalendarz",
+    link: "/calendar",
+  },
+  weddingSettings: {
+    name: "Dane ślubu",
+    link: "/profil/#weddingSettings",
   },
 };
 
@@ -38,3 +54,12 @@ export const GUEST_ROUTES_NAV = [
   ROUTES.services,
   ROUTES.forCompanies,
 ];
+
+export const USER_ROUTES_NAV = [
+  ROUTES.organizer,
+  ROUTES.services,
+  ROUTES.budget,
+  ROUTES.calendar,
+];
+
+export const USER_MENU = [ROUTES.profil, ROUTES.weddingSettings];

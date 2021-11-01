@@ -1,12 +1,15 @@
 import React from "react";
 // Modules
 import { AppProps } from "next/app";
+import "react-notifications-component/dist/theme.css";
 import Head from "next/head";
 // MUI Core
 // Utils
 import { theme } from "../utils/theme";
 import Layout from "../components/common/Layout";
 import { CssBaseline, ThemeProvider } from "@mui/material";
+import { wrapper } from "../store/store";
+import ReactNotification from "react-notifications-component";
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   React.useEffect(() => {
@@ -20,7 +23,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>Best Bride</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -29,6 +32,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Layout>
+          <ReactNotification />
           <Component {...pageProps} />
         </Layout>
       </ThemeProvider>
@@ -36,4 +40,4 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   );
 };
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

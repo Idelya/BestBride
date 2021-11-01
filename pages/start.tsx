@@ -6,18 +6,17 @@ import Image from "next/image";
 import React, { ReactNode, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Layout from "../components/common/Layout";
-import { SignInPage } from "../components/SignInPage";
+import { StartUserPage } from "../components/StartUserPage";
 import { User } from "../config/types";
-import { authPage, unauthPage } from "../store/auth";
+import { authPage } from "../store/auth";
 import { setUser } from "../store/slices/auth";
 
-const UnauthGuard = dynamic<{}>(() =>
-  import("../components/Guards/UnauthGuard").then((mod) => mod.UnauthGuard)
+const AuthGuard = dynamic<{}>(() =>
+  import("../components/Guards/AuthGuard").then((mod) => mod.AuthGuard)
 );
 
-export const getServerSideProps = unauthPage;
-
-const SignIn: NextPage<{ user: User; children?: ReactNode }> = ({
+export const getServerSideProps = authPage;
+const Start: NextPage<{ user: User; children?: ReactNode }> = ({
   user,
 }: {
   user: User;
@@ -28,10 +27,10 @@ const SignIn: NextPage<{ user: User; children?: ReactNode }> = ({
     dispatch(setUser(user));
   });
   return (
-    <UnauthGuard>
-      <SignInPage />
-    </UnauthGuard>
+    <AuthGuard>
+      <StartUserPage />
+    </AuthGuard>
   );
 };
 
-export default SignIn;
+export default Start;

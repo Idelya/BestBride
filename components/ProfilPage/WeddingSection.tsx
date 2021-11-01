@@ -69,7 +69,7 @@ export default function WeddingSection() {
     },
   });
   return (
-    <Container component="section">
+    <Container component="section" id="weddingSettings">
       <Divider textAlign="right">Dane ślubu</Divider>
       <form onSubmit={formik.handleSubmit} className={classes.form}>
         <div>
