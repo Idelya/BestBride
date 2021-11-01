@@ -41,7 +41,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -57,7 +57,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -72,7 +72,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -92,7 +92,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -107,7 +107,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -122,7 +122,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -142,7 +142,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -157,7 +157,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -172,7 +172,7 @@ const rows = [
         mail: "adres@mail.com",
         phone: "999 000 543",
         children: 0,
-        witness: false,
+        isWithness: false,
         accommodation: false,
         transport: false,
         groups: [],
@@ -298,6 +298,7 @@ export default function GroupAdd({ open, handleClose }: GuestAddProps) {
                 value={searchedGuest}
                 className={classes.select}
                 getOptionLabel={(option) => option.name + " " + option.surname}
+                //@ts-ignore
                 onChange={(e, v) => setSearchedGuest(v)}
                 renderInput={(params) => (
                   <TextField
