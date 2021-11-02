@@ -32,3 +32,24 @@ export type Phase = {
   tasks: number;
   doneTasks: number;
 };
+
+export type TaskStatus = "nierozpoczęte" | "w trakcie" | "zakończone";
+
+export const TASK_STATUS = {
+  BACKLOG: "nierozpoczęte",
+  WIP: "w trakcie",
+  DONE: "zakończone",
+};
+
+export type Task = {
+  id: number;
+  name: string;
+  status: TaskStatus;
+  date: Date;
+  assignedTo?: string;
+  expanses?: {
+    id: number;
+    name: string;
+  }[];
+  remarks?: string;
+};
