@@ -36,16 +36,16 @@ export type Phase = {
 export type TaskStatus = "nierozpoczęte" | "w trakcie" | "zakończone";
 
 export const TASK_STATUS = {
-  BACKLOG: "nierozpoczęte",
-  WIP: "w trakcie",
-  DONE: "zakończone",
+  BACKLOG: "nierozpoczęte" as TaskStatus,
+  WIP: "w trakcie" as TaskStatus,
+  DONE: "zakończone" as TaskStatus,
 };
 
 export type Task = {
   id: number;
   name: string;
   status: TaskStatus;
-  date: Date;
+  date?: Date;
   assignedTo?: string;
   expanses?: {
     id: number;

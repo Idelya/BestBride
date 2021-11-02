@@ -147,7 +147,6 @@ export default function Stages() {
       >
         <Box
           sx={{
-            position: "absolute",
             minWidth: "500px",
             width: "100%",
             height: "100%",
