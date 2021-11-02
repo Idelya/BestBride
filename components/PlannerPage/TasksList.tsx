@@ -12,12 +12,19 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { Phase, TASK_STATUS } from "../../config/types";
+import { Phase, Task, TASK_STATUS } from "../../config/types";
 import AddIcon from "@mui/icons-material/Add";
 import RectangularButton from "../RectangularButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Task from "../Task";
 import TaskDetails from "../TaskDetails";
+import {
+  DragDropContext,
+  Droppable,
+  DroppableProvided,
+  DropResult,
+  ResponderProvided,
+} from "react-beautiful-dnd";
+import DraggableTask from "./DraggableTask";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -111,6 +118,28 @@ interface TasksListProps {
 export default function TasksList({ phase }: TasksListProps) {
   const classes = useStyles();
   const [filtrList, setFiltrList] = useState<"all" | "undone" | "done">("all");
+  const [localItems, setLocalItems] = useState<Array<Task>>(data);
+
+  // normally one would commit/save any order changes via an api call here...
+  const handleDragEnd = (result: DropResult, provided?: ResponderProvided) => {
+    if (!result.destination) {
+      return;
+    }
+
+    if (result.destination.index === result.source.index) {
+      return;
+    }
+
+    setLocalItems((prev: any) => {
+      const temp = [...prev];
+      const d = temp[result.destination!.index];
+      temp[result.destination!.index] = temp[result.source.index];
+      temp[result.source.index] = d;
+
+      return temp;
+    });
+  };
+
   return (
     <div className={classes.container}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -175,38 +204,26 @@ export default function TasksList({ phase }: TasksListProps) {
           </RectangularButton>
         </ButtonGroup>
       </Box>
-      <List className={classes.list}>
-        <Typography color="gray">W tym etapie nie ma żadnych zadań.</Typography>
-      </List>
       <List>
-        {data.map((task) => (
-          <Accordion
-            key={task.id}
-            className={classes.listItem}
-            id={"task-" + task.id}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              className={classes.summary}
-            >
-              <Typography color="primary" variant="h6">
-                {task.name}
-              </Typography>
-              <div className={classes.box}>
-                <Typography
-                  color="primary"
-                  variant="subtitle1"
-                  className={classes.spacing}
-                >
-                  {task.status}
-                </Typography>
+        {!data && (
+          <Typography color="gray">
+            W tym etapie nie ma żadnych zadań.
+          </Typography>
+        )}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="droppable" direction="vertical">
+            {(droppableProvided: DroppableProvided) => (
+              <div
+                {...droppableProvided.droppableProps}
+                ref={droppableProvided.innerRef}
+              >
+                {data.map((task, index) => (
+                  <DraggableTask key={index} task={task} index={index} />
+                ))}
               </div>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TaskDetails task={task} />
-            </AccordionDetails>
-          </Accordion>
-        ))}
+            )}
+          </Droppable>
+        </DragDropContext>
       </List>
     </div>
   );
