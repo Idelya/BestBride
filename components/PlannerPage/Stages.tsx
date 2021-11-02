@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -29,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 0,
     },
     picked: {
-      borderWidth: "2px",
       backgroundColor: theme.palette.grey[200],
     },
     finished: {
@@ -50,7 +51,17 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset",
       transition: "all 1s ease-in-out",
     },
-    wrapper: { overflowX: "hidden", display: "flex" },
+    wrapper: {
+      overflowX: "hidden",
+      display: "flex",
+      margin: theme.spacing(10, 0),
+    },
+    btn: {
+      textAlign: "center",
+      margin: theme.spacing(2, 0),
+      textTransform: "none",
+      width: "150px",
+    },
   })
 );
 
@@ -95,6 +106,9 @@ export default function Stages() {
         sx={{ width: currPhase ? "30%" : "100%" }}
         className={classes.container}
       >
+        <Button startIcon={<AddIcon />} className={classes.btn}>
+          Dodaj etap
+        </Button>
         {data.map((stage) => (
           <Card
             className={
@@ -139,7 +153,7 @@ export default function Stages() {
             height: "100%",
           }}
         >
-          <TasksList />
+          {currPhase && <TasksList phase={currPhase} />}
         </Box>
       </Box>
     </Box>

@@ -2,23 +2,24 @@ import React from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Container,
+  Button,
+  IconButton,
+  List,
   Theme,
   Typography,
 } from "@mui/material";
+import { Phase } from "../../config/types";
+import AddIcon from "@mui/icons-material/Add";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       display: "flex",
       flexDirection: "column",
-      width: "100%",
-      height: "100%",
-      justifyContent: "center",
-      alignItems: "center",
+      padding: theme.spacing(3),
+    },
+    list: {
+      display: "flex",
     },
     stage: {
       margin: theme.spacing(2),
@@ -35,6 +36,11 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       alignItems: "center",
       justifyContent: "space-between",
+    },
+    btn: {
+      textAlign: "center",
+      textTransform: "none",
+      width: "150px",
     },
   })
 );
@@ -66,11 +72,26 @@ const data = [
   },
 ];
 
-export default function TasksList() {
+interface TasksListProps {
+  phase: Phase;
+}
+export default function TasksList({ phase }: TasksListProps) {
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <Typography color="gray">W tym etapie nie ma żadnych zadań.</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4" color="primary">
+          {phase.name}
+        </Typography>
+        <div>
+          <Button startIcon={<AddIcon />} className={classes.btn}>
+            Dodaj zadanie
+          </Button>
+        </div>
+      </Box>
+      <List className={classes.list}>
+        <Typography color="gray">W tym etapie nie ma żadnych zadań.</Typography>
+      </List>
     </div>
   );
 }
