@@ -23,3 +23,12 @@ export const ROLE = {
   COMPANY: "firm",
 };
 export type RoleType = "user" | "admin" | "firm";
+
+export type ServiceStatusType = "Wersja robocza";
+
+export type Service = {
+  id: number;
+  img: string;
+  status: ServiceStatusType;
+  name: string;
+};
