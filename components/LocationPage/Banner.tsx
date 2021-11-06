@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     banner: {
       position: "relative",
-      height: "100vh",
-      minHeight: "700px",
+      height: "80vh",
+      minHeight: "500px",
       width: "100%",
     },
     content: {
@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(5),
       backgroundColor: "rgba(255,255,255,0.95)",
       display: "flex",
+      flexDirection: "column",
       justifyContent: "center",
-      alignItems: "center",
       border: "solid thin " + theme.palette.primary.main,
       fontWeight: "normal",
     },
@@ -65,20 +65,20 @@ export default function Banner({
           <Typography variant="h5" color="primary">
             Kategoria: restauracje
           </Typography>
-          <Typography variant="h3" color="primary">
-            {service.name}
-          </Typography>
-          <br />
-          <Typography variant="h6" color="GrayText">
-            Kontakt
-          </Typography>
-          <Typography variant="subtitle1" color="GrayText">
-            email
-          </Typography>
-          <Typography variant="subtitle1" color="GrayText">
-            tel.
-          </Typography>
         </Link>
+        <Typography variant="h3" color="primary">
+          {service.name}
+        </Typography>
+        <br />
+        <Typography variant="h6" color="GrayText">
+          Kontakt
+        </Typography>
+        <Typography variant="subtitle1" color="GrayText">
+          email
+        </Typography>
+        <Typography variant="subtitle1" color="GrayText">
+          tel.
+        </Typography>
       </div>
       <div className={classes.img}>
         <Image src={service.img} alt="" layout="fill" objectFit="cover" />

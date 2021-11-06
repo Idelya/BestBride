@@ -31,4 +31,5 @@ export type Service = {
   img: string;
   status: ServiceStatusType;
   name: string;
+  offer: string;
 };
