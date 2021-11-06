@@ -40,19 +40,6 @@ export const fetchUser = createAsyncThunk("auth/user", async (_, thunkAPI) => {
   }
 });
 
-export const setUser = createAsyncThunk(
-  "auth/setUser",
-  async (user: User | null, thunkAPI) => {
-    try {
-      return {
-        me: user,
-      };
-    } catch (error) {
-      return thunkAPI.rejectWithValue({ error: (error as Error).message });
-    }
-  }
-);
-
 export const register = createAsyncThunk(
   "auth/register",
   async (
@@ -104,10 +91,9 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
 });
 
 export const authSlice = createSlice({
-  name: "auth", // name of the slice that we will use.
+  name: "auth",
   initialState: internalInitialState,
   reducers: {
-    // here will end up non async basic reducers.
     updateAccessToken(
       state: AuthSliceState,
       action: PayloadAction<{ token: string }>
@@ -115,6 +101,9 @@ export const authSlice = createSlice({
       state.accessToken = action.payload.token;
     },
     reset: () => internalInitialState,
+    setUser(state: AuthSliceState, action: PayloadAction<{ me: User | null }>) {
+      state.me = action.payload.me;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action: any) => {
@@ -154,17 +143,6 @@ export const authSlice = createSlice({
     builder.addCase(fetchUser.pending, (state, action) => {
       state.loading = AuthStates.LOADING;
     });
-    builder.addCase(setUser.rejected, (state, action) => {
-      state = { ...internalInitialState, error: action.error };
-      throw new Error(action.error.message);
-    });
-    builder.addCase(setUser.fulfilled, (state, action) => {
-      state.me = (action.payload as any).me;
-      state.loading = AuthStates.IDLE;
-    });
-    builder.addCase(setUser.pending, (state, action) => {
-      state.loading = AuthStates.LOADING;
-    });
     builder.addCase(logout.rejected, (state, action) => {
       state = { ...internalInitialState, error: action.error };
       throw new Error(action.error.message);
@@ -179,4 +157,4 @@ export const authSlice = createSlice({
   },
 });
 
-export const { updateAccessToken, reset } = authSlice.actions;
+export const { updateAccessToken, reset, setUser } = authSlice.actions;
