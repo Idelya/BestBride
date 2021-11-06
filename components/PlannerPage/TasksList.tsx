@@ -25,6 +25,7 @@ import {
   ResponderProvided,
 } from "react-beautiful-dnd";
 import DraggableTask from "./DraggableTask";
+import { orderBy } from "lodash";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -92,21 +93,25 @@ const data = [
   {
     id: 1,
     name: "Zadanie 1",
+    order: 1,
     status: TASK_STATUS.BACKLOG,
   },
   {
     id: 2,
     name: "Etap 2",
+    order: 2,
     status: TASK_STATUS.BACKLOG,
   },
   {
     id: 3,
     name: "Etap 3",
+    order: 4,
     status: TASK_STATUS.BACKLOG,
   },
   {
     id: 4,
     name: "Etap 4",
+    order: 3,
     status: TASK_STATUS.BACKLOG,
   },
 ];
@@ -115,12 +120,23 @@ interface TasksListProps {
   phase: Phase;
 }
 
+const reorder = (
+  list: Iterable<Task> | ArrayLike<Task>,
+  startIndex: number,
+  endIndex: number
+) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
 export default function TasksList({ phase }: TasksListProps) {
   const classes = useStyles();
   const [filtrList, setFiltrList] = useState<"all" | "undone" | "done">("all");
-  const [localItems, setLocalItems] = useState<Array<Task>>(data);
+  const [localItems, setLocalItems] = useState<Array<Task>>(data.sort());
 
-  // normally one would commit/save any order changes via an api call here...
   const handleDragEnd = (result: DropResult, provided?: ResponderProvided) => {
     if (!result.destination) {
       return;
@@ -130,13 +146,17 @@ export default function TasksList({ phase }: TasksListProps) {
       return;
     }
 
-    setLocalItems((prev: any) => {
-      const temp = [...prev];
-      const d = temp[result.destination!.index];
-      temp[result.destination!.index] = temp[result.source.index];
-      temp[result.source.index] = d;
+    setLocalItems((_) => {
+      if (!result.destination) {
+        return data;
+      }
 
-      return temp;
+      const items = reorder(
+        localItems,
+        result.source.index,
+        result.destination.index
+      );
+      return items;
     });
   };
 
@@ -217,9 +237,10 @@ export default function TasksList({ phase }: TasksListProps) {
                 {...droppableProvided.droppableProps}
                 ref={droppableProvided.innerRef}
               >
-                {data.map((task, index) => (
-                  <DraggableTask key={index} task={task} index={index} />
+                {localItems.sort().map((task, index) => (
+                  <DraggableTask key={task.order} task={task} index={index} />
                 ))}
+                {droppableProvided.placeholder}
               </div>
             )}
           </Droppable>

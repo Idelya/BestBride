@@ -43,6 +43,7 @@ export const TASK_STATUS = {
 
 export type Task = {
   id: number;
+  order: number;
   name: string;
   status: TaskStatus;
   date?: Date;

@@ -85,29 +85,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const data = [
-  {
-    id: 1,
-    name: "Zadanie 1",
-    status: TASK_STATUS.BACKLOG,
-  },
-  {
-    id: 2,
-    name: "Etap 2",
-    status: TASK_STATUS.BACKLOG,
-  },
-  {
-    id: 3,
-    name: "Etap 3",
-    status: TASK_STATUS.BACKLOG,
-  },
-  {
-    id: 4,
-    name: "Etap 4",
-    status: TASK_STATUS.BACKLOG,
-  },
-];
-
 interface DraggableTaskProps {
   task: Task;
   index: number;
@@ -115,8 +92,9 @@ interface DraggableTaskProps {
 
 export default function DraggableTask({ task, index }: DraggableTaskProps) {
   const classes = useStyles();
+  console.log(task);
   return (
-    <Draggable draggableId={task.id.toString()} index={index}>
+    <Draggable draggableId={task.order.toString()} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
         return (
           <Accordion
