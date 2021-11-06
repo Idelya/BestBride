@@ -26,6 +26,7 @@ import {
 } from "react-beautiful-dnd";
 import DraggableTask from "./DraggableTask";
 import { orderBy } from "lodash";
+import AddTask from "./AddTask";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -136,6 +137,7 @@ export default function TasksList({ phase }: TasksListProps) {
   const classes = useStyles();
   const [filtrList, setFiltrList] = useState<"all" | "undone" | "done">("all");
   const [localItems, setLocalItems] = useState<Array<Task>>(data.sort());
+  const [openTaskAdd, setOpenTaskAdd] = useState<boolean>(false);
 
   const handleDragEnd = (result: DropResult, provided?: ResponderProvided) => {
     if (!result.destination) {
@@ -162,12 +164,17 @@ export default function TasksList({ phase }: TasksListProps) {
 
   return (
     <div className={classes.container}>
+      <AddTask open={openTaskAdd} handleClose={() => setOpenTaskAdd(false)} />
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4" color="primary">
           {phase.name}
         </Typography>
         <div>
-          <Button startIcon={<AddIcon />} className={classes.btn}>
+          <Button
+            startIcon={<AddIcon />}
+            className={classes.btn}
+            onClick={() => setOpenTaskAdd(true)}
+          >
             Dodaj zadanie
           </Button>
         </div>

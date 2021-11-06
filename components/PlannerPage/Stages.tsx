@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import TasksList from "./TasksList";
 import { Phase } from "../../config/types";
+import AddPhase from "./AddPhase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,6 +96,7 @@ const data = [
 export default function Stages() {
   const classes = useStyles();
   const [currPhase, setCurrPhase] = useState<Phase | null>(null);
+  const [openPhaseAdd, setOpenPhaseAdd] = useState<boolean>(false);
 
   const handleChange = (stage: Phase) => {
     setCurrPhase(stage === currPhase ? null : stage);
@@ -102,11 +104,19 @@ export default function Stages() {
 
   return (
     <Box className={classes.wrapper}>
+      <AddPhase
+        open={openPhaseAdd}
+        handleClose={() => setOpenPhaseAdd(false)}
+      />
       <Box
         sx={{ width: currPhase ? "30%" : "100%" }}
         className={classes.container}
       >
-        <Button startIcon={<AddIcon />} className={classes.btn}>
+        <Button
+          startIcon={<AddIcon />}
+          className={classes.btn}
+          onClick={() => setOpenPhaseAdd(true)}
+        >
           Dodaj etap
         </Button>
         {data.map((stage) => (
