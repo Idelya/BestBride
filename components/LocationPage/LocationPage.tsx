@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import Banner from "./Banner";
 import { ServiceStatusType } from "../../config/types";
 import Offer from "./Offer";
+import Gallery from "./Gallery";
 
 const location = {
   id: 1,
@@ -89,6 +90,7 @@ export default function LocationPage() {
         <Divider>Oferta</Divider>
         <Offer service={location} mode={mode} />
         <Divider textAlign="right">Galeria</Divider>
+        <Gallery />
         <Divider>Kontakt</Divider>
       </Container>
     </div>

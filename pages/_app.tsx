@@ -10,6 +10,7 @@ import Layout from "../components/common/Layout";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { wrapper } from "../store/store";
 import ReactNotification from "react-notifications-component";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   React.useEffect(() => {

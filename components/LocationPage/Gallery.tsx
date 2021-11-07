@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ServiceStatusType } from "../../config/types";
+import ImageGallery from "react-image-gallery";
 
 const location = {
   id: 1,
@@ -22,12 +23,42 @@ const location = {
   offer: "",
 };
 
+const images = [
+  {
+    original: "https://picsum.photos/id/1018/1000/600/",
+    thumbnail: "https://picsum.photos/id/1018/250/150/",
+  },
+  {
+    original: "https://picsum.photos/id/1015/1000/600/",
+    thumbnail: "https://picsum.photos/id/1015/250/150/",
+  },
+  {
+    original: "https://picsum.photos/id/1019/1000/600/",
+    thumbnail: "https://picsum.photos/id/1019/250/150/",
+  },
+];
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {},
+    container: {
+      margin: theme.spacing(5, 0),
+      "& .image-gallery-thumbnail.active": {
+        borderColor: theme.palette.primary.main,
+      },
+      "& .image-gallery-thumbnail:hover": {
+        borderColor: theme.palette.primary.main,
+      },
+      "& .image-gallery-icon:hover": {
+        color: theme.palette.primary.main,
+      },
+    },
   })
 );
-export default function LocationPage() {
+export default function Gallery() {
   const classes = useStyles();
-  return <div></div>;
+  return (
+    <div className={classes.container}>
+      <ImageGallery items={images} />
+    </div>
+  );
 }
