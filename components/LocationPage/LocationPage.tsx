@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -29,16 +30,64 @@ const location = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {},
+    controls: {
+      position: "fixed",
+      right: 0,
+      top: "50%",
+      backgroundColor: "white",
+      display: "flex",
+      flexDirection: "column",
+      boxShadow: "rgba(0, 0, 0, 0.26) 0px 1px 5px",
+      "& > *": {
+        textTransform: "none",
+        width: "min-content",
+        margin: theme.spacing(1),
+      },
+    },
   })
 );
 export default function LocationPage() {
   const classes = useStyles();
+  const router = useRouter();
+  const { id } = router.query;
+  const [mode, setMode] = useState<"edit" | "view">(
+    id === "new" ? "edit" : "view"
+  );
+
+  const handleReset = () => {
+    //cofnij zmiany
+    setMode("view");
+  };
+
+  const handleViewVersion = () => {
+    //aktualizuj zmiany
+    setMode("view");
+  };
+
+  const publicVersion = () => {
+    //send to verification
+  };
   return (
     <div>
       <Banner service={location} />
       <Container>
+        <div className={classes.controls}>
+          {mode != "edit" ? (
+            <>
+              <Button onClick={publicVersion}>Publikuj wersję</Button>
+              <Button onClick={() => setMode("edit")}>Edytuj</Button>
+              <Button>Usuń</Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={handleViewVersion}>Podgląd wersji</Button>
+              <Button onClick={handleReset}>Anuluj</Button>
+              <Button>Usuń</Button>
+            </>
+          )}
+        </div>
         <Divider>Oferta</Divider>
-        <Offer service={location} />
+        <Offer service={location} mode={mode} />
         <Divider textAlign="right">Galeria</Divider>
         <Divider>Kontakt</Divider>
       </Container>

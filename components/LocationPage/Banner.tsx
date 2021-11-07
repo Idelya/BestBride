@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       left: theme.spacing(10),
       padding: theme.spacing(5),
       backgroundColor: "rgba(255,255,255,0.95)",
+      boxShadow: "rgba(0, 0, 0, 0.26) 0px 1px 5px",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",

@@ -10,7 +10,15 @@ import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
 import { Service } from "../../config/types";
-import { EditorState, Editor, RichUtils, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import dynamic from "next/dynamic";
+import { stateToHTML } from "draft-js-export-html";
+
+const Editor = dynamic(
+  //@ts-ignore
+  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
+  { ssr: false }
+);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,8 +28,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     editor: {
       height: "100%",
-      border: "solid thin " + theme.palette.primary.main,
       minHeight: "300px",
+    },
+    editMode: {
+      border: "solid thin " + theme.palette.primary.main,
     },
   })
 );
@@ -35,30 +45,39 @@ export default function Offer({
 }) {
   const classes = useStyles();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const editor = useRef(null);
 
-  const handleKeyCommand = (command: string) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      setEditorState(newState);
-      return "handled";
-    }
-    return "not-handled";
-  };
-
-  function focusEditor() {
-    //@ts-ignore
-    editor.current.focus();
-  }
   console.log(convertToRaw(editorState.getCurrentContent()).blocks);
   return (
     <div className={classes.content}>
-      <div className={classes.editor} onClick={focusEditor}>
+      <div
+        className={
+          "editor " +
+          classes.editor +
+          " " +
+          (mode === "edit" ? classes.editMode : "")
+        }
+      >
         <Editor
-          ref={editor}
+          //@ts-ignore
           editorState={editorState}
-          onChange={setEditorState}
-          handleKeyCommand={handleKeyCommand}
+          readOnly={mode != "edit"}
+          toolbarHidden={mode != "edit"}
+          onEditorStateChange={setEditorState}
+          toolbar={{
+            options: [
+              "inline",
+              "blockType",
+              "fontSize",
+              "list",
+              "textAlign",
+              "history",
+            ],
+            inline: { inDropdown: true },
+            list: { inDropdown: true },
+            textAlign: { inDropdown: true },
+            link: { inDropdown: true },
+            image: { disabled: true },
+          }}
         />
       </div>
     </div>

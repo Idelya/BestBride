@@ -28,6 +28,10 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/react-draft-wysiwyg@1.12.3/dist/react-draft-wysiwyg.css"
+        />
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
