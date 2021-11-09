@@ -19,6 +19,7 @@ import Banner from "./Banner";
 import { ServiceStatusType } from "../../config/types";
 import Offer from "./Offer";
 import Gallery from "./Gallery";
+import Contact from "./Contact";
 
 const location = {
   id: 1,
@@ -92,6 +93,7 @@ export default function LocationPage() {
         <Divider textAlign="right">Galeria</Divider>
         <Gallery />
         <Divider>Kontakt</Divider>
+        <Contact service={location} mode={mode} />
       </Container>
     </div>
   );
