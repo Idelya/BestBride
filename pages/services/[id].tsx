@@ -23,13 +23,13 @@ const Location: NextPage<{ user: User; children?: ReactNode }> = ({
   user: User;
   children?: ReactNode;
 }) => {
-  const dispatch = useDispatch();
-  dispatch(setUser({ me: user }));
+  //const dispatch = useDispatch();
+  //dispatch(setUser({ me: user }));
 
   return (
-    <CompanyAuthGuard>
-      <LocationPage />
-    </CompanyAuthGuard>
+    // <CompanyAuthGuard>
+    <LocationPage />
+    //</CompanyAuthGuard>
   );
 };
 
