@@ -20,7 +20,7 @@ import {
   dietsOptions,
   guestSchemaValidation,
   initialValues,
-  invitationAcceptedsOptions,
+  statusOptions,
 } from "../../schema/GuestSchema";
 import { store } from "react-notifications-component";
 import request from "../../config/requests";
@@ -61,12 +61,14 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
 
   const formik = useFormik({
     initialValues: initialValues,
-    validationSchema: guestSchemaValidation,
     onSubmit: async (values) => {
+      console.log("submit");
       console.log(values);
       try {
         const url = "/api/guest/";
-        const x = await request.post(url, values);
+        console.log(request);
+        const x = await request.post(url, { ...values, diet: null });
+        console.log(x);
         if (x.data) {
           store.addNotification({
             title: "Success",
@@ -113,7 +115,7 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
           <Grid item xs={12} md={6} pr={8}>
             <div className={classes.inline}>
               <Typography component="label" color="GrayText" variant="h6">
-                Imię:
+                Imię i nazwisko:
               </Typography>
               <TextField
                 id="name"
@@ -127,30 +129,16 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
             </div>
             <div className={classes.inline}>
               <Typography component="label" color="GrayText" variant="h6">
-                Nazwisko:
-              </Typography>
-              <TextField
-                id="surname"
-                name="surname"
-                size="small"
-                value={formik.values.surname}
-                onChange={formik.handleChange}
-                error={formik.touched.surname && Boolean(formik.errors.surname)}
-                helperText={formik.touched.surname && formik.errors.surname}
-              />
-            </div>
-            <div className={classes.inline}>
-              <Typography component="label" color="GrayText" variant="h6">
                 Mail:
               </Typography>
               <TextField
-                id="eMail"
-                name="eMail"
+                id="email"
+                name="email"
                 size="small"
-                value={formik.values.eMail}
+                value={formik.values.email}
                 onChange={formik.handleChange}
-                error={formik.touched.eMail && Boolean(formik.errors.eMail)}
-                helperText={formik.touched.eMail && formik.errors.eMail}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
               />
             </div>
             <div className={classes.inline}>
@@ -189,6 +177,7 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                 id="children"
                 name="children"
                 size="small"
+                InputProps={{ inputProps: { min: 0 } }}
                 type="number"
                 value={formik.values.children}
                 onChange={formik.handleChange}
@@ -200,32 +189,21 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
             </div>
             <div className={classes.inline}>
               <Typography color="GrayText" variant="h6">
-                Zaakceptowano:
+                Status zaproszenia:
               </Typography>
               <TextField
-                id="invitationAccepted"
-                name="invitationAccepted"
+                id="status"
+                name="status"
                 select
-                value={formik.values.invitationAccepted}
+                value={formik.values.status}
                 onChange={formik.handleChange}
               >
-                {invitationAcceptedsOptions.map((e, i) => (
-                  <MenuItem key={i} value={e}>
-                    {e}
+                {statusOptions.map((e, i) => (
+                  <MenuItem key={i} value={e.value}>
+                    {e.name}
                   </MenuItem>
                 ))}
               </TextField>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText" variant="h6">
-                Wysłano zaproszenie:
-              </Typography>
-              <Checkbox
-                id="invitationSend"
-                name="invitationSend"
-                value={formik.values.invitationSend}
-                onChange={formik.handleChange}
-              />
             </div>
           </Grid>
           <Grid item xs={12} md={6} pr={8} pl={8}>
@@ -235,12 +213,12 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
               </Typography>
               <Autocomplete
                 disablePortal
-                id="accompanyingPerson"
+                id="partner"
                 size="small"
                 options={[]}
-                value={formik.values.accompanyingPerson}
+                value={formik.values.partner}
                 renderInput={(params) => (
-                  <TextField name="accompanyingPerson" {...params} />
+                  <TextField name="partner" {...params} />
                 )}
               />
             </div>
@@ -251,7 +229,7 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
               <Checkbox
                 id="isWithness"
                 name="isWithness"
-                value={formik.values.isWithness}
+                value={formik.values.isWitness}
                 onChange={formik.handleChange}
               />
             </div>
@@ -283,14 +261,19 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                   Grupy:
                 </Typography>
                 <Select
-                  name="groups"
+                  name="guestsGroupGuests"
                   fullWidth
-                  id="groups"
+                  id="guestsGroupGuests"
                   size="small"
                   multiple
-                  value={formik.values.groups}
+                  value={formik.values.guestsGroupGuests}
                   onChange={formik.handleChange}
-                  input={<OutlinedInput name="groups" id="groups" />}
+                  input={
+                    <OutlinedInput
+                      name="guestsGroupGuests"
+                      id="guestsGroupGuests"
+                    />
+                  }
                   renderValue={(selected) => selected.join(", ")}
                 >
                   {[].map((e, i) => (
@@ -305,14 +288,14 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                   Diety:
                 </Typography>
                 <Select
-                  id="diets"
-                  name="diets"
+                  id="diet"
+                  name="diet"
                   multiple
                   size="small"
                   fullWidth
-                  value={formik.values.diets}
+                  value={formik.values.diet}
                   onChange={formik.handleChange}
-                  input={<OutlinedInput name="diets" id="diets" />}
+                  input={<OutlinedInput name="diet" id="diet" />}
                   renderValue={(selected) => selected.join(", ")}
                 >
                   {dietsOptions.map((e, i) => (
@@ -330,16 +313,21 @@ export default function GuestAdd({ open, handleClose }: GuestAddProps) {
                 Uwagi:
               </Typography>
               <TextField
-                id="remarks"
-                name="remarks"
+                id="additionalInfo"
+                name="additionalInfo"
                 size="small"
                 type="text"
                 fullWidth
                 rows={3}
-                value={formik.values.remarks}
+                value={formik.values.additionalInfo}
                 onChange={formik.handleChange}
-                error={formik.touched.remarks && Boolean(formik.errors.remarks)}
-                helperText={formik.touched.remarks && formik.errors.remarks}
+                error={
+                  formik.touched.additionalInfo &&
+                  Boolean(formik.errors.additionalInfo)
+                }
+                helperText={
+                  formik.touched.additionalInfo && formik.errors.additionalInfo
+                }
               />
             </div>
           </Grid>

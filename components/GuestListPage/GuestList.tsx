@@ -23,6 +23,7 @@ import useSWR from "swr";
 import request from "../../config/requests";
 import user from "../../pages/api/user";
 import Loading from "../Loading";
+import { statusOptions } from "../../schema/GuestSchema";
 
 export const initialGuest = {
   mail: "adres@mail.com",
@@ -72,19 +73,10 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset",
       padding: theme.spacing(1),
     },
-    groupTxt: { width: "10%", display: "block", flex: "none" },
-    nameTxt: { width: "25%", display: "block", flex: "none" },
-    surnameTxt: { width: "25%", display: "block", flex: "none" },
-    invitationTxt: {
-      width: "15%",
+    nameTxt: { width: "75%", display: "block", flex: "none" },
+    statusTxt: {
+      width: "25%",
       display: "block",
-      textAlign: "center",
-      flex: "none",
-    },
-    invitationSendTxt: {
-      width: "15%",
-      display: "block",
-      textAlign: "center",
       flex: "none",
     },
     subheader: {
@@ -139,20 +131,11 @@ export default function GuestList({
           className={classes.list}
           subheader={
             <ListSubheader component="div" className={classes.subheader}>
-              <Typography color="primary" className={classes.groupTxt}>
-                Miasto
-              </Typography>
               <Typography color="primary" className={classes.nameTxt}>
-                Imię
+                Imię i nazwisko
               </Typography>
-              <Typography color="primary" className={classes.surnameTxt}>
-                Nazwisko
-              </Typography>
-              <Typography color="primary" className={classes.invitationTxt}>
-                Zaakceptowano
-              </Typography>
-              <Typography color="primary" className={classes.invitationSendTxt}>
-                Czy zaproszono
+              <Typography color="primary" className={classes.statusTxt}>
+                Status zaproszenia
               </Typography>
             </ListSubheader>
           }
@@ -180,34 +163,24 @@ export default function GuestList({
                     })
                   }
                 >
-                  <ListItemText primary="" className={classes.groupTxt} />
                   <ListItemText
                     primary={item.name}
                     className={classes.nameTxt}
                   />
                   <ListItemText
-                    primary={item.surname}
-                    className={classes.surnameTxt}
-                  />
-                  <ListItemText
-                    primary={item.invitationAccepted}
+                    primary={
+                      statusOptions.find((s) => item.status === s.value)?.name
+                    }
                     sx={{
                       color:
-                        item.invitationAccepted === "Tak"
+                        item.status === 2
                           ? "#15B811"
-                          : item.invitationAccepted === "?"
+                          : item.status != 3
                           ? "#4A8DF4"
                           : "#C13126;",
                     }}
-                    className={classes.invitationTxt}
+                    className={classes.statusTxt}
                   />
-                  <ListItemIcon className={classes.invitationSendTxt}>
-                    {item.invitationSend ? (
-                      <CheckIcon color="success" />
-                    ) : (
-                      <CloseIcon color="error" />
-                    )}
-                  </ListItemIcon>
                 </ListItemButton>
               );
             })

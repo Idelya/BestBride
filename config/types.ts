@@ -5,21 +5,22 @@ export type Route = {
 
 export type Guest = {
   id: number;
-  surname: string;
+  surname?: string;
   name: string;
-  invitationAccepted: string;
-  invitationSend: boolean;
-  eMail?: string;
+  status: number;
+  email: string;
   phone?: string;
   city?: string;
   children: number;
-  isWithness: boolean;
-  accompanyingPerson?: number;
+  isWitness: boolean;
+  partner?: number;
   accommodation: boolean;
   transport: boolean;
-  groups: number[];
-  diets: string[];
-  remarks?: string;
+  age?: number;
+  gender?: number;
+  guestsGroupGuests: number[];
+  diet: string[];
+  additionalInfo?: string;
 };
 
 export type Group = {
