@@ -1,32 +1,41 @@
 import { Container } from "@mui/material";
 import { useRouter } from "next/dist/client/router";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ROLE } from "../../config/types";
 import { AuthStates } from "../../store/slices/auth";
 import { OurStore } from "../../store/store";
 import Loading from "../Loading";
 
-export const UnauthGuard: React.FC = ({ children }) => {
+export const AdminAuthGuard: React.FC = ({ children }) => {
   const { loading, me } = useSelector((state: OurStore) => state.authReducer);
   const router = useRouter();
+
   useEffect(() => {
     async function redirect() {
-      if (me && me.role === ROLE.COMPANY) {
-        await router.push("/companies-locations-list");
-      } else if (me && me.role === ROLE.USER) {
-        await router.push("/start");
-      } else if (me && me.role === ROLE.ADMIN) {
-        await router.push("/admin");
-      }
+      await router.push("/");
+    }
+    async function redirectUser() {
+      await router.push("/start");
+    }
+    async function redirectCompany() {
+      await router.push("/companies-locations-list");
     }
 
-    if (loading != AuthStates.LOADING && !!me) {
+    if (loading != AuthStates.LOADING && !me) {
       redirect();
+    } else if (
+      loading != AuthStates.LOADING &&
+      me &&
+      me.role === ROLE.COMPANY
+    ) {
+      redirectCompany();
+    } else if (loading != AuthStates.LOADING && me && me.role != ROLE.ADMIN) {
+      redirectUser();
     }
   }, [loading, me, router]);
 
-  if (loading === AuthStates.LOADING || !!me) {
+  if (loading === AuthStates.LOADING || !me || me?.role != ROLE.ADMIN) {
     return (
       <Container sx={{ minHeight: "100vh", display: "flex", minWidth: "100%" }}>
         <Loading />

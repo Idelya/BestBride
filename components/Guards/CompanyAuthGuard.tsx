@@ -19,8 +19,14 @@ export const CompanyAuthGuard: React.FC = ({ children }) => {
       await router.push("/start");
     }
 
+    async function redirectAdmin() {
+      await router.push("/admin");
+    }
+
     if (loading != AuthStates.LOADING && !me) {
       redirect();
+    } else if (loading != AuthStates.LOADING && me && me.role === ROLE.ADMIN) {
+      redirectAdmin();
     } else if (loading != AuthStates.LOADING && me && me.role != ROLE.COMPANY) {
       redirectUser();
     }

@@ -19,6 +19,10 @@ export const AuthGuard: React.FC = ({ children }) => {
       await router.push("/companies-locations-list");
     }
 
+    async function redirectAdmin() {
+      await router.push("/admin");
+    }
+
     console.log(me);
     if (loading != AuthStates.LOADING && !me) {
       redirect();
@@ -28,6 +32,8 @@ export const AuthGuard: React.FC = ({ children }) => {
       me.role === ROLE.COMPANY
     ) {
       redirectCompanies();
+    } else if (loading != AuthStates.LOADING && me && me.role === ROLE.ADMIN) {
+      redirectAdmin();
     }
   }, [loading, me, router]);
 
