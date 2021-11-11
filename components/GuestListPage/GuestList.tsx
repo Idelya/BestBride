@@ -118,7 +118,7 @@ export default function GuestList({
 
   if (error) return <div>Nie można pobrać danych. Odśwież stronę.</div>;
   if (!data) return <Loading />;
-
+  console.log(data);
   return (
     <>
       <GuestInfo
