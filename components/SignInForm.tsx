@@ -83,7 +83,7 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
         size="small"
         variant="outlined"
         margin="normal"
-        type="email"
+        type={routeSignUp && "email"}
         value={formik.values.email}
         onChange={formik.handleChange}
       />
