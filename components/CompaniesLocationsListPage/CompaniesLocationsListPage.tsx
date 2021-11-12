@@ -13,11 +13,12 @@ import {
 } from "@mui/material";
 import Divider from "../Divider";
 import { number } from "yup";
+import { useRouter } from "next/router";
 
 const locations = [
   {
     id: 1,
-    img: "https://restauracjaakademia.pl/wp-content/uploads//2018/04/restauracja-akademia-trendy-gastronomiczne-blog.jpg",
+    img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1974&q=80",
     status: "Wersja robocza",
     name: "Sklep 1",
   },
@@ -91,6 +92,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function CompaniesLocationsListPage() {
   const classes = useStyles();
+  const router = useRouter();
+
+  const redirectToLocationPage = async (id: number) => {
+    await router.push(`services/${id}`);
+  };
+
   return (
     <Container className={classes.container}>
       <Divider textAlign="center">Twoje lokalizacje</Divider>
@@ -98,7 +105,9 @@ export default function CompaniesLocationsListPage() {
         {locations.map((loc) => (
           <Grid item md={4} key={loc.id}>
             <Card className={classes.card}>
-              <CardActionArea>
+              <CardActionArea
+                onClick={async () => await redirectToLocationPage(loc.id)}
+              >
                 {!loc.img && <CardContent className={classes.background} />}
                 <CardMedia
                   component="img"

@@ -18,7 +18,7 @@ export const getServerSideProps = authPage;
 const CompaniesLocationslist: NextPage<{ user: User; children?: ReactNode }> =
   ({ user }: { user: User; children?: ReactNode }) => {
     const dispatch = useDispatch();
-    dispatch(setUser(user));
+    dispatch(setUser({ me: user }));
     return (
       <CompanyAuthGuard>
         <CompaniesLocationsListPage />

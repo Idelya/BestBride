@@ -25,7 +25,7 @@ const Home: NextPage<{ user: User | null; children?: ReactNode }> = ({
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setUser(user));
+    dispatch(setUser({ me: user }));
   });
   return (
     <UnauthGuard>
