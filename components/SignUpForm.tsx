@@ -30,8 +30,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SignUpFormProps {
   routeSignIn: Route;
+  role?: string;
 }
-export default function SignUpForm({ routeSignIn }: SignUpFormProps) {
+export default function SignUpForm({
+  routeSignIn,
+  role = "user",
+}: SignUpFormProps) {
   const classes = useStyles();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -41,8 +45,7 @@ export default function SignUpForm({ routeSignIn }: SignUpFormProps) {
     validationSchema: signUpSchemaValidation,
     onSubmit: (values: { email: string; password: string }) => {
       try {
-        dispatch(register(values));
-        router.push("/profil");
+        dispatch(register({ ...values, role: role }));
       } catch (e) {
         store.addNotification({
           title: "Error",

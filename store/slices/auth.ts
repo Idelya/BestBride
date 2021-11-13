@@ -4,7 +4,9 @@ import {
   PayloadAction,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import axios from "axios";
 import request from "../../config/requests";
+import { User } from "../../config/types";
 
 export enum AuthStates {
   IDLE = "idle",
@@ -14,10 +16,7 @@ export enum AuthStates {
 export interface AuthSliceState {
   accessToken: string;
   loading: AuthStates;
-  me?: {
-    name?: string;
-    email?: string;
-  };
+  me?: User | null;
   error?: SerializedError;
 }
 
@@ -25,20 +24,38 @@ export interface AuthSliceState {
 const internalInitialState: AuthSliceState = {
   accessToken: "",
   loading: AuthStates.IDLE,
-  me: undefined,
+  me: null,
   error: {},
 };
 
+export const fetchUser = createAsyncThunk("auth/user", async (_, thunkAPI) => {
+  try {
+    const response = await axios.get("localhost:3000/api/user");
+
+    return {
+      me: response,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ error: (error as Error).message });
+  }
+});
+
 export const register = createAsyncThunk(
   "auth/register",
-  async (credentials: { email: string; password: string }, thunkAPI) => {
+  async (
+    credentials: { email: string; password: string; role: string },
+    thunkAPI
+  ) => {
     try {
       await request.post("api/register", credentials);
-      const response = await request.post("api/login", credentials);
-
+      const response = await axios.post("api/login", {
+        email: credentials.email,
+        password: credentials.password,
+      });
+      const user = await axios.get("api/user");
+      console.log(user);
       return {
-        accesssToken: "123",
-        me: credentials,
+        me: user,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
@@ -50,11 +67,11 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
-      const response = await request.post("api/login", credentials);
-
+      const response = await axios.post("api/login", credentials);
+      const user = await axios.get("api/user");
+      console.log(user);
       return {
-        accesssToken: "123",
-        me: credentials,
+        me: (user?.data as any).user,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
@@ -62,11 +79,21 @@ export const login = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+  try {
+    const res = await axios.post("api/logout");
+    return {
+      me: null,
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ error: (error as Error).message });
+  }
+});
+
 export const authSlice = createSlice({
-  name: "auth", // name of the slice that we will use.
+  name: "auth",
   initialState: internalInitialState,
   reducers: {
-    // here will end up non async basic reducers.
     updateAccessToken(
       state: AuthSliceState,
       action: PayloadAction<{ token: string }>
@@ -74,6 +101,9 @@ export const authSlice = createSlice({
       state.accessToken = action.payload.token;
     },
     reset: () => internalInitialState,
+    setUser(state: AuthSliceState, action: PayloadAction<{ me: User | null }>) {
+      state.me = action.payload.me;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action: any) => {
@@ -102,7 +132,29 @@ export const authSlice = createSlice({
     builder.addCase(register.rejected, (state, action) => {
       state.error = action.error;
     });
+    builder.addCase(fetchUser.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(fetchUser.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(fetchUser.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      state = { ...internalInitialState, error: action.error };
+      throw new Error(action.error.message);
+    });
+    builder.addCase(logout.fulfilled, (state, action) => {
+      state.me = (action.payload as any).me;
+      state.loading = AuthStates.IDLE;
+    });
+    builder.addCase(logout.pending, (state, action) => {
+      state.loading = AuthStates.LOADING;
+    });
   },
 });
 
-export const { updateAccessToken, reset } = authSlice.actions;
+export const { updateAccessToken, reset, setUser } = authSlice.actions;

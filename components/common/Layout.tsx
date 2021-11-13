@@ -1,4 +1,3 @@
-import { createTheme, ThemeProvider } from "@mui/material";
 import React, { ReactNode, useEffect } from "react";
 import { Footer } from "../Footer";
 

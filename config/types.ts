@@ -43,3 +43,26 @@ export type Expense = {
   task?: number;
 };
 export const OPTIONS_STATUS = ["opłacone", "zaplanowane"];
+export type User = {
+  name?: string;
+  email: string;
+  id?: number;
+  role: string;
+};
+
+export const ROLE = {
+  USER: "user",
+  ADMIN: "admin",
+  COMPANY: "firm",
+};
+export type RoleType = "user" | "admin" | "firm";
+
+export type ServiceStatusType = "Wersja robocza";
+
+export type Service = {
+  id: number;
+  img: string;
+  status: ServiceStatusType;
+  name: string;
+  offer: string;
+};

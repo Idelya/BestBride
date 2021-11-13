@@ -10,6 +10,7 @@ import Layout from "../components/common/Layout";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { wrapper } from "../store/store";
 import ReactNotification from "react-notifications-component";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   React.useEffect(() => {
@@ -27,6 +28,10 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/react-draft-wysiwyg@1.12.3/dist/react-draft-wysiwyg.css"
         />
       </Head>
       <ThemeProvider theme={theme}>
