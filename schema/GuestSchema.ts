@@ -2,7 +2,7 @@ import * as yup from "yup";
 import { number } from "yup/lib/locale";
 
 export const initialValues = {
-  surname: "Nieznane", //not used for now
+  surname: "string",
   name: "",
   email: "",
   phone: "",
@@ -14,30 +14,11 @@ export const initialValues = {
   accommodation: false,
   transport: false,
   guestsGroupGuests: [],
-  diet: [],
+  diet: 4,
   additionalInfo: "",
   gender: 0,
+  age: 0,
 };
-
-export const dietsOptions = ["Wegetariańska", "Bezgltenowa", "Wegańska"];
-export const statusOptions = [
-  {
-    name: "Niezaproszony",
-    value: 0,
-  },
-  {
-    name: "Zaproszony",
-    value: 1,
-  },
-  {
-    name: "Zaakceptowany",
-    value: 2,
-  },
-  {
-    name: "Odrzucony",
-    value: 3,
-  },
-];
 
 export const guestSchemaValidation: any = yup.object({
   surname: yup.string(),

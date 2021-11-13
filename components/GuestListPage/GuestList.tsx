@@ -23,18 +23,7 @@ import useSWR from "swr";
 import request from "../../config/requests";
 import user from "../../pages/api/user";
 import Loading from "../Loading";
-import { statusOptions } from "../../schema/GuestSchema";
-
-export const initialGuest = {
-  mail: "adres@mail.com",
-  phone: "999 000 543",
-  children: 0,
-  witness: false,
-  accommodation: false,
-  transport: false,
-  groups: [],
-  diets: [],
-};
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -96,36 +85,43 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const fetcher = (url: string) => request.get(url).then((res) => res.data);
-
 export default function GuestList({
   addGuest,
-  update,
+  data,
+  error,
 }: {
   addGuest: () => void;
-  update: boolean;
+  data: Guest[] | undefined;
+  error: boolean;
 }) {
   const classes = useStyles();
 
-  const { data, mutate, error } = useSWR(`/api/guest`, fetcher);
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
 
-  useEffect(() => {
-    if (!update) {
-      mutate();
-    }
-  }, [mutate, update]);
+  if (error)
+    return (
+      <div className={classes.main}>
+        Nie można pobrać danych. Odśwież stronę.
+      </div>
+    );
+  if (!data)
+    return (
+      <div className={classes.main}>
+        <Loading />
+      </div>
+    );
 
-  if (error) return <div>Nie można pobrać danych. Odśwież stronę.</div>;
-  if (!data) return <Loading />;
   console.log(data);
+
   return (
     <>
-      <GuestInfo
-        open={!!showGuest}
-        handleClose={() => setShowGuest(undefined)}
-        guest={showGuest}
-      />
+      {showGuest && (
+        <GuestInfo
+          open={!!showGuest}
+          handleClose={() => setShowGuest(undefined)}
+          guest={showGuest}
+        />
+      )}
       <div className={classes.main}>
         <List
           className={classes.list}
@@ -156,21 +152,13 @@ export default function GuestList({
                 <ListItemButton
                   key={item.id}
                   className={classes.row}
-                  onClick={() =>
-                    setShowGuest({
-                      ...item,
-                      ...initialGuest,
-                    })
-                  }
+                  onClick={() => setShowGuest(item)}
                 >
                   <ListItemText
                     primary={item.name}
                     className={classes.nameTxt}
                   />
                   <ListItemText
-                    primary={
-                      statusOptions.find((s) => item.status === s.value)?.name
-                    }
                     sx={{
                       color:
                         item.status === 2

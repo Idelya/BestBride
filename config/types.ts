@@ -14,12 +14,13 @@ export type Guest = {
   children: number;
   isWitness: boolean;
   partner?: number;
+  partnerName?: string;
   accommodation: boolean;
   transport: boolean;
   age?: number;
   gender?: number;
-  guestsGroupGuests: number[];
-  diet: string[];
+  groups: number[];
+  diet: number;
   additionalInfo?: string;
 };
 
@@ -56,4 +57,14 @@ export type Service = {
   status: ServiceStatusType;
   name: string;
   offer: string;
+};
+
+export type Option = {
+  key: number;
+  value: string;
+};
+
+export type Diet = {
+  id: number;
+  name: string;
 };

@@ -1,25 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
-import {
-  Button,
-  ButtonGroup,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Theme,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import { Button, ButtonGroup, Theme } from "@mui/material";
 import Divider from "../Divider";
 import AddIcon from "@mui/icons-material/Add";
-import useToggle from "../../utils/useToggle";
 import RectangularButton from "../RectangularButton";
 import Filters from "./Filters";
 import GuestList from "./GuestList";
 import GuestAdd from "./GuestAdd";
 import GroupAdd from "./GroupAdd";
 import GroupList from "./GroupList";
+import useSWR from "swr";
+import axios from "axios";
+import { Guest } from "../../config/types";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
 export default function GuestSection() {
   const classes = useStyles();
 
@@ -51,9 +45,29 @@ export default function GuestSection() {
   const [addGuest, setAddGuest] = useState<boolean>(false);
   const [addGroup, setAddGroup] = useState<boolean>(false);
 
+  const {
+    data: guests,
+    mutate,
+    error: errorGuests,
+  } = useSWR("api/guest", fetcher) as {
+    data: Guest[];
+    mutate: any;
+    error: any;
+  };
+
+  useEffect(() => {
+    if (!addGuest) {
+      mutate();
+    }
+  }, [mutate, addGuest]);
+
   return (
     <section className={classes.main}>
-      <GuestAdd open={addGuest} handleClose={() => setAddGuest(false)} />
+      <GuestAdd
+        open={addGuest}
+        handleClose={() => setAddGuest(false)}
+        guests={guests}
+      />
       <GroupAdd open={addGroup} handleClose={() => setAddGroup(false)} />
       <Divider component="h2" textAlign="right">
         Lista gości
@@ -119,7 +133,11 @@ export default function GuestSection() {
       {groups ? (
         <GroupList addGroup={() => setAddGroup(true)} />
       ) : (
-        <GuestList addGuest={() => setAddGuest(true)} update={addGuest} />
+        <GuestList
+          addGuest={() => setAddGuest(true)}
+          data={guests}
+          error={!!errorGuests}
+        />
       )}
     </section>
   );
