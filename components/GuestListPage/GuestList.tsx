@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import {
+  Box,
   Collapse,
   IconButton,
   ListItemButton,
@@ -18,100 +19,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
 import { Guest } from "../../config/types";
-import GuestAdd from "./GuestAdd";
-
-const rows = [
-  {
-    name: "Wrocław",
-    items: [
-      {
-        id: 1,
-        surname: "Snow",
-        name: "Jon",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-      },
-
-      {
-        id: 4,
-        surname: "Stark",
-        name: "Arya",
-        invitationAccepted: "Nie",
-        invitationSend: true,
-      },
-      {
-        id: 5,
-        surname: "Targaryen",
-        name: "Daenerys",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-      },
-    ],
-  },
-  {
-    name: "Kielce",
-    items: [
-      {
-        id: 2,
-        surname: "Lannister",
-        name: "Cersei",
-        invitationAccepted: "?",
-        invitationSend: false,
-      },
-      {
-        id: 3,
-        surname: "Lannister",
-        name: "Jaime",
-        invitationAccepted: "?",
-        invitationSend: true,
-      },
-      {
-        id: 6,
-        surname: "Lannister",
-        name: "Tyrion",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-      },
-    ],
-  },
-  {
-    name: "Winterfell",
-    items: [
-      {
-        id: 7,
-        surname: "Sansa",
-        name: "Stark",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-      },
-      {
-        id: 8,
-        surname: "Arya",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-      },
-      {
-        id: 9,
-        surname: "Robb",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-      },
-    ],
-  },
-];
-
-export const initialGuest = {
-  mail: "adres@mail.com",
-  phone: "999 000 543",
-  children: 0,
-  witness: false,
-  accommodation: false,
-  transport: false,
-  groups: [],
-  diets: [],
-};
+import useSWR from "swr";
+import request from "../../config/requests";
+import user from "../../pages/api/user";
+import Loading from "../Loading";
+import axios from "axios";
+import { getValue } from "../../config/helpers";
+import guest from "../../pages/api/guest";
+import { GuestContext } from "./GuestContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -150,19 +65,10 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset",
       padding: theme.spacing(1),
     },
-    groupTxt: { width: "10%", display: "block", flex: "none" },
-    nameTxt: { width: "25%", display: "block", flex: "none" },
-    surnameTxt: { width: "25%", display: "block", flex: "none" },
-    invitationTxt: {
-      width: "15%",
+    nameTxt: { width: "75%", display: "block", flex: "none" },
+    statusTxt: {
+      width: "25%",
       display: "block",
-      textAlign: "center",
-      flex: "none",
-    },
-    invitationSendTxt: {
-      width: "15%",
-      display: "block",
-      textAlign: "center",
       flex: "none",
     },
     subheader: {
@@ -182,106 +88,99 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function GuestList({ addGuest }: { addGuest: () => void }) {
+export default function GuestList({
+  addGuest,
+  data,
+  error,
+}: {
+  addGuest: () => void;
+  data: Guest[] | undefined;
+  error: boolean;
+}) {
   const classes = useStyles();
+
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
+
+  const { statusOptions } = useContext(GuestContext);
+
+  if (error)
+    return (
+      <div className={classes.main}>
+        Nie można pobrać danych. Odśwież stronę.
+      </div>
+    );
+  if (!data)
+    return (
+      <div className={classes.main}>
+        <Loading />
+      </div>
+    );
+
+  console.log(data);
+
   return (
     <>
-      <GuestInfo
-        open={!!showGuest}
-        handleClose={() => setShowGuest(undefined)}
-        guest={showGuest}
-      />
+      {showGuest && (
+        <GuestInfo
+          open={!!showGuest}
+          handleClose={() => setShowGuest(undefined)}
+          guest={showGuest}
+        />
+      )}
       <div className={classes.main}>
         <List
           className={classes.list}
           subheader={
             <ListSubheader component="div" className={classes.subheader}>
-              <Typography color="primary" className={classes.groupTxt}>
-                Miasto
-              </Typography>
               <Typography color="primary" className={classes.nameTxt}>
-                Imię
+                Imię i nazwisko
               </Typography>
-              <Typography color="primary" className={classes.surnameTxt}>
-                Nazwisko
-              </Typography>
-              <Typography color="primary" className={classes.invitationTxt}>
-                Zaakceptowano
-              </Typography>
-              <Typography color="primary" className={classes.invitationSendTxt}>
-                Czy zaproszono
+              <Typography color="primary" className={classes.statusTxt}>
+                Status zaproszenia
               </Typography>
             </ListSubheader>
           }
         >
-          {rows.map((group) => {
-            return (
-              <div key={group.name}>
-                <ListItem
-                  key={group.name}
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="edit">
-                      <EditIcon color="primary" />
-                    </IconButton>
-                  }
-                  disablePadding
-                  className={classes.groupItem}
+          {(data as Guest[]).length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+              }}
+            >
+              <Typography sx={{ margin: "32px auto" }}>
+                Lista gości jest pusta.
+              </Typography>
+            </Box>
+          ) : (
+            (data as Guest[]).map((item) => {
+              return (
+                <ListItemButton
+                  key={item.id}
+                  className={classes.row}
+                  onClick={() => setShowGuest(item)}
                 >
                   <ListItemText
-                    primary={group.name}
-                    className={classes.groupTxt}
+                    primary={item.name}
+                    className={classes.nameTxt}
                   />
-                </ListItem>
-                <Collapse in={true} timeout="auto">
-                  <List component="div" disablePadding>
-                    {group.items.map((item) => (
-                      <ListItemButton
-                        key={item.id}
-                        className={classes.row}
-                        onClick={() =>
-                          setShowGuest({
-                            city: group.name,
-                            ...item,
-                            ...initialGuest,
-                          })
-                        }
-                      >
-                        <ListItemText primary="" className={classes.groupTxt} />
-                        <ListItemText
-                          primary={item.name}
-                          className={classes.nameTxt}
-                        />
-                        <ListItemText
-                          primary={item.surname}
-                          className={classes.surnameTxt}
-                        />
-                        <ListItemText
-                          primary={item.invitationAccepted}
-                          sx={{
-                            color:
-                              item.invitationAccepted === "Tak"
-                                ? "#15B811"
-                                : item.invitationAccepted === "?"
-                                ? "#4A8DF4"
-                                : "#C13126;",
-                          }}
-                          className={classes.invitationTxt}
-                        />
-                        <ListItemIcon className={classes.invitationSendTxt}>
-                          {item.invitationSend ? (
-                            <CheckIcon color="success" />
-                          ) : (
-                            <CloseIcon color="error" />
-                          )}
-                        </ListItemIcon>
-                      </ListItemButton>
-                    ))}
-                  </List>
-                </Collapse>
-              </div>
-            );
-          })}
+                  <ListItemText
+                    primary={getValue(statusOptions || [], item.status)}
+                    sx={{
+                      color:
+                        item.status === 1
+                          ? "#64150F"
+                          : item.status === 2
+                          ? "#15B811"
+                          : item.status != 3
+                          ? "#888888"
+                          : "#C13126;",
+                    }}
+                    className={classes.statusTxt}
+                  />
+                </ListItemButton>
+              );
+            })
+          )}
         </List>
 
         <div className={classes.footer}>

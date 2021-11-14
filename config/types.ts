@@ -12,21 +12,28 @@ export type Event = {
 
 export type Guest = {
   id: number;
-  surname: string;
+  surname?: string;
   name: string;
-  invitationAccepted: string;
-  invitationSend: boolean;
-  mail?: string;
+  status: number;
+  email: string;
   phone?: string;
   city?: string;
   children: number;
-  witness: boolean;
-  accompanyingPerson?: number;
+  isWitness: boolean;
+  partner?: number;
+  partnerName?: string;
   accommodation: boolean;
   transport: boolean;
+  age?: number;
+  gender?: number;
   groups: number[];
-  diets: string[];
-  remarks?: string;
+  diet: number;
+  additionalInfo?: string;
+};
+
+export type Group = {
+  name: string;
+  guests: Guest[];
 };
 
 export type Expense = {
@@ -65,4 +72,14 @@ export type Service = {
   status: ServiceStatusType;
   name: string;
   offer: string;
+};
+
+export type Option = {
+  key: number;
+  value: string;
+};
+
+export type Diet = {
+  id: number;
+  name: string;
 };

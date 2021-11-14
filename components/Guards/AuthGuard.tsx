@@ -19,7 +19,6 @@ export const AuthGuard: React.FC = ({ children }) => {
       await router.push("/companies-locations-list");
     }
 
-    console.log(me);
     if (loading != AuthStates.LOADING && !me) {
       redirect();
     } else if (

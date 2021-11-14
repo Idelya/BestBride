@@ -24,7 +24,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>Best Bride</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

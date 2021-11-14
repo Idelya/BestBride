@@ -55,7 +55,6 @@ export default function Account() {
   const handleLogout = () => {
     try {
       dispatch(logout());
-      router.push("/");
     } catch (e) {
       console.log(e);
     }

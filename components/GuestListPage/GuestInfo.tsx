@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Modal from "@mui/material/Modal";
 import {
@@ -22,6 +22,9 @@ import Filters from "./Filters";
 import GuestList from "./GuestList";
 import { Guest } from "../../config/types";
 import { style } from "@mui/system";
+import { getValue, getValueFromDiet } from "../../config/helpers";
+import { GuestContext } from "./GuestContext";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface GuestInfoProps {
   open: boolean;
   handleClose: () => void;
-  guest?: Guest;
+  guest: Guest;
 }
 export default function GuestInfo({
   open,
@@ -61,10 +64,15 @@ export default function GuestInfo({
 }: GuestInfoProps) {
   const classes = useStyles();
 
-  if (!guest) {
-    return null;
-  }
+  const { genderOptions, dietsOptions, statusOptions } =
+    useContext(GuestContext);
 
+  if (!open || !genderOptions || !dietsOptions || !statusOptions) {
+    <Modal open={open} onClose={handleClose}>
+      <Loading />
+    </Modal>;
+  }
+  console.log(guest.diet);
   return (
     <Modal open={open} onClose={handleClose}>
       <Box className={classes.main}>
@@ -73,15 +81,23 @@ export default function GuestInfo({
           variant="h5"
           secondary="Gość"
           textMargin="64px"
-        >{`${guest.name} ${guest.surname}`}</Divider>
+        >{`${guest.name}`}</Divider>
         <Grid container>
           <Grid item xs={12} md={6} pr={8}>
+            <div className={classes.inline}>
+              <Typography color="GrayText" variant="h6">
+                Płeć:
+              </Typography>
+              <Typography color="primary" variant="h6">
+                {getValue(genderOptions || [], guest.gender)}
+              </Typography>
+            </div>
             <div className={classes.inline}>
               <Typography color="GrayText" variant="h6">
                 Mail:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.mail}
+                {guest.email}
               </Typography>
             </div>
             <div className={classes.inline}>
@@ -110,18 +126,10 @@ export default function GuestInfo({
             </div>
             <div className={classes.inline}>
               <Typography color="GrayText" variant="h6">
-                Wysłano zaproszenie:
+                Status zaproszenia:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.invitationSend ? "Tak" : "Nie"}
-              </Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText" variant="h6">
-                Zaakceptowano:
-              </Typography>
-              <Typography color="primary" variant="h6">
-                {guest.invitationAccepted}
+                {getValue(statusOptions || [], guest.status)}
               </Typography>
             </div>
             <div className={classes.inline}>
@@ -129,7 +137,7 @@ export default function GuestInfo({
                 Jest świadkiem:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.witness ? "Tak" : "Nie"}
+                {guest.isWitness ? "Tak" : "Nie"}
               </Typography>
             </div>
           </Grid>
@@ -139,7 +147,7 @@ export default function GuestInfo({
                 Osoba towarzysząca:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.accompanyingPerson || "Nie"}
+                {guest.partnerName || "Nie"}
               </Typography>
             </div>
             <div className={classes.inline}>
@@ -158,31 +166,27 @@ export default function GuestInfo({
                 {guest.transport ? "Tak" : "Nie"}
               </Typography>
             </div>
+            <div className={classes.inline}>
+              <Typography color="GrayText" variant="h6">
+                Dieta:
+              </Typography>
+              <Typography color="primary" variant="h6">
+                {getValueFromDiet(dietsOptions || [], guest.diet)}
+              </Typography>
+            </div>
             <div>
               <List>
                 <Typography color="GrayText" variant="h6">
                   Grupy:
                 </Typography>
-                {guest.groups.map((group) => (
-                  <ListItemText color="primary" key={group}>
-                    {group}
-                  </ListItemText>
-                ))}
-                {guest.groups.length === 0 && (
+                {!guest.groups ? (
                   <ListItemText color="primary">Brak</ListItemText>
-                )}
-              </List>
-              <List>
-                <Typography color="GrayText" variant="h6">
-                  Diety:
-                </Typography>
-                {guest.diets.map((diet) => (
-                  <ListItemText color="primary" key={diet}>
-                    {diet}
-                  </ListItemText>
-                ))}
-                {guest.diets.length === 0 && (
-                  <ListItemText color="primary">Brak</ListItemText>
+                ) : (
+                  guest.groups.map((group) => (
+                    <ListItemText color="primary" key={group}>
+                      {group}
+                    </ListItemText>
+                  ))
                 )}
               </List>
             </div>
@@ -193,7 +197,7 @@ export default function GuestInfo({
                 Uwagi:
               </Typography>
               <Typography color="primary" variant="h6">
-                {guest.remarks || "Brak uwag"}
+                {guest.additionalInfo || "Brak uwag"}
               </Typography>
             </div>
           </Grid>

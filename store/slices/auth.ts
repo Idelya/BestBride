@@ -53,7 +53,6 @@ export const register = createAsyncThunk(
         password: credentials.password,
       });
       const user = await axios.get("api/user");
-      console.log(user);
       return {
         me: user,
       };
@@ -69,7 +68,6 @@ export const login = createAsyncThunk(
     try {
       const response = await axios.post("api/login", credentials);
       const user = await axios.get("api/user");
-      console.log(user);
       return {
         me: (user?.data as any).user,
       };

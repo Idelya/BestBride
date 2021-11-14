@@ -1,40 +1,62 @@
 import * as yup from "yup";
+import { number } from "yup/lib/locale";
 
 export const initialValues = {
-  surname: "",
+  surname: "string",
   name: "",
-  invitationAccepted: "?",
-  invitationSend: false,
-  mail: "",
+  email: "",
   phone: "",
   city: "",
+  isWitness: false,
+  status: 0,
   children: 0,
-  witness: false,
-  accompanyingPerson: undefined,
+  partner: undefined,
   accommodation: false,
   transport: false,
-  groups: [],
-  diets: [],
-  remarks: "",
+  guestsGroupGuests: [],
+  diet: 4,
+  additionalInfo: "",
+  gender: 0,
+  age: 0,
 };
-
-export const dietsOptions = ["Wegetariańska", "Bezgltenowa", "Wegańska"];
-export const invitationAcceptedsOptions = ["Tak", "Nie", "?"];
 
 export const guestSchemaValidation: any = yup.object({
   surname: yup.string(),
-  name: yup.string(),
-  invitationAccepted: yup.string(),
-  invitationSend: yup.boolean(),
-  mail: yup.string(),
+  name: yup
+    .string()
+    .required()
+    .test(
+      "len",
+      "Imię i nazwisko nie mogą mieć więcej niż 32 znaki",
+      //@ts-ignore
+      (val: string | undefined) => (val ? val.length <= 32 : false)
+    ),
+  email: yup.string().email().required(),
   phone: yup.string(),
-  city: yup.string(),
-  children: yup.number(),
-  witness: yup.boolean(),
-  accompanyingPerson: yup.number(),
+  city: yup.string().test(
+    "len",
+    "Miasto nie może mieć więcej niż 32 znaki",
+    //@ts-ignore
+    (val: string | undefined) => (val ? val.length <= 32 : true)
+  ),
+  isWitness: yup.boolean(),
+  status: yup.string().required(),
+  children: yup.number().test(
+    "len",
+    "Liczba dzieci nie może byc mniejsza niż 0",
+    //@ts-ignore
+    (val: number | undefined) => (val ? val >= 0 : true)
+  ),
+  partner: yup.number(),
   accommodation: yup.boolean(),
   transport: yup.boolean(),
-  groups: yup.array(),
-  diets: yup.array(),
-  remarks: yup.string(),
+  guestsGroupGuests: yup.array(),
+  diet: yup.array(),
+  additionalInfo: yup
+    .string()
+    .test(
+      "len",
+      "uwagi nie mogą mieć więcej niż 150 znaków",
+      (val: string | undefined) => (val ? val.length <= 32 : true)
+    ),
 });
