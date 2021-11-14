@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
@@ -24,6 +24,9 @@ import request from "../../config/requests";
 import user from "../../pages/api/user";
 import Loading from "../Loading";
 import axios from "axios";
+import { getValue } from "../../config/helpers";
+import guest from "../../pages/api/guest";
+import { GuestContext } from "./GuestContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -98,6 +101,8 @@ export default function GuestList({
 
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
 
+  const { statusOptions } = useContext(GuestContext);
+
   if (error)
     return (
       <div className={classes.main}>
@@ -159,12 +164,15 @@ export default function GuestList({
                     className={classes.nameTxt}
                   />
                   <ListItemText
+                    primary={getValue(statusOptions || [], item.status)}
                     sx={{
                       color:
-                        item.status === 2
+                        item.status === 1
+                          ? "#64150F"
+                          : item.status === 2
                           ? "#15B811"
                           : item.status != 3
-                          ? "#4A8DF4"
+                          ? "#888888"
                           : "#C13126;",
                     }}
                     className={classes.statusTxt}

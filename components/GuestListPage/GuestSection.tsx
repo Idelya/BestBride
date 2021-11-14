@@ -12,6 +12,7 @@ import GroupList from "./GroupList";
 import useSWR from "swr";
 import axios from "axios";
 import { Guest } from "../../config/types";
+import Search from "../Search";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,11 +56,20 @@ export default function GuestSection() {
     error: any;
   };
 
+  const [filtredGuests, setFiltredGuests] = useState<Guest[]>(guests);
+  const [searchGuests, setSearchGuests] = useState<Guest[]>(filtredGuests);
+
   useEffect(() => {
     if (!addGuest) {
       mutate();
     }
   }, [mutate, addGuest]);
+
+  useEffect(() => {
+    setFiltredGuests(guests);
+  }, [guests]);
+
+  console.log(searchGuests);
 
   return (
     <section className={classes.main}>
@@ -129,13 +139,21 @@ export default function GuestSection() {
           </RectangularButton>
         </ButtonGroup>
       </div>
-      <Filters />
+      <div className={classes.optionsBox}>
+        <Filters
+          handleChangeFilter={setFiltredGuests}
+          handleChangeSearch={setSearchGuests}
+          guests={guests}
+          filtredGuests={filtredGuests}
+          searchGuests={searchGuests}
+        />
+      </div>
       {groups ? (
         <GroupList addGroup={() => setAddGroup(true)} />
       ) : (
         <GuestList
           addGuest={() => setAddGuest(true)}
-          data={guests}
+          data={searchGuests}
           error={!!errorGuests}
         />
       )}

@@ -5,7 +5,6 @@ export const getValue = (options: Option[], key?: number): string =>
     : "Brak danych";
 
 export const getValueFromDiet = (options: Diet[], id?: number): string => {
-  console.log(options, id);
   return id || id === 0
     ? options.find((option) => option.id === id)?.name || "Brak danych"
     : "Brak danych";
