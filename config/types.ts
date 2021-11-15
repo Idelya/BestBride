@@ -40,15 +40,21 @@ export type Expense = {
   id: number;
   name: string;
   price: number;
-  paymentDate?: string;
-  finalDate?: string;
-  status: "opłacone" | "zaplanowane";
-  estiamtedPrice?: number;
-  type?: string;
-  remarks?: string;
+  paymentDate?: Date;
+  finalDate?: Date;
+  paid: number;
+  expensesCategory: string;
+  additionalInfo?: string;
   service?: number;
-  task?: number;
+  toDo?: number;
+  whoAdded?: number;
 };
+
+export type ExpenseCategory = {
+  id: number;
+  name: string;
+};
+
 export const OPTIONS_STATUS = ["opłacone", "zaplanowane"];
 export type User = {
   name?: string;

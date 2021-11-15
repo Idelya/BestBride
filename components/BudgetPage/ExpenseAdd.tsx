@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Modal from "@mui/material/Modal";
 import {
@@ -29,6 +29,9 @@ import {
 import { LocalizationProvider, DateTimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { OPTIONS_STATUS } from "../../config/types";
+import axios from "axios";
+import { store } from "react-notifications-component";
+import { ExpenseContext } from "./ExpenseContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,18 +66,65 @@ const useStyles = makeStyles((theme: Theme) =>
 interface ExpenseAddProps {
   open: boolean;
   handleClose: () => void;
+  update: () => void;
 }
-export default function ExpenseAdd({ open, handleClose }: ExpenseAddProps) {
+export default function ExpenseAdd({
+  open,
+  handleClose,
+  update,
+}: ExpenseAddProps) {
   const classes = useStyles();
-  const [paymentDate, setPaymentDate] = useState<Date | null>(new Date());
+  const [paymentDate, setPaymentDate] = useState<Date | null>(null);
   const [deadline, setDeadline] = useState<Date | null>(new Date());
-  const [status, setStatus] = useState<string>("zaplanowane");
+
+  const { expenseOptions } = useContext(ExpenseContext);
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: expenseSchemaValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      const data = !deadline ? values : { ...values, finalDate: deadline };
+      console.log(data, !deadline);
+      const dataWithDates = !paymentDate
+        ? data
+        : { ...data, paymentDate: paymentDate };
+      console.log(dataWithDates, !paymentDate);
+      try {
+        const x = await axios.post("/api/expenseAdd", dataWithDates);
+        if (x.data) {
+          store.addNotification({
+            title: "Success",
+            message: "Dodano nowy wydatek.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+          update();
+          handleClose();
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
@@ -114,27 +164,20 @@ export default function ExpenseAdd({ open, handleClose }: ExpenseAddProps) {
               />
             </div>
             <div className={classes.inline}>
-              <Typography variant="h6">Status:</Typography>
+              <Typography variant="h6">Opłacono:</Typography>
               <TextField
-                id="status"
-                select
-                name="status"
+                id="paid"
+                name="paid"
                 size="small"
-                label=""
-                value={status}
-                defaultValue="zaplanowane"
-                onChange={(e) => {
-                  setStatus(e.target.value);
-                  setPaymentDate(null);
+                type="number"
+                InputProps={{
+                  inputProps: { min: 0, max: formik.values.price },
                 }}
-                className={classes.input}
-              >
-                {OPTIONS_STATUS.map((option, i) => (
-                  <MenuItem key={i} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
+                value={formik.values.paid}
+                onChange={formik.handleChange}
+                error={formik.touched.paid && Boolean(formik.errors.paid)}
+                helperText={formik.touched.paid && formik.errors.paid}
+              />
             </div>
             <div className={classes.inline}>
               <Typography
@@ -149,7 +192,7 @@ export default function ExpenseAdd({ open, handleClose }: ExpenseAddProps) {
                     <TextField id="paymentDate" name="paymentDate" {...props} />
                   )}
                   value={paymentDate}
-                  disabled={status !== "opłacone"}
+                  disabled={formik.values.paid < formik.values.price}
                   onChange={(newValue: Date | null) => {
                     setPaymentDate(newValue);
                   }}
@@ -174,81 +217,62 @@ export default function ExpenseAdd({ open, handleClose }: ExpenseAddProps) {
           <Grid item xs={12} md={6} pr={8} pl={8}>
             <div className={classes.inline}>
               <Typography component="label" variant="h6">
-                Typ:
+                Kategoria:
               </Typography>
               <TextField
                 id="type"
                 name="type"
                 size="small"
-                value={formik.values.type}
-                onChange={formik.handleChange}
-                error={formik.touched.type && Boolean(formik.errors.type)}
-                helperText={formik.touched.type && formik.errors.type}
-              />
-            </div>
-            <div className={classes.inline}>
-              <Typography variant="h6">Szacowana cena:</Typography>
-              <TextField
-                id="estiamtedPrice"
-                name="estiamtedPrice"
-                size="small"
-                type="number"
-                value={formik.values.estiamtedPrice}
+                value={formik.values.expensesCategory}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.estiamtedPrice &&
-                  Boolean(formik.errors.estiamtedPrice)
+                  formik.touched.expensesCategory &&
+                  Boolean(formik.errors.expensesCategory)
                 }
                 helperText={
-                  formik.touched.estiamtedPrice && formik.errors.estiamtedPrice
+                  formik.touched.expensesCategory &&
+                  formik.errors.expensesCategory
                 }
-              />
-            </div>
-            <div className={classes.inline}>
-              <Typography component="label" variant="h6">
-                Link do usługi:
-              </Typography>
-              <TextField
-                id="service"
-                name="service"
-                size="small"
-                value={formik.values.service}
-                onChange={formik.handleChange}
-                error={formik.touched.service && Boolean(formik.errors.service)}
-                helperText={formik.touched.service && formik.errors.service}
-              />
-            </div>
-            <div className={classes.inline}>
-              <Typography variant="h6">Zadanie:</Typography>
-              <TextField
-                id="task"
-                name="task"
-                select
-                value={formik.values.task}
-                onChange={formik.handleChange}
               >
-                {[].map((e, i) => (
-                  <MenuItem key={i} value={e}>
-                    {e}
+                {(expenseOptions || []).map((e, i) => (
+                  <MenuItem key={i} value={e.id}>
+                    {e.name}
                   </MenuItem>
                 ))}
               </TextField>
+            </div>
+            <div className={classes.inline}>
+              <Typography variant="h6">Zadanie:</Typography>
+              <Autocomplete
+                id="toDoe"
+                options={[]}
+                onChange={formik.handleChange}
+                includeInputInList
+                renderInput={(params) => (
+                  <TextField {...params} name="toDo" variant="outlined" />
+                )}
+              />
             </div>
           </Grid>
           <Grid item md={12}>
             <div className={classes.block}>
               <Typography variant="h6">Uwagi:</Typography>
               <TextField
-                id="remarks"
-                name="remarks"
+                id="additionalInfo"
+                name="additionalInfo"
                 size="small"
                 type="text"
                 fullWidth
                 rows={3}
-                value={formik.values.remarks}
+                value={formik.values.additionalInfo}
                 onChange={formik.handleChange}
-                error={formik.touched.remarks && Boolean(formik.errors.remarks)}
-                helperText={formik.touched.remarks && formik.errors.remarks}
+                error={
+                  formik.touched.additionalInfo &&
+                  Boolean(formik.errors.additionalInfo)
+                }
+                helperText={
+                  formik.touched.additionalInfo && formik.errors.additionalInfo
+                }
               />
             </div>
           </Grid>

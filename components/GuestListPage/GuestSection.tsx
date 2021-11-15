@@ -69,8 +69,6 @@ export default function GuestSection() {
     setFiltredGuests(guests);
   }, [guests]);
 
-  console.log(searchGuests);
-
   return (
     <section className={classes.main}>
       <GuestAdd

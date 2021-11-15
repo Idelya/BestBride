@@ -4,6 +4,7 @@ import Banner from "./Banner";
 import SummarySection from "./SummarySection";
 import { Container } from "@mui/material";
 import Expenses from "./Expenses";
+import { ExpenseContext } from "./ExpenseContext";
 
 const useStyles = makeStyles({
   root: {
@@ -13,13 +14,20 @@ const useStyles = makeStyles({
 
 export default function BudgetPage() {
   const classes = useStyles();
+
   return (
-    <div>
-      <Banner />
-      <Container>
-        <SummarySection />
-        <Expenses />
-      </Container>
-    </div>
+    <ExpenseContext.Provider
+      value={{
+        expenseOptions: [],
+      }}
+    >
+      <div>
+        <Banner />
+        <Container>
+          <SummarySection />
+          <Expenses />
+        </Container>
+      </div>
+    </ExpenseContext.Provider>
   );
 }

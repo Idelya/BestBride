@@ -3,12 +3,16 @@ import { createStyles, makeStyles } from "@mui/styles";
 import Heading from "../Heading";
 import { Theme } from "@mui/system";
 import Divider from "../Divider";
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, ButtonGroup } from "@mui/material";
 import ExpenseSummary from "./ExpenseSummary";
 import AddIcon from "@mui/icons-material/Add";
 import ExpensesList from "./ExpensesList";
 import { Expense } from "../../config/types";
 import ExpenseAdd from "./ExpenseAdd";
+import axios from "axios";
+import useSWR from "swr";
+import Loading from "../Loading";
+import RectangularButton from "../RectangularButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,54 +22,96 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "flex-end",
     },
     btn: {
+      textTransform: "none",
       "& *": {
         textTransform: "none",
       },
     },
+    btnInactive: {
+      color: theme.palette.grey[500],
+    },
+    btnInactiveWithBorder: {
+      color: theme.palette.grey[500],
+      borderColor: theme.palette.grey[500],
+      boxShadow: "none",
+    },
   })
 );
 
-const data: Expense[] = [
-  {
-    id: 1,
-    name: "Rzecz 1",
-    price: 300,
-    paymentDate: "4 listopada",
-    status: "opłacone",
-  },
-  {
-    id: 2,
-    name: "Rzecz 2",
-    price: 300,
-    paymentDate: "4 listopada",
-    status: "opłacone",
-  },
-  {
-    id: 3,
-    name: "Rzecz 3",
-    price: 300,
-    paymentDate: "9 listopada",
-    status: "zaplanowane",
-  },
-];
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function Expenses() {
   const classes = useStyles();
   const [addExpense, setAddExpense] = useState(false);
+  const [planned, setPlanned] = useState<boolean>(true);
+
+  const {
+    data: expenses,
+    mutate,
+    error: errorExpenses,
+  } = useSWR("api/expenses", fetcher) as {
+    data: Expense[];
+    mutate: any;
+    error: any;
+  };
+
+  console.log(expenses);
+
+  if (errorExpenses)
+    return (
+      <div className={classes.root}>
+        Nie można pobrać danych. Odśwież stronę.
+      </div>
+    );
+
+  if (!expenses)
+    return (
+      <div className={classes.root}>
+        <Loading />
+      </div>
+    );
+
   return (
     <div className={classes.root}>
       <Divider textAlign="right">Wydatki</Divider>
-      <ExpenseAdd open={addExpense} handleClose={() => setAddExpense(false)} />
+      <ExpenseAdd
+        open={addExpense}
+        update={mutate}
+        handleClose={() => setAddExpense(false)}
+      />
       <Grid container>
         <Grid item md={12} className={classes.summary}>
           <ExpenseSummary />
         </Grid>
         <Grid item md={12} className={classes.btn}>
+          <ButtonGroup aria-label="switch to group" sx={{ margin: " 0 10px" }}>
+            <RectangularButton
+              className={
+                classes.btn + " " + (!planned && classes.btnInactiveWithBorder)
+              }
+              size="large"
+              onClick={() => setPlanned(true)}
+            >
+              Planowane wydatki
+            </RectangularButton>
+            <RectangularButton
+              className={
+                classes.btn + " " + (planned && classes.btnInactiveWithBorder)
+              }
+              size="large"
+              onClick={() => setPlanned(false)}
+            >
+              Opłacone wydatki
+            </RectangularButton>
+          </ButtonGroup>
+
           <Button startIcon={<AddIcon />} onClick={() => setAddExpense(true)}>
             Dodaj wydatek
           </Button>
         </Grid>
         <Grid item md={12}>
-          <ExpensesList expenses={data} />
+          <ExpensesList
+            expenses={expenses.filter((e) => e.price <= e.paid === !planned)}
+          />
         </Grid>
       </Grid>
     </div>

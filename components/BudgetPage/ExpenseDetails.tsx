@@ -14,6 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import btnImg from "../../public/btn.png";
 import { Expense } from "../../config/types";
+import { formatDate } from "../../config/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,10 +58,10 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
         </div>
         <div className={classes.inline}>
           <Typography color="GrayText" variant="subtitle1">
-            Status:
+            Opłacono:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.status}
+            {expense.paid}
           </Typography>
         </div>
         <div className={classes.inline}>
@@ -68,7 +69,10 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Data zapłaty:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.paymentDate || "Nieopłacone"}
+            {expense.paymentDate &&
+            new Date(expense.paymentDate).getFullYear() > 1000
+              ? formatDate(new Date(expense.paymentDate))
+              : "Nieopłacone"}
           </Typography>
         </div>
         <div className={classes.inline}>
@@ -76,15 +80,10 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Ostateczny termin zapłaty:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.finalDate || "Brak"}
-          </Typography>
-        </div>
-        <div className={classes.inline}>
-          <Typography color="GrayText" variant="subtitle1">
-            Szacowana cena:
-          </Typography>
-          <Typography color="primary" variant="subtitle1">
-            {expense.estiamtedPrice || "Brak"}
+            {expense.finalDate &&
+            new Date(expense.finalDate).getFullYear() > 1000
+              ? formatDate(new Date(expense.finalDate))
+              : "Brak"}
           </Typography>
         </div>
         <div className={classes.inline}>
@@ -92,7 +91,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Typ wydatku:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.type || "Brak"}
+            {expense.expensesCategory || "Brak"}
           </Typography>
         </div>
       </Grid>
@@ -110,7 +109,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Link do zadania:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.task || "Brak"}
+            {expense.toDo || "Brak"}
           </Typography>
         </div>
       </Grid>
@@ -120,7 +119,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Uwagi:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.remarks || "Brak"}
+            {expense.additionalInfo || "Brak"}
           </Typography>
         </div>
       </Grid>
