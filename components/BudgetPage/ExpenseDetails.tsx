@@ -14,7 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import btnImg from "../../public/btn.png";
 import { Expense } from "../../config/types";
-import { formatDate } from "../../config/helpers";
+import { formatDateWithHour } from "../../config/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,7 +71,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
           <Typography color="primary" variant="subtitle1">
             {expense.paymentDate &&
             new Date(expense.paymentDate).getFullYear() > 1000
-              ? formatDate(new Date(expense.paymentDate))
+              ? formatDateWithHour(new Date(expense.paymentDate))
               : "Nieopłacone"}
           </Typography>
         </div>
@@ -82,7 +82,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
           <Typography color="primary" variant="subtitle1">
             {expense.finalDate &&
             new Date(expense.finalDate).getFullYear() > 1000
-              ? formatDate(new Date(expense.finalDate))
+              ? formatDateWithHour(new Date(expense.finalDate))
               : "Brak"}
           </Typography>
         </div>

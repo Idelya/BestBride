@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Heading from "../Heading";
 import { Theme } from "@mui/system";
@@ -13,6 +13,8 @@ import axios from "axios";
 import useSWR from "swr";
 import Loading from "../Loading";
 import RectangularButton from "../RectangularButton";
+import { groupBy } from "lodash";
+import { formatDate } from "../../config/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +57,24 @@ export default function Expenses() {
   };
 
   console.log(expenses);
+  /*const groupedExpenses = useMemo(() => {
+    if (expenses) {
+      const sorted = planned
+        ? expenses.sort((a, b) => new Date(a.finalDate) - new Date(b.finalDate))
+        : expenses.sort(
+            (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
+          );
+      console.log(sorted);
+      const grouped = planned
+        ? groupBy((e) => formatDate(e.finalDate))
+        : groupBy((e) => formatDate(e.paymentDate));
+
+      console.log(grouped);
+      return sorted;
+    } else {
+      return null;
+    }
+  }, [expenses]);*/
 
   if (errorExpenses)
     return (
@@ -109,9 +129,7 @@ export default function Expenses() {
           </Button>
         </Grid>
         <Grid item md={12}>
-          <ExpensesList
-            expenses={expenses.filter((e) => e.price <= e.paid === !planned)}
-          />
+          <ExpensesList data={[]} />
         </Grid>
       </Grid>
     </div>

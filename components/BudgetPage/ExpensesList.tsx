@@ -47,52 +47,51 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ExpensesListProps {
-  expenses: Expense[];
+  data: {
+    date: Date;
+    list: Expense[];
+  }[];
 }
-export default function ExpensesList({ expenses }: ExpensesListProps) {
+export default function ExpensesList({ data }: ExpensesListProps) {
   const classes = useStyles();
 
   return (
     <div className={classes.list}>
-      <List>
-        {expenses.map((expense) => (
-          <Accordion
-            key={expense.id}
-            className={classes.listItem}
-            id={"expense-" + expense.id}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              className={classes.summary}
-            >
-              <Typography color="primary" variant="h6">
-                {expense.name}
-              </Typography>
-              <div className={classes.box}>
-                <Typography
-                  color="primary"
-                  variant="subtitle1"
-                  className={classes.spacing}
+      {data.map((ele) => (
+        <>
+          <Typography>{formatDate(ele.date)}</Typography>
+          <List>
+            {ele.list.map((expense) => (
+              <Accordion
+                key={expense.id}
+                className={classes.listItem}
+                id={"expense-" + expense.id}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  className={classes.summary}
                 >
-                  {expense.status}
-                </Typography>
-                <Typography
-                  color="primary"
-                  variant="subtitle1"
-                  className={classes.spacing}
-                >
-                  {`${expense.status === "opłacone" ? expense.price : 0}/${
-                    expense.price
-                  }`}
-                </Typography>
-              </div>
-            </AccordionSummary>
-            <AccordionDetails className={classes.details}>
-              <ExpenseDetails expense={expense} />
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </List>
+                  <Typography color="primary" variant="h6">
+                    {expense.name}
+                  </Typography>
+                  <div className={classes.box}>
+                    <Typography
+                      color="primary"
+                      variant="subtitle1"
+                      className={classes.spacing}
+                    >
+                      {`${expense.paid}/${expense.price}`}
+                    </Typography>
+                  </div>
+                </AccordionSummary>
+                <AccordionDetails className={classes.details}>
+                  <ExpenseDetails expense={expense} />
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </List>
+        </>
+      ))}
     </div>
   );
 }

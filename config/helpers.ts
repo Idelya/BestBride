@@ -11,8 +11,14 @@ export const getValueFromDiet = (options: Diet[], id?: number): string => {
     : "Brak danych";
 };
 
-export const formatDate = (date: Date) => {
+export const formatDateWithHour = (date: Date) => {
   const day = `${date.getDay() < 10 && "0"}${date.getDay()}`;
   const month = `${date.getMonth() < 10 ? "0" : ""}${date.getMonth()}`;
   return `${date.getFullYear()}-${month}-${day} ${date.getHours()}:${date.getMinutes()}`;
+};
+
+export const formatDate = (date: Date) => {
+  const day = `${date.getDay() < 10 && "0"}${date.getDay()}`;
+  const month = `${date.getMonth() < 10 ? "0" : ""}${date.getMonth()}`;
+  return `${date.getFullYear()}-${month}-${day}`;
 };
