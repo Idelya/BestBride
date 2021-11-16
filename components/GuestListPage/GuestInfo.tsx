@@ -72,7 +72,7 @@ export default function GuestInfo({
       <Loading />
     </Modal>;
   }
-  console.log(guest.diet);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box className={classes.main}>

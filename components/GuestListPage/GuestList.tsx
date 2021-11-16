@@ -98,7 +98,7 @@ export default function GuestList({
   error: boolean;
 }) {
   const classes = useStyles();
-
+  console.log(data);
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
 
   const { statusOptions } = useContext(GuestContext);
@@ -111,12 +111,14 @@ export default function GuestList({
     );
   if (!data)
     return (
-      <div className={classes.main}>
+      <Box
+        sx={{
+          display: "flex",
+        }}
+      >
         <Loading />
-      </div>
+      </Box>
     );
-
-  console.log(data);
 
   return (
     <>

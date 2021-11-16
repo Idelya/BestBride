@@ -32,6 +32,7 @@ export type Guest = {
 };
 
 export type Group = {
+  id?: number;
   name: string;
   guests: Guest[];
 };

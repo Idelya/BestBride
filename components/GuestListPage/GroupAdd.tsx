@@ -27,160 +27,8 @@ import Divider from "../Divider";
 import { Form, useFormik } from "formik";
 import { groupSchemaValidation, initialValues } from "../../schema/GroupSchema";
 import { Guest } from "../../config/types";
-
-const rows = [
-  {
-    name: "Wrocław",
-    items: [
-      {
-        id: 1,
-        surname: "Snow",
-        name: "Jon",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-
-      {
-        id: 4,
-        surname: "Stark",
-        name: "Arya",
-        invitationAccepted: "Nie",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 5,
-        surname: "Targaryen",
-        name: "Daenerys",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-  {
-    name: "Kielce",
-    items: [
-      {
-        id: 2,
-        surname: "Lannister",
-        name: "Cersei",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 3,
-        surname: "Lannister",
-        name: "Jaime",
-        invitationAccepted: "?",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 6,
-        surname: "Lannister",
-        name: "Tyrion",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-  {
-    name: "Winterfell",
-    items: [
-      {
-        id: 7,
-        surname: "Sansa",
-        name: "Stark",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 8,
-        surname: "Arya",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 9,
-        surname: "Robb",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-];
+import axios from "axios";
+import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -240,26 +88,60 @@ const useStyles = makeStyles((theme: Theme) =>
 interface GuestAddProps {
   open: boolean;
   handleClose: () => void;
+  guests: Guest[];
 }
-export default function GroupAdd({ open, handleClose }: GuestAddProps) {
+export default function GroupAdd({ open, handleClose, guests }: GuestAddProps) {
+  console.log(guests);
   const classes = useStyles();
   const [guestInList, setGuestInList] = useState<Guest[]>([]);
   const searchableGuests = useMemo(
-    () =>
-      rows
-        .map((item) => item.items)
-        .flat()
-        .filter((o) => !guestInList.includes(o)),
-    [guestInList]
+    () => guests.filter((o) => !guestInList.includes(o)),
+    [guestInList, guests]
   );
+
   const [searchedGuest, setSearchedGuest] = useState(null);
   const [clear, setClear] = useState(false);
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: groupSchemaValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify({ ...values, list: guestInList }, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const x = await axios.post("/api/groupAdd", values);
+        console.log(values);
+        if (x.data) {
+          handleClose();
+          store.addNotification({
+            title: "Success",
+            message: "Dodano nowego gościa.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
@@ -297,7 +179,7 @@ export default function GroupAdd({ open, handleClose }: GuestAddProps) {
                 options={searchableGuests}
                 value={searchedGuest}
                 className={classes.select}
-                getOptionLabel={(option) => option.name + " " + option.surname}
+                getOptionLabel={(option) => option.name}
                 //@ts-ignore
                 onChange={(e, v) => setSearchedGuest(v)}
                 renderInput={(params) => (
@@ -339,7 +221,7 @@ export default function GroupAdd({ open, handleClose }: GuestAddProps) {
                     </IconButton>
                   }
                 >
-                  <ListItemText primary={`${guest.name} ${guest.surname}`} />
+                  <ListItemText primary={`${guest.name}`} />
                 </ListItem>
               ))}
             </List>

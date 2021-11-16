@@ -15,9 +15,9 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Search from "../Search";
-import { Guest } from "../../config/types";
+import { Group, Guest } from "../../config/types";
 import { Field, Formik, useFormik, useFormikContext } from "formik";
-import { uniq } from "lodash";
+import { groupBy, uniq } from "lodash";
 import { GuestContext } from "./GuestContext";
 import { getValueFromDiet, getValue } from "../../config/helpers";
 
@@ -74,13 +74,13 @@ export default function Filters({
   handleChangeSearch,
   filtredGuests,
 }: {
-  handleChangeFilter: (guests: Guest[]) => void;
-  handleChangeSearch: (guests: Guest[]) => void;
-  guests: Guest[];
-  filtredGuests: Guest[];
-  searchGuests: Guest[];
+  handleChangeFilter: (guests: Group[]) => void;
+  handleChangeSearch: (guests: Group[]) => void;
+  guests: Group[];
+  filtredGuests: Group[];
 }) {
   const classes = useStyles();
+  console.log(guests, filtredGuests);
 
   const { genderOptions, dietsOptions, statusOptions } =
     useContext(GuestContext);
@@ -94,19 +94,29 @@ export default function Filters({
   const handleSubmitFilters = (values: ValuesTypes) => {
     console.log(values.status);
     const filtr = guests
-      ?.filter(
-        (guest) =>
-          values.city.length === 0 || values.city.includes(guest.city || "")
-      )
-      .filter(
-        (guest) =>
-          values.status.length === 0 || values.status.includes(guest.status)
-      )
-      .filter(
-        (guest) => values.diet.length === 0 || values.diet.includes(guest.diet)
-      )
-      .filter((guest) => !values.accommodation || guest.accommodation)
-      .filter((guest) => !values.transport || guest.transport);
+      .map((groups) => {
+        return {
+          name: groups.name,
+          guests: groups.guests
+            ?.filter(
+              (guest) =>
+                values.city.length === 0 ||
+                values.city.includes(guest.city || "")
+            )
+            .filter(
+              (guest) =>
+                values.status.length === 0 ||
+                values.status.includes(guest.status)
+            )
+            .filter(
+              (guest) =>
+                values.diet.length === 0 || values.diet.includes(guest.diet)
+            )
+            .filter((guest) => !values.accommodation || guest.accommodation)
+            .filter((guest) => !values.transport || guest.transport),
+        };
+      })
+      .filter((group) => group.guests.length != 0);
     handleChangeFilter(filtr);
   };
 
@@ -171,7 +181,12 @@ export default function Filters({
                           : "Wybierz miasto";
                       }}
                     >
-                      {uniq(guests.map((e) => e.city)).map((e, i) => (
+                      {uniq(
+                        guests
+                          .map((group) => group.guests)
+                          .flat()
+                          .map((e) => e.city)
+                      ).map((e, i) => (
                         <MenuItem key={i} value={e}>
                           {e || "Bez miasta"}
                         </MenuItem>

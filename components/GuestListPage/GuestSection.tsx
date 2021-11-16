@@ -11,8 +11,9 @@ import GroupAdd from "./GroupAdd";
 import GroupList from "./GroupList";
 import useSWR from "swr";
 import axios from "axios";
-import { Guest } from "../../config/types";
+import { Group, Guest } from "../../config/types";
 import Search from "../Search";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,8 +57,23 @@ export default function GuestSection() {
     error: any;
   };
 
-  const [filtredGuests, setFiltredGuests] = useState<Guest[]>(guests);
-  const [searchGuests, setSearchGuests] = useState<Guest[]>(filtredGuests);
+  const {
+    data: groupsData,
+    mutate: updateGroups,
+    error: errorGroup,
+  } = useSWR("api/group", fetcher) as {
+    data: Group[];
+    mutate: any;
+    error: any;
+  };
+
+  const [filtredGuests, setFiltredGuests] = useState<Group[]>([
+    {
+      name: "all",
+      guests: guests || [],
+    },
+  ]);
+  const [searchGuests, setSearchGuests] = useState<Group[]>(filtredGuests);
 
   useEffect(() => {
     if (!addGuest) {
@@ -66,8 +82,26 @@ export default function GuestSection() {
   }, [mutate, addGuest]);
 
   useEffect(() => {
-    setFiltredGuests(guests);
-  }, [guests]);
+    if (!addGroup) {
+      updateGroups(groupsData);
+    }
+  }, [updateGroups, addGroup, groupsData]);
+
+  useEffect(() => {
+    console.log("update guests", guests);
+    if (groups) {
+      setFiltredGuests(groupsData);
+    } else {
+      setFiltredGuests([
+        {
+          name: "all",
+          guests: guests || [],
+        },
+      ]);
+    }
+  }, [groups, groupsData, guests]);
+
+  console.log("searchGuests", searchGuests);
 
   return (
     <section className={classes.main}>
@@ -76,7 +110,11 @@ export default function GuestSection() {
         handleClose={() => setAddGuest(false)}
         guests={guests}
       />
-      <GroupAdd open={addGroup} handleClose={() => setAddGroup(false)} />
+      <GroupAdd
+        open={addGroup}
+        handleClose={() => setAddGroup(false)}
+        guests={guests || []}
+      />
       <Divider component="h2" textAlign="right">
         Lista gości
       </Divider>
@@ -141,17 +179,25 @@ export default function GuestSection() {
         <Filters
           handleChangeFilter={setFiltredGuests}
           handleChangeSearch={setSearchGuests}
-          guests={guests}
+          guests={[
+            {
+              name: "all",
+              guests: guests || [],
+            },
+          ]}
           filtredGuests={filtredGuests}
-          searchGuests={searchGuests}
         />
       </div>
       {groups ? (
-        <GroupList addGroup={() => setAddGroup(true)} />
+        <GroupList
+          addGroup={() => setAddGroup(true)}
+          data={searchGuests || []}
+          error={!!errorGuests}
+        />
       ) : (
         <GuestList
           addGuest={() => setAddGuest(true)}
-          data={searchGuests}
+          data={searchGuests.map((group) => group.guests).flat() || []}
           error={!!errorGuests}
         />
       )}

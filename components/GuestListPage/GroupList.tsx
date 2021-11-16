@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import {
+  Box,
   Collapse,
   IconButton,
   ListItemButton,
@@ -19,161 +20,9 @@ import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
 import { Group, Guest } from "../../config/types";
 import GroupEdit from "./GroupEdit";
-import { initialGuest } from "./GuestList";
-
-const rows = [
-  {
-    name: "Wrocław",
-    guests: [
-      {
-        id: 1,
-        surname: "Snow",
-        name: "Jon",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-
-      {
-        id: 4,
-        surname: "Stark",
-        name: "Arya",
-        invitationAccepted: "Nie",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 5,
-        surname: "Targaryen",
-        name: "Daenerys",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-  {
-    name: "Kielce",
-    guests: [
-      {
-        id: 2,
-        surname: "Lannister",
-        name: "Cersei",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 3,
-        surname: "Lannister",
-        name: "Jaime",
-        invitationAccepted: "?",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 6,
-        surname: "Lannister",
-        name: "Tyrion",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-  {
-    name: "Winterfell",
-    guests: [
-      {
-        id: 7,
-        surname: "Sansa",
-        name: "Stark",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 8,
-        surname: "Arya",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 9,
-        surname: "Robb",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-];
+import { getValue } from "../../config/helpers";
+import Loading from "../Loading";
+import { GuestContext } from "./GuestContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -241,20 +90,58 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1),
       justifyContent: "center",
     },
+
+    statusTxt: {
+      width: "25%",
+      display: "block",
+      flex: "none",
+    },
   })
 );
 
-export default function GroupList({ addGroup }: { addGroup: () => void }) {
+export default function GroupList({
+  addGroup,
+  data,
+  error,
+}: {
+  addGroup: () => void;
+  data: Group[];
+  error: boolean;
+}) {
+  console.log(data);
   const classes = useStyles();
   const [showGroup, setShowGroup] = useState<Group | undefined>();
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
+
+  const { statusOptions } = useContext(GuestContext);
+
+  if (error)
+    return (
+      <div className={classes.main}>
+        Nie można pobrać danych. Odśwież stronę.
+      </div>
+    );
+
+  if (!data)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+        }}
+      >
+        <Loading />
+      </Box>
+    );
+
   return (
     <>
-      <GuestInfo
-        open={!!showGuest}
-        handleClose={() => setShowGuest(undefined)}
-        guest={showGuest}
-      />
+      {showGuest && (
+        <GuestInfo
+          open={!!showGuest}
+          handleClose={() => setShowGuest(undefined)}
+          guest={showGuest}
+        />
+      )}
       {showGroup && (
         <GroupEdit
           open={!!showGroup}
@@ -273,89 +160,83 @@ export default function GroupList({ addGroup }: { addGroup: () => void }) {
               <Typography color="primary" className={classes.nameTxt}>
                 Imię
               </Typography>
-              <Typography color="primary" className={classes.surnameTxt}>
-                Nazwisko
-              </Typography>
-              <Typography color="primary" className={classes.invitationTxt}>
-                Zaakceptowano
-              </Typography>
               <Typography color="primary" className={classes.invitationSendTxt}>
-                Czy zaproszono
+                Status zaproszenia
               </Typography>
             </ListSubheader>
           }
         >
-          {rows.map((group) => {
-            return (
-              <div key={group.name}>
-                <ListItem
-                  key={group.name}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() => setShowGroup(group)}
-                    >
-                      <EditIcon color="primary" />
-                    </IconButton>
-                  }
-                  disablePadding
-                  className={classes.groupItem}
-                >
-                  <ListItemText
-                    primary={group.name}
-                    className={classes.groupTxt}
-                  />
-                </ListItem>
-                <Collapse in={true} timeout="auto">
-                  <List component="div" disablePadding>
-                    {group.guests.map((item) => (
-                      <ListItemButton
-                        key={item.id}
-                        className={classes.row}
-                        onClick={() =>
-                          setShowGuest({
-                            city: group.name,
-                            ...item,
-                            ...initialGuest,
-                          })
-                        }
+          {(data as Group[]).length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+              }}
+            >
+              <Typography sx={{ margin: "32px auto" }}>
+                Lista gości jest pusta.
+              </Typography>
+            </Box>
+          ) : (
+            (data as Group[]).map((group) => {
+              return (
+                <div key={group.name}>
+                  <ListItem
+                    key={group.name}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        aria-label="edit"
+                        onClick={() => setShowGroup(group)}
                       >
-                        <ListItemText primary="" className={classes.groupTxt} />
-                        <ListItemText
-                          primary={item.name}
-                          className={classes.nameTxt}
-                        />
-                        <ListItemText
-                          primary={item.surname}
-                          className={classes.surnameTxt}
-                        />
-                        <ListItemText
-                          primary={item.invitationAccepted}
-                          sx={{
-                            color:
-                              item.invitationAccepted === "Tak"
-                                ? "#15B811"
-                                : item.invitationAccepted === "?"
-                                ? "#4A8DF4"
-                                : "#C13126;",
-                          }}
-                          className={classes.invitationTxt}
-                        />
-                        <ListItemIcon className={classes.invitationSendTxt}>
-                          {item.invitationSend ? (
-                            <CheckIcon color="success" />
-                          ) : (
-                            <CloseIcon color="error" />
-                          )}
-                        </ListItemIcon>
-                      </ListItemButton>
-                    ))}
-                  </List>
-                </Collapse>
-              </div>
-            );
-          })}
+                        <EditIcon color="primary" />
+                      </IconButton>
+                    }
+                    disablePadding
+                    className={classes.groupItem}
+                  >
+                    <ListItemText
+                      primary={group.name}
+                      className={classes.groupTxt}
+                    />
+                  </ListItem>
+                  <Collapse in={true} timeout="auto">
+                    <List component="div" disablePadding>
+                      {group.guests.map((item) => (
+                        <ListItemButton
+                          key={item.id}
+                          className={classes.row}
+                          onClick={() => setShowGuest(item)}
+                        >
+                          <ListItemText
+                            primary=""
+                            className={classes.groupTxt}
+                          />
+                          <ListItemText
+                            primary={item.name}
+                            className={classes.nameTxt}
+                          />
+                          <ListItemText
+                            primary={getValue(statusOptions || [], item.status)}
+                            sx={{
+                              color:
+                                item.status === 1
+                                  ? "#64150F"
+                                  : item.status === 2
+                                  ? "#15B811"
+                                  : item.status != 3
+                                  ? "#888888"
+                                  : "#C13126;",
+                            }}
+                            className={classes.statusTxt}
+                          />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Collapse>
+                </div>
+              );
+            })
+          )}
         </List>
 
         <div className={classes.footer}>

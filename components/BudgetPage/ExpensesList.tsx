@@ -19,6 +19,7 @@ import { Expense } from "../../config/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpenseDetails from "./ExpenseDetails";
 import { useRouter } from "next/dist/client/router";
+import { formatDate } from "../../config/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
