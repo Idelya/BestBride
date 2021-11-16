@@ -19,6 +19,7 @@ import { useFormik } from "formik";
 import { store } from "react-notifications-component";
 import request from "../../config/requests";
 import { phaseSchemaValidation, initialValues } from "../../schema/PhaseSchema";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,15 +54,51 @@ const useStyles = makeStyles((theme: Theme) =>
 interface AddPhaseProps {
   open: boolean;
   handleClose: () => void;
+  update: () => void;
 }
-export default function AddPhase({ open, handleClose }: AddPhaseProps) {
+export default function AddPhase({ open, handleClose, update }: AddPhaseProps) {
   const classes = useStyles();
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: phaseSchemaValidation,
     onSubmit: async (values) => {
-      console.log(values);
+      try {
+        const x = await axios.post("/api/phaseAdd", values);
+        if (x.data) {
+          handleClose();
+          update();
+          store.addNotification({
+            title: "Sukces",
+            message: "Dodano nowy etap.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 

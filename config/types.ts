@@ -95,8 +95,8 @@ export type Diet = {
 export type Phase = {
   id: number;
   name?: string;
-  tasks: number;
-  doneTasks: number;
+  tasks?: number;
+  doneTasks?: number;
 };
 
 export type TaskStatus = "nierozpoczęte" | "w trakcie" | "zakończone";

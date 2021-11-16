@@ -14,8 +14,11 @@ import {
   Typography,
 } from "@mui/material";
 import TasksList from "./TasksList";
-import { Phase } from "../../config/types";
+import { Guest, Phase } from "../../config/types";
 import AddPhase from "./AddPhase";
+import axios from "axios";
+import useSWR from "swr";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -93,6 +96,8 @@ const data = [
   },
 ];
 
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
 export default function Stages() {
   const classes = useStyles();
   const [currPhase, setCurrPhase] = useState<Phase | null>(null);
@@ -102,11 +107,43 @@ export default function Stages() {
     setCurrPhase(stage === currPhase ? null : stage);
   };
 
+  const {
+    data: phases,
+    mutate,
+    error: errorPhase,
+  } = useSWR("api/phases", fetcher) as {
+    data: Phase[];
+    mutate: any;
+    error: any;
+  };
+
+  if (errorPhase)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+        }}
+      >
+        Nie można pobrać danych. Odśwież stronę.
+      </Box>
+    );
+  if (!data)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+        }}
+      >
+        <Loading />
+      </Box>
+    );
+
   return (
     <Box className={classes.wrapper}>
       <AddPhase
         open={openPhaseAdd}
         handleClose={() => setOpenPhaseAdd(false)}
+        update={mutate}
       />
       <Box
         sx={{ width: currPhase ? "30%" : "100%" }}
@@ -119,14 +156,14 @@ export default function Stages() {
         >
           Dodaj etap
         </Button>
-        {data.map((stage) => (
+        {(phases || []).map((stage) => (
           <Card
             className={
               classes.stage +
               " " +
               (currPhase !== stage ? "" : classes.picked) +
               " " +
-              (stage.doneTasks === stage.tasks ? classes.finished : "")
+              (stage?.doneTasks === stage?.tasks ? classes.finished : "")
             }
             key={stage.id}
           >
@@ -138,10 +175,9 @@ export default function Stages() {
                 <Typography variant="h6" color="primary">
                   {stage.name}
                 </Typography>
-                <Typography
-                  variant="h6"
-                  color="primary"
-                >{`${stage.doneTasks}/${stage.tasks}`}</Typography>
+                <Typography variant="h6" color="primary">{`${
+                  stage?.doneTasks || 0
+                }/${stage?.tasks || 0}`}</Typography>
               </CardContent>
             </CardActionArea>
           </Card>

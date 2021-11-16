@@ -9,7 +9,6 @@ import { theme } from "../utils/theme";
 import Layout from "../components/common/Layout";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { wrapper } from "../store/store";
-import ReactNotification from "react-notifications-component";
 import "react-image-gallery/styles/css/image-gallery.css";
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
@@ -37,7 +36,6 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Layout>
-          <ReactNotification />
           <Component {...pageProps} />
         </Layout>
       </ThemeProvider>
