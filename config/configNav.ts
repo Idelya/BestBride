@@ -32,8 +32,8 @@ export const ROUTES = {
     link: "/profil/#profil",
   },
   organizer: {
-    name: "Orgaznizer",
-    link: "/organizer",
+    name: "Planner",
+    link: "/planner",
   },
   budget: {
     name: "Budżet",
