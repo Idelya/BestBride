@@ -244,6 +244,7 @@ export default function GroupAdd({ open, handleClose, group }: GroupAddProps) {
       rows
         .map((item) => item.items)
         .flat()
+        //@ts-ignore
         .filter((o) => !guestInList.includes(o)),
     [guestInList]
   );
