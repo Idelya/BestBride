@@ -20,20 +20,19 @@ export default function SearchInGroup({
   React.useEffect(() => {
     if (!!list) {
       handleChange(
-        list
-          .map((group) => {
-            return {
-              name: group.name,
-              guests: group.guests.filter((obj: any) =>
-                Object.values(obj)
-                  .flat()
-                  .some((v) =>
-                    `${v}`.toLowerCase().includes(`${search}`.toLowerCase())
-                  )
-              ),
-            };
-          })
-          .filter((e) => e.guests.length != 0)
+        list.map((group) => {
+          console.log(group.guests);
+          return {
+            name: group.name,
+            guests: group.guests.filter((obj: any) =>
+              Object.values(obj)
+                .flat()
+                .some((v) =>
+                  `${v}`.toLowerCase().includes(`${search}`.toLowerCase())
+                )
+            ),
+          };
+        })
       );
     }
   }, [search, list, handleChange]);

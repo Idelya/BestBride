@@ -20,6 +20,7 @@ import { Field, Formik, useFormik, useFormikContext } from "formik";
 import { groupBy, uniq } from "lodash";
 import { GuestContext } from "./GuestContext";
 import { getValueFromDiet, getValue } from "../../config/helpers";
+import SearchInGroup from "./SearchInGroup";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,30 +91,26 @@ export default function Filters({
   };
 
   const handleSubmitFilters = (values: ValuesTypes) => {
-    const filtr = guests
-      .map((groups) => {
-        return {
-          name: groups.name,
-          guests: groups.guests
-            ?.filter(
-              (guest) =>
-                values.city.length === 0 ||
-                values.city.includes(guest.city || "")
-            )
-            .filter(
-              (guest) =>
-                values.status.length === 0 ||
-                values.status.includes(guest.status)
-            )
-            .filter(
-              (guest) =>
-                values.diet.length === 0 || values.diet.includes(guest.diet)
-            )
-            .filter((guest) => !values.accommodation || guest.accommodation)
-            .filter((guest) => !values.transport || guest.transport),
-        };
-      })
-      .filter((group) => group.guests.length != 0);
+    const filtr = guests.map((groups) => {
+      return {
+        name: groups.name,
+        guests: groups.guests
+          ?.filter(
+            (guest) =>
+              values.city.length === 0 || values.city.includes(guest.city || "")
+          )
+          .filter(
+            (guest) =>
+              values.status.length === 0 || values.status.includes(guest.status)
+          )
+          .filter(
+            (guest) =>
+              values.diet.length === 0 || values.diet.includes(guest.diet)
+          )
+          .filter((guest) => !values.accommodation || guest.accommodation)
+          .filter((guest) => !values.transport || guest.transport),
+      };
+    });
     handleChangeFilter(filtr);
   };
 
@@ -138,7 +135,7 @@ export default function Filters({
             }
           />
         </Button>
-        <Search handleChange={handleChangeSearch} list={filtredGuests} />
+        <SearchInGroup handleChange={handleChangeSearch} list={filtredGuests} />
       </Box>
       <Collapse in={expanded} timeout="auto">
         <Formik

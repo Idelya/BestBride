@@ -61,19 +61,12 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset",
       padding: theme.spacing(1),
     },
-    groupTxt: { width: "10%", display: "block", flex: "none" },
-    nameTxt: { width: "25%", display: "block", flex: "none" },
-    surnameTxt: { width: "25%", display: "block", flex: "none" },
-    invitationTxt: {
-      width: "15%",
+    groupTxt: { width: "15%", display: "block", flex: "none" },
+    nameTxt: { width: "45%", display: "block", flex: "none" },
+    statusTxt: {
+      width: "30%",
       display: "block",
-      textAlign: "center",
-      flex: "none",
-    },
-    invitationSendTxt: {
-      width: "15%",
-      display: "block",
-      textAlign: "center",
+      textAlign: "right",
       flex: "none",
     },
     subheader: {
@@ -89,12 +82,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       padding: theme.spacing(1),
       justifyContent: "center",
-    },
-
-    statusTxt: {
-      width: "25%",
-      display: "block",
-      flex: "none",
     },
   })
 );
@@ -160,7 +147,7 @@ export default function GroupList({
               <Typography color="primary" className={classes.nameTxt}>
                 Imię
               </Typography>
-              <Typography color="primary" className={classes.invitationSendTxt}>
+              <Typography color="primary" className={classes.statusTxt}>
                 Status zaproszenia
               </Typography>
             </ListSubheader>
@@ -196,7 +183,7 @@ export default function GroupList({
                   >
                     <ListItemText
                       primary={group.name}
-                      className={classes.groupTxt}
+                      className={classes.nameTxt}
                     />
                   </ListItem>
                   <Collapse in={true} timeout="auto">
