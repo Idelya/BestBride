@@ -1,5 +1,12 @@
 import { number, string } from "yup/lib/locale";
 
+export type Wedding = {
+  id?: number;
+  date?: Date;
+  budget?: number;
+  plannedGuestAmmount?: number;
+};
+
 export type Route = {
   name: string;
   link: string;
@@ -66,6 +73,12 @@ export type User = {
   role: string;
 };
 
+export type UserPlanner = {
+  name?: string;
+  email: string;
+  id?: number;
+};
+
 export const ROLE = {
   USER: "user",
   ADMIN: "admin",
@@ -99,24 +112,20 @@ export type Phase = {
   doneTasks?: number;
 };
 
-export type TaskStatus = "nierozpoczęte" | "w trakcie" | "zakończone";
-
-export const TASK_STATUS = {
-  BACKLOG: "nierozpoczęte" as TaskStatus,
-  WIP: "w trakcie" as TaskStatus,
-  DONE: "zakończone" as TaskStatus,
-};
-
 export type Task = {
   id: number;
   order: number;
   name: string;
-  status: TaskStatus;
+  status: number;
   date?: Date;
-  assignedTo?: string;
+  assigned?: {
+    id: number;
+    name?: string;
+    email: string;
+  };
   expanses?: {
     id: number;
     name: string;
   }[];
-  remarks?: string;
+  additionalInfo?: string;
 };

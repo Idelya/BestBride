@@ -6,7 +6,7 @@ import Stages from "./Stages";
 import request from "../../config/requests";
 import useSWR from "swr";
 import { PlannerContext } from "./PlannerContext";
-import { Option } from "../../config/types";
+import { Option, Wedding } from "../../config/types";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
 import {
   Autocomplete,
   Button,
   Checkbox,
   Grid,
+  IconButton,
   List,
+  ListItem,
+  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
@@ -18,13 +22,13 @@ import Divider from "../Divider";
 import { useFormik } from "formik";
 import { store } from "react-notifications-component";
 import request from "../../config/requests";
-import {
-  taskSchemaValidation,
-  initialValues,
-  taskStatusOptions,
-} from "../../schema/TaskSchema";
+import { taskSchemaValidation, initialValues } from "../../schema/TaskSchema";
 import { LocalizationProvider, DateTimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import axios from "axios";
+import { PlannerContext } from "./PlannerContext";
+import useSWR from "swr";
+import { Expense, Option, Phase, UserPlanner } from "../../config/types";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,24 +54,141 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "column",
     },
+
+    list: {
+      margin: theme.spacing(0, 1),
+      height: "300px",
+      overflowY: "auto",
+      "& .scrollbar": {
+        width: "5px",
+      },
+      "&::-webkit-scrollbar-track": {
+        borderRadius: "10px",
+        backgroundColor: " #F5F5F5",
+      },
+
+      "&::-webkit-scrollbar": {
+        width: "12px",
+        backgroundColor: "#F5F5F5",
+      },
+
+      "&::-webkit-scrollbar-thumb": {
+        borderRadius: "10px",
+        boxShadow: "inset 0 0 6px rgba(0,0,0,.3)",
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+    select: {
+      minWidth: "200px",
+    },
+    btn: {
+      textDecoration: "none",
+      margin: "5px auto",
+    },
   })
 );
 
 interface AddTaskProps {
   open: boolean;
   handleClose: () => void;
+  update: () => void;
+  phase: Phase;
 }
-export default function AddTask({ open, handleClose }: AddTaskProps) {
+
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
+export default function AddTask({
+  open,
+  handleClose,
+  update,
+  phase,
+}: AddTaskProps) {
   const classes = useStyles();
   const [value, setValue] = useState<Date | null>(new Date());
+  const [user, setUser] = useState<UserPlanner | null>(null);
+
+  const { todoOptions } = useContext(PlannerContext);
+  const { data: expenses } = useSWR("api/expenses", fetcher) as {
+    data: Expense[];
+  };
+
+  const [expenseInList, setExpenseInList] = useState<Expense[]>([]);
+  const searchableExpenses = useMemo(
+    () => (expenses || []).filter((o) => !expenseInList.includes(o)),
+    [expenseInList, expenses]
+  );
+
+  const [searchedExpense, setSearchedExpense] = useState(null);
+
+  const [clear, setClear] = useState(false);
+
+  const { data: users } = useSWR("api/usersWedding", fetcher) as {
+    data: UserPlanner[];
+  };
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: taskSchemaValidation,
     onSubmit: async (values) => {
-      console.log(values);
+      const formData = !!user
+        ? { ...values, assigned: user.id, phaseId: phase.id }
+        : values;
+      const taskWithExp =
+        expenseInList.length > 0
+          ? { ...formData, expenses: expenseInList.map((exp) => exp.id) }
+          : formData;
+      try {
+        console.log(
+          {
+            ...taskWithExp,
+            order: 0,
+            date: value,
+          },
+          formData,
+          values
+        );
+        const x = await axios.post("/api/taskAdd", {
+          ...taskWithExp,
+          order: 0,
+          date: value,
+        });
+        if (x.data) {
+          handleClose();
+          update();
+          store.addNotification({
+            title: "Sukces",
+            message: "Dodano nowe zadanie.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
+  if (!users || !expenses) return null;
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -100,9 +221,9 @@ export default function AddTask({ open, handleClose }: AddTaskProps) {
                 value={formik.values.status}
                 onChange={formik.handleChange}
               >
-                {taskStatusOptions.map((e, i) => (
-                  <MenuItem key={i} value={e}>
-                    {e}
+                {(todoOptions || []).map((e, i) => (
+                  <MenuItem key={i} value={e.key}>
+                    {e.value}
                   </MenuItem>
                 ))}
               </TextField>
@@ -114,7 +235,7 @@ export default function AddTask({ open, handleClose }: AddTaskProps) {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                   renderInput={(props) => (
-                    <TextField id="weddingDate" name="weddingDate" {...props} />
+                    <TextField id="date" name="date" {...props} />
                   )}
                   value={value}
                   onChange={(newValue: Date | null) => {
@@ -123,43 +244,79 @@ export default function AddTask({ open, handleClose }: AddTaskProps) {
                 />
               </LocalizationProvider>
             </div>
-            <div className={classes.inline}>
+            <div className={classes.block}>
               <Typography color="GrayText" variant="h6">
                 Przypisano do:
               </Typography>
               <Autocomplete
                 disablePortal
-                id="assignedTo"
+                id="assigned"
                 size="small"
-                options={[]}
-                value={formik.values.assignedTo}
+                options={users}
+                getOptionLabel={(option) => option.name || option.email}
+                value={user}
+                onChange={(e, v) => setUser(v)}
                 renderInput={(params) => (
-                  <TextField name="assignedTo" {...params} />
+                  <TextField name="assigned" {...params} />
                 )}
               />
             </div>
           </Grid>
           <Grid item md={5} pr={10}>
-            <List>
-              <Typography color="GrayText" variant="h6">
+            <div className={classes.block}>
+              <Typography component="label" color="GrayText" variant="h6">
                 Wydatki powiązane z zadaniem:
               </Typography>
-              <Select
-                id="expanses"
-                name="expanses"
-                multiple
+              <Autocomplete
                 size="small"
-                fullWidth
-                value={formik.values.expanses}
-                onChange={formik.handleChange}
-                input={<OutlinedInput name="expanses" id="expanses" />}
+                key={clear.toString()}
+                options={searchableExpenses}
+                value={searchedExpense}
+                className={classes.select}
+                getOptionLabel={(option) => option.name}
+                //@ts-ignore
+                onChange={(e, v) => setSearchedExpense(v)}
+                renderInput={(params) => (
+                  <TextField
+                    name="expenses"
+                    placeholder="wybierz powiązany wydatek"
+                    {...params}
+                  />
+                )}
+              />
+              <Button
+                variant="contained"
+                className={classes.btn}
+                onClick={() => {
+                  if (!!searchedExpense) {
+                    setExpenseInList(expenseInList.concat([searchedExpense]));
+                    setSearchedExpense(null);
+                    setClear(!clear);
+                  }
+                }}
               >
-                {[].map((e, i) => (
-                  <MenuItem key={i} value={e}>
-                    {e}
-                  </MenuItem>
-                ))}
-              </Select>
+                Dodaj
+              </Button>
+            </div>
+            <List className={classes.list}>
+              {expenseInList.map((exp) => (
+                <ListItem
+                  key={exp.id}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() =>
+                        setExpenseInList(expenseInList.filter((o) => o != exp))
+                      }
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText primary={`${exp.name}`} />
+                </ListItem>
+              ))}
             </List>
           </Grid>
           <Grid item md={12} pr={10}>
@@ -168,16 +325,21 @@ export default function AddTask({ open, handleClose }: AddTaskProps) {
                 Uwagi:
               </Typography>
               <TextField
-                id="remarks"
-                name="remarks"
+                id="additionalInfo"
+                name="additionalInfo"
                 size="small"
                 type="text"
                 fullWidth
                 rows={3}
-                value={formik.values.remarks}
+                value={formik.values.additionalInfo}
                 onChange={formik.handleChange}
-                error={formik.touched.remarks && Boolean(formik.errors.remarks)}
-                helperText={formik.touched.remarks && formik.errors.remarks}
+                error={
+                  formik.touched.additionalInfo &&
+                  Boolean(formik.errors.additionalInfo)
+                }
+                helperText={
+                  formik.touched.additionalInfo && formik.errors.additionalInfo
+                }
               />
             </div>
           </Grid>

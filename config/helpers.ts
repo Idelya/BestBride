@@ -14,7 +14,9 @@ export const getValueFromDiet = (options: Diet[], id?: number): string => {
 export const formatDateWithHour = (date: Date) => {
   const day = `${date.getDay() < 10 && "0"}${date.getDay()}`;
   const month = `${date.getMonth() < 10 ? "0" : ""}${date.getMonth()}`;
-  return `${date.getFullYear()}-${month}-${day} ${date.getHours()}:${date.getMinutes()}`;
+  const hour = `${date.getHours() < 10 ? "0" : ""}${date.getHours()}`;
+  const minutes = `${date.getMinutes() < 10 ? "0" : ""}${date.getMinutes()}`;
+  return `${date.getFullYear()}-${month}-${day} ${hour}:${minutes}`;
 };
 
 export const formatDate = (date: Date) => {

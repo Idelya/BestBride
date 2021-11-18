@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Accordion,
@@ -12,7 +12,7 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { Phase, Task, TASK_STATUS } from "../../config/types";
+import { Phase, Task } from "../../config/types";
 import AddIcon from "@mui/icons-material/Add";
 import RectangularButton from "../RectangularButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -27,6 +27,10 @@ import {
 import DraggableTask from "./DraggableTask";
 import { orderBy } from "lodash";
 import AddTask from "./AddTask";
+import useSWR from "swr";
+import Loading from "../Loading";
+import axios from "axios";
+import { PlannerContext } from "./PlannerContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,33 +94,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const data = [
-  {
-    id: 1,
-    name: "Zadanie 1",
-    order: 1,
-    status: TASK_STATUS.BACKLOG,
-  },
-  {
-    id: 2,
-    name: "Etap 2",
-    order: 2,
-    status: TASK_STATUS.BACKLOG,
-  },
-  {
-    id: 3,
-    name: "Etap 3",
-    order: 4,
-    status: TASK_STATUS.BACKLOG,
-  },
-  {
-    id: 4,
-    name: "Etap 4",
-    order: 3,
-    status: TASK_STATUS.BACKLOG,
-  },
-];
-
 interface TasksListProps {
   phase: Phase;
 }
@@ -133,11 +110,26 @@ const reorder = (
   return result;
 };
 
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
 export default function TasksList({ phase }: TasksListProps) {
   const classes = useStyles();
-  const [filtrList, setFiltrList] = useState<"all" | "undone" | "done">("all");
-  const [localItems, setLocalItems] = useState<Array<Task>>(data.sort());
+  const [filtrList, setFiltrList] = useState<number>(1);
   const [openTaskAdd, setOpenTaskAdd] = useState<boolean>(false);
+
+  const { todoOptions } = useContext(PlannerContext);
+  const {
+    data: tasks,
+    mutate,
+    error: errorTask,
+  } = useSWR(`api/task/${phase.id}`, fetcher) as {
+    data: Task[];
+    mutate: any;
+    error: any;
+  };
+  console.log(tasks);
+
+  const [localItems, setLocalItems] = useState<Array<Task>>(tasks || []);
 
   const handleDragEnd = (result: DropResult, provided?: ResponderProvided) => {
     if (!result.destination) {
@@ -150,7 +142,7 @@ export default function TasksList({ phase }: TasksListProps) {
 
     setLocalItems((_) => {
       if (!result.destination) {
-        return data;
+        return tasks;
       }
 
       const items = reorder(
@@ -162,9 +154,37 @@ export default function TasksList({ phase }: TasksListProps) {
     });
   };
 
+  if (errorTask)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          margin: "32px",
+        }}
+      >
+        Nie można pobrać danych. Odśwież stronę.
+      </Box>
+    );
+  if (!tasks || !todoOptions)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          margin: "32px",
+        }}
+      >
+        <Loading />
+      </Box>
+    );
+
   return (
     <div className={classes.container}>
-      <AddTask open={openTaskAdd} handleClose={() => setOpenTaskAdd(false)} />
+      <AddTask
+        open={openTaskAdd}
+        handleClose={() => setOpenTaskAdd(false)}
+        update={mutate}
+        phase={phase}
+      />
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4" color="primary">
           {phase.name}
@@ -196,43 +216,24 @@ export default function TasksList({ phase }: TasksListProps) {
             justifyContent: "center",
           }}
         >
-          <RectangularButton
-            className={
-              classes.btn +
-              " " +
-              ("all" != filtrList && classes.btnInactiveWithBorder)
-            }
-            size="large"
-            onClick={() => setFiltrList("all")}
-          >
-            Wszystkie
-          </RectangularButton>
-          <RectangularButton
-            className={
-              classes.btn +
-              " " +
-              ("undone" != filtrList && classes.btnInactiveWithBorder)
-            }
-            size="large"
-            onClick={() => setFiltrList("undone")}
-          >
-            Niezrobione
-          </RectangularButton>
-          <RectangularButton
-            className={
-              classes.btn +
-              " " +
-              ("done" != filtrList && classes.btnInactiveWithBorder)
-            }
-            size="large"
-            onClick={() => setFiltrList("done")}
-          >
-            Zrobione
-          </RectangularButton>
+          {todoOptions.map((elem) => (
+            <RectangularButton
+              key={elem.key}
+              className={
+                classes.btn +
+                " " +
+                (elem.key != filtrList && classes.btnInactiveWithBorder)
+              }
+              size="large"
+              onClick={() => setFiltrList(elem.key)}
+            >
+              {elem.value}
+            </RectangularButton>
+          ))}
         </ButtonGroup>
       </Box>
       <List>
-        {!data && (
+        {!tasks && (
           <Typography color="gray">
             W tym etapie nie ma żadnych zadań.
           </Typography>
@@ -244,7 +245,7 @@ export default function TasksList({ phase }: TasksListProps) {
                 {...droppableProvided.droppableProps}
                 ref={droppableProvided.innerRef}
               >
-                {localItems.sort().map((task, index) => (
+                {tasks.sort().map((task, index) => (
                   <DraggableTask key={task.order} task={task} index={index} />
                 ))}
                 {droppableProvided.placeholder}

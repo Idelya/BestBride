@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Draggable,
@@ -17,11 +17,13 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { Phase, Task, TASK_STATUS } from "../../config/types";
+import { Phase, Task } from "../../config/types";
 import AddIcon from "@mui/icons-material/Add";
 import RectangularButton from "../RectangularButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TaskDetails from "../TaskDetails";
+import { getValue } from "../../config/helpers";
+import { PlannerContext } from "./PlannerContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -92,7 +94,8 @@ interface DraggableTaskProps {
 
 export default function DraggableTask({ task, index }: DraggableTaskProps) {
   const classes = useStyles();
-  console.log(task);
+
+  const { todoOptions } = useContext(PlannerContext);
   return (
     <Draggable draggableId={task.order.toString()} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
@@ -118,7 +121,7 @@ export default function DraggableTask({ task, index }: DraggableTaskProps) {
                   variant="subtitle1"
                   className={classes.spacing}
                 >
-                  {task.status}
+                  {getValue(todoOptions || [], task.status)}
                 </Typography>
               </div>
             </AccordionSummary>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
@@ -11,6 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Task } from "../config/types";
+import { formatDate, formatDateWithHour, getValue } from "../config/helpers";
+import { PlannerContext } from "./PlannerPage/PlannerContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,6 +34,9 @@ interface TaskProps {
 }
 export default function TaskDetails({ task }: TaskProps) {
   const classes = useStyles();
+  console.log(task);
+
+  const { todoOptions } = useContext(PlannerContext);
   return (
     <Grid container columnSpacing={15}>
       <Grid item md={6}>
@@ -40,7 +45,7 @@ export default function TaskDetails({ task }: TaskProps) {
             Status:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {task.status}
+            {getValue(todoOptions || [], task.status)}
           </Typography>
         </div>
         <div className={classes.inline}>
@@ -48,7 +53,7 @@ export default function TaskDetails({ task }: TaskProps) {
             Termin:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {task.date || "Brak"}
+            {task.date ? formatDateWithHour(new Date(task.date)) : "Brak"}
           </Typography>
         </div>
         <div className={classes.inline}>
@@ -56,7 +61,7 @@ export default function TaskDetails({ task }: TaskProps) {
             Przypisano:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {task.assignedTo || "Brak"}
+            {task.assigned?.name || task?.assigned?.email || "Brak"}
           </Typography>
         </div>
       </Grid>
@@ -64,7 +69,7 @@ export default function TaskDetails({ task }: TaskProps) {
       <Grid item md={5}>
         <div className={classes.block}>
           <Typography color="GrayText" variant="subtitle1">
-            Link do wydatku:
+            Wydatki:
           </Typography>
           <Typography color="primary" variant="subtitle1">
             <List>
@@ -86,7 +91,7 @@ export default function TaskDetails({ task }: TaskProps) {
             Uwagi:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {task.remarks || "Brak"}
+            {task.additionalInfo || "Brak"}
           </Typography>
         </div>
       </Grid>
