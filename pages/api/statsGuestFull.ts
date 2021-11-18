@@ -8,7 +8,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = cookies.get("jwt");
 
   try {
-    const response = await request.get("api/ggwithguests", {
+    const response = await request.get("api/stat/guestfull", {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
 

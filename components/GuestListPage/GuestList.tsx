@@ -98,7 +98,6 @@ export default function GuestList({
   error: boolean;
 }) {
   const classes = useStyles();
-  console.log(data);
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
 
   const { statusOptions } = useContext(GuestContext);

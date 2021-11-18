@@ -5,6 +5,8 @@ import { Grid, Theme, Typography } from "@mui/material";
 import img from "../../public/img/guestList.jpg";
 import Heading from "../Heading";
 import DecorationTypography from "../DecorationTypography";
+import axios from "axios";
+import useSWR from "swr";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
     summary: {
       display: "flex",
       justifyContent: "center",
-      textAlign: "center",
       flexDirection: "column",
     },
     spacing: {
@@ -49,40 +50,44 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const summarry = [
-  {
-    name: "Potwierdzone:",
-    value: 68,
-    color: "#000000",
-  },
-  {
-    name: "Zaproszone:",
-    value: 130,
-    color: "#64150F",
-  },
-  {
-    name: "Wszystkie:",
-    value: 253,
-    color: "#E19A80",
-  },
-  {
-    name: "Oczekujące:",
-    value: 37,
-    color: "#6F6F6F",
-  },
-];
+const summarry = ["#000000", "#64150F", "#E19A80", "#6F6F6F"];
+
+const statsNames = {
+  allGuests: "Wszyscy goście",
+  children: "Dzieci",
+  confirmed: "Potwierdzeni goście",
+  invited: "Zaproszeni goście",
+  planned: "Planowani goście",
+};
+
+interface StatsBasic {
+  allGuests: string;
+  children: string;
+  confirmed: string;
+  invited: string;
+  planned: string;
+}
+
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function Banner() {
   const classes = useStyles();
+  const { data: stats } = useSWR("api/statsGuestBasic", fetcher) as {
+    data: StatsBasic;
+    mutate: any;
+    error: any;
+  };
+
   return (
     <Grid container className={classes.container}>
       <Grid item md={5} className={classes.summary}>
-        {summarry.map((elem, i) => (
+        {Object.keys(stats || {}).map((elem, i) => (
           <Typography
             key={i}
-            sx={{ color: elem.color }}
+            sx={{ color: summarry[i % summarry.length] }}
             variant="h5"
             className={classes.spacing}
-          >{`${elem.name} ${elem.value}`}</Typography>
+            //@ts-ignore
+          >{`${statsNames[elem]}: ${stats[elem]}`}</Typography>
         ))}
       </Grid>
       <Grid item className={classes.headingBox} md={7}>

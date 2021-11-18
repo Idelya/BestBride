@@ -84,11 +84,9 @@ export default function ExpenseAdd({
     validationSchema: expenseSchemaValidation,
     onSubmit: async (values) => {
       const data = !deadline ? values : { ...values, finalDate: deadline };
-      console.log(data, !deadline);
       const dataWithDates = !paymentDate
         ? data
         : { ...data, paymentDate: paymentDate };
-      console.log(dataWithDates, !paymentDate);
       try {
         const x = await axios.post("/api/expenseAdd", dataWithDates);
         if (x.data) {

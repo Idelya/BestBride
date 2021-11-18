@@ -66,6 +66,7 @@ export default function GuestSection() {
     mutate: any;
     error: any;
   };
+  console.log(groupsData);
 
   const [filtredGuests, setFiltredGuests] = useState<Group[]>([
     {
@@ -88,7 +89,6 @@ export default function GuestSection() {
   }, [updateGroups, addGroup, groupsData]);
 
   useEffect(() => {
-    console.log("update guests", guests);
     if (groups) {
       setFiltredGuests(groupsData);
     } else {
@@ -100,8 +100,6 @@ export default function GuestSection() {
       ]);
     }
   }, [groups, groupsData, guests]);
-
-  console.log("searchGuests", searchGuests);
 
   return (
     <section className={classes.main}>
@@ -140,38 +138,24 @@ export default function GuestSection() {
             </Button>
           )}
         </div>
-        <ButtonGroup variant="text" aria-label="switch to group">
-          <Button
-            className={classes.btn + " " + (groups && classes.btnInactive)}
-            onClick={() => setGroups(false)}
-          >
-            Goście
-          </Button>
-          <Button
-            className={classes.btn + " " + (!groups && classes.btnInactive)}
-            onClick={() => setGroups(true)}
-          >
-            Grupy
-          </Button>
-        </ButtonGroup>
         <ButtonGroup aria-label="switch to my list">
           <RectangularButton
             className={
-              classes.btn + " " + (smallList && classes.btnInactiveWithBorder)
+              classes.btn + " " + (groups && classes.btnInactiveWithBorder)
             }
             size="large"
-            onClick={() => setSmallList(false)}
+            onClick={() => setGroups(false)}
           >
-            Wszyscy goście
+            Goście
           </RectangularButton>
           <RectangularButton
             className={
-              classes.btn + " " + (!smallList && classes.btnInactiveWithBorder)
+              classes.btn + " " + (!groups && classes.btnInactiveWithBorder)
             }
             size="large"
-            onClick={() => setSmallList(true)}
+            onClick={() => setGroups(true)}
           >
-            Moja lista gości
+            Grupy
           </RectangularButton>
         </ButtonGroup>
       </div>

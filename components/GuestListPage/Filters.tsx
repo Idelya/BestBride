@@ -80,8 +80,6 @@ export default function Filters({
   filtredGuests: Group[];
 }) {
   const classes = useStyles();
-  console.log(guests, filtredGuests);
-
   const { genderOptions, dietsOptions, statusOptions } =
     useContext(GuestContext);
 
@@ -92,7 +90,6 @@ export default function Filters({
   };
 
   const handleSubmitFilters = (values: ValuesTypes) => {
-    console.log(values.status);
     const filtr = guests
       .map((groups) => {
         return {

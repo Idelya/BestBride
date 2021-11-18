@@ -17,7 +17,6 @@ export default function Search({
   const [search, setSearch] = React.useState("");
 
   React.useEffect(() => {
-    console.log("search", list, search);
     if (!!list) {
       handleChange(
         list.filter((obj: any) =>

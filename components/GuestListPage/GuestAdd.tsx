@@ -74,13 +74,11 @@ export default function GuestAdd({
     onSubmit: async (values) => {
       const { guestsGroupGuests, ...formData } = values;
       const guest = !!partner ? { ...formData, partner: partner } : formData;
-      console.log(guest);
       try {
         const x = await axios.post("/api/guestAdd", {
           ...guest,
           surname: "",
         });
-        console.log(formData);
         if (x.data) {
           store.addNotification({
             title: "Success",

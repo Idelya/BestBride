@@ -56,7 +56,6 @@ export default function Expenses() {
     error: any;
   };
 
-  console.log(expenses);
   /*const groupedExpenses = useMemo(() => {
     if (expenses) {
       const sorted = planned

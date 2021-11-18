@@ -108,12 +108,12 @@ export default function GroupAdd({ open, handleClose, guests }: GuestAddProps) {
     onSubmit: async (values) => {
       try {
         const x = await axios.post("/api/groupAdd", values);
-        console.log(values);
+        console.log(values, x);
         if (x.data) {
           handleClose();
           store.addNotification({
             title: "Success",
-            message: "Dodano nowego gościa.",
+            message: "Dodano nową grupę.",
             type: "success",
             insert: "top",
             container: "bottom-center",
