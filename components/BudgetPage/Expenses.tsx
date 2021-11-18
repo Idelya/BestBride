@@ -56,24 +56,45 @@ export default function Expenses() {
     error: any;
   };
 
-  /*const groupedExpenses = useMemo(() => {
+  const groupedExpenses = useMemo(() => {
     if (expenses) {
       const sorted = planned
-        ? expenses.sort((a, b) => new Date(a.finalDate) - new Date(b.finalDate))
-        : expenses.sort(
-            (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
-          );
-      console.log(sorted);
+        ? expenses
+            .filter((exp) => exp.price > exp.paid)
+            .sort((a, b) =>
+              a.finalDate && b.finalDate
+                ? new Date(a.finalDate).getTime() -
+                  new Date(b.finalDate).getTime()
+                : 0
+            )
+        : expenses
+            .filter((exp) => exp.price <= exp.paid)
+            .sort((a, b) =>
+              b.paymentDate && a.paymentDate
+                ? new Date(b.paymentDate).getTime() -
+                  new Date(a.paymentDate).getTime()
+                : 0
+            );
       const grouped = planned
-        ? groupBy((e) => formatDate(e.finalDate))
-        : groupBy((e) => formatDate(e.paymentDate));
-
-      console.log(grouped);
-      return sorted;
+        ? groupBy(sorted, (e) =>
+            e.finalDate ? formatDate(new Date(e.finalDate)) : "Nieznana data"
+          )
+        : groupBy(sorted, (e) =>
+            e.paymentDate
+              ? formatDate(new Date(e.paymentDate))
+              : "Nieznana data"
+          );
+      const toArray = Object.keys(grouped).map((key) => {
+        return {
+          date: key,
+          list: grouped[key],
+        };
+      });
+      return toArray;
     } else {
-      return null;
+      return [];
     }
-  }, [expenses]);*/
+  }, [expenses, planned]);
 
   if (errorExpenses)
     return (
@@ -128,7 +149,7 @@ export default function Expenses() {
           </Button>
         </Grid>
         <Grid item md={12}>
-          <ExpensesList data={[]} />
+          <ExpensesList data={groupedExpenses} />
         </Grid>
       </Grid>
     </div>

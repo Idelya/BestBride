@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
       width: "100%",
+      minHeight: "100vh",
+      margin: theme.spacing(5, 0),
     },
     listItem: {
       margin: theme.spacing(2, 0),
@@ -49,18 +51,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ExpensesListProps {
   data: {
-    date: Date;
+    date: string;
     list: Expense[];
   }[];
 }
+
 export default function ExpensesList({ data }: ExpensesListProps) {
   const classes = useStyles();
+
+  if (data.length === 0) {
+    return (
+      <div className={classes.list}>
+        <Typography>Nie ma tutaj jeszcze żadnych wydatków</Typography>
+      </div>
+    );
+  }
 
   return (
     <div className={classes.list}>
       {data.map((ele) => (
         <>
-          <Typography>{formatDate(ele.date)}</Typography>
+          <Typography variant="h5" color="secondary">
+            {ele.date}
+          </Typography>
           <List>
             {ele.list.map((expense) => (
               <Accordion

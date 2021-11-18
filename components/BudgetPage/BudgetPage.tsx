@@ -5,6 +5,9 @@ import SummarySection from "./SummarySection";
 import { Container } from "@mui/material";
 import Expenses from "./Expenses";
 import { ExpenseContext } from "./ExpenseContext";
+import useSWR from "swr";
+import request from "../../config/requests";
+import { ExpenseCategory } from "../../config/types";
 
 const useStyles = makeStyles({
   root: {
@@ -12,13 +15,20 @@ const useStyles = makeStyles({
   },
 });
 
+const fetcher = (url: string) => request.get(url).then((res) => res.data);
+
 export default function BudgetPage() {
   const classes = useStyles();
+
+  const { data: expenseOptions } = useSWR("api/expensescategory", fetcher) as {
+    data: ExpenseCategory[];
+  };
+  console.log(expenseOptions);
 
   return (
     <ExpenseContext.Provider
       value={{
-        expenseOptions: [],
+        expenseOptions: expenseOptions || [],
       }}
     >
       <div>
