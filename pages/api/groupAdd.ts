@@ -11,7 +11,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const response = await request.post("api/gg", body, {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
-    console.log(response);
 
     return res.status(200).json({ data: response.data });
   } catch (e: any) {

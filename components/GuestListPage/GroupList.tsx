@@ -95,7 +95,6 @@ export default function GroupList({
   data: Group[];
   error: boolean;
 }) {
-  console.log(data);
   const classes = useStyles();
   const [showGroup, setShowGroup] = useState<Group | undefined>();
   const [showGuest, setShowGuest] = useState<Guest | undefined>();

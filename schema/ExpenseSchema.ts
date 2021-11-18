@@ -6,10 +6,8 @@ export const initialValues = {
   paymentDate: undefined,
   finalDate: undefined,
   paid: 0,
-  expensesCategory: undefined,
+  category: undefined,
   additionalInfo: "",
-  service: undefined,
-  toDo: undefined,
 };
 
 export const expenseSchemaValidation: any = yup.object({
@@ -19,8 +17,6 @@ export const expenseSchemaValidation: any = yup.object({
   paymentDate: yup.date(),
   finalDate: yup.date(),
   status: yup.string(),
-  expensesCategory: yup.string(),
+  category: yup.string(),
   additionalInfo: yup.string(),
-  service: yup.number(),
-  toDo: yup.number(),
 });

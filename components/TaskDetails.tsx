@@ -34,7 +34,6 @@ interface TaskProps {
 }
 export default function TaskDetails({ task }: TaskProps) {
   const classes = useStyles();
-  console.log(task);
 
   const { todoOptions } = useContext(PlannerContext);
   return (

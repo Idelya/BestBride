@@ -127,7 +127,6 @@ export default function TasksList({ phase }: TasksListProps) {
     mutate: any;
     error: any;
   };
-  console.log(tasks);
 
   const [localItems, setLocalItems] = useState<Array<Task>>(tasks || []);
 

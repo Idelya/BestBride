@@ -21,7 +21,6 @@ export default function SearchInGroup({
     if (!!list) {
       handleChange(
         list.map((group) => {
-          console.log(group.guests);
           return {
             name: group.name,
             guests: group.guests.filter((obj: any) =>

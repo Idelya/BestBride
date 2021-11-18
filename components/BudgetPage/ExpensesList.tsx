@@ -19,7 +19,7 @@ import { Expense } from "../../config/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpenseDetails from "./ExpenseDetails";
 import { useRouter } from "next/dist/client/router";
-import { formatDate } from "../../config/helpers";
+import { formatDate, getDiffInHours } from "../../config/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,10 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
     summary: {
       border: "1px solid " + theme.palette.primary.main,
       boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-      "& div": {
+      "& >div": {
         display: "flex",
         justifyContent: "space-between",
       },
+    },
+    deadlineBox: {
+      boxShadow: "rgba(255, 0, 0, 0.50) 0px 0px 5px 0px inset",
     },
     details: {},
     spacing: {
@@ -45,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     box: {
       width: "250px",
+      display: "flex",
     },
   })
 );
@@ -66,7 +70,6 @@ export default function ExpensesList({ data }: ExpensesListProps) {
       </div>
     );
   }
-
   return (
     <div className={classes.list}>
       {data.map((ele) => (
@@ -75,34 +78,45 @@ export default function ExpensesList({ data }: ExpensesListProps) {
             {ele.date}
           </Typography>
           <List>
-            {ele.list.map((expense) => (
-              <Accordion
-                key={expense.id}
-                className={classes.listItem}
-                id={"expense-" + expense.id}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  className={classes.summary}
+            {ele.list.map((expense) => {
+              const isdeadline =
+                !!expense.finalDate &&
+                expense.price > expense.paid &&
+                getDiffInHours(new Date(), new Date(expense.finalDate)) <= 24;
+              return (
+                <Accordion
+                  key={expense.id}
+                  className={classes.listItem}
+                  id={"expense-" + expense.id}
                 >
-                  <Typography color="primary" variant="h6">
-                    {expense.name}
-                  </Typography>
-                  <div className={classes.box}>
-                    <Typography
-                      color="primary"
-                      variant="subtitle1"
-                      className={classes.spacing}
-                    >
-                      {`${expense.paid}/${expense.price}`}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    className={
+                      classes.summary +
+                      " " +
+                      (isdeadline ? classes.deadlineBox : "")
+                    }
+                  >
+                    <Typography color="primary" variant="h6">
+                      {expense.name}
                     </Typography>
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails className={classes.details}>
-                  <ExpenseDetails expense={expense} />
-                </AccordionDetails>
-              </Accordion>
-            ))}
+                    <div className={classes.box}>
+                      <Typography
+                        color="primary"
+                        variant="subtitle1"
+                        className={classes.spacing}
+                      >
+                        {`${expense.paid}/${expense.price}`}
+                      </Typography>
+                      {isdeadline && <Typography color="error">!</Typography>}
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails className={classes.details}>
+                    <ExpenseDetails expense={expense} />
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
           </List>
         </>
       ))}

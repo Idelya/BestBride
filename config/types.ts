@@ -53,7 +53,7 @@ export type Expense = {
   paymentDate?: Date;
   finalDate?: Date;
   paid: number;
-  expensesCategory: string;
+  category: number;
   additionalInfo?: string;
   service?: number;
   toDo?: number;

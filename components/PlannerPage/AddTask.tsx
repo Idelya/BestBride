@@ -138,15 +138,6 @@ export default function AddTask({
           ? { ...formData, expenses: expenseInList.map((exp) => exp.id) }
           : formData;
       try {
-        console.log(
-          {
-            ...taskWithExp,
-            order: 0,
-            date: value,
-          },
-          formData,
-          values
-        );
         const x = await axios.post("/api/taskAdd", {
           ...taskWithExp,
           order: 0,

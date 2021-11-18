@@ -213,24 +213,21 @@ export default function ExpenseAdd({
             </div>
           </Grid>
           <Grid item xs={12} md={6} pr={8} pl={8}>
-            <div className={classes.inline}>
+            <div className={classes.block}>
               <Typography component="label" variant="h6">
                 Kategoria:
               </Typography>
               <TextField
-                id="type"
-                name="type"
+                id="category"
+                name="category"
                 size="small"
-                value={formik.values.expensesCategory}
+                select
+                value={formik.values.category}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.expensesCategory &&
-                  Boolean(formik.errors.expensesCategory)
+                  formik.touched.category && Boolean(formik.errors.category)
                 }
-                helperText={
-                  formik.touched.expensesCategory &&
-                  formik.errors.expensesCategory
-                }
+                helperText={formik.touched.category && formik.errors.category}
               >
                 {(expenseOptions || []).map((e, i) => (
                   <MenuItem key={i} value={e.id}>
@@ -242,7 +239,7 @@ export default function ExpenseAdd({
             <div className={classes.inline}>
               <Typography variant="h6">Zadanie:</Typography>
               <Autocomplete
-                id="toDoe"
+                id="toDo"
                 options={[]}
                 onChange={formik.handleChange}
                 includeInputInList

@@ -46,7 +46,6 @@ export default function Offer({
   const classes = useStyles();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-  console.log(convertToRaw(editorState.getCurrentContent()).blocks);
   return (
     <div className={classes.content}>
       <div

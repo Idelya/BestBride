@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useMemo } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Divider from "../Divider";
 import Image from "next/image";
@@ -14,7 +14,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import btnImg from "../../public/btn.png";
 import { Expense } from "../../config/types";
-import { formatDateWithHour } from "../../config/helpers";
+import {
+  formatDate,
+  formatDateWithHour,
+  getDiffInHours,
+  getValueFromExpenseCategory,
+} from "../../config/helpers";
+import { ExpenseContext } from "./ExpenseContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +51,22 @@ interface ExpenseDetails {
 }
 export default function ExpenseDetails({ expense }: ExpenseDetails) {
   const classes = useStyles();
+
+  const { expenseOptions } = useContext(ExpenseContext);
+  console.log(
+    getDiffInHours(
+      new Date(),
+      expense.finalDate ? new Date(expense.finalDate) : new Date()
+    )
+  );
+  const isDeadline = useMemo(() => {
+    return (
+      !!expense.finalDate &&
+      expense.price > expense.paid &&
+      getDiffInHours(new Date(), new Date(expense.finalDate)) <= 24
+    );
+  }, [expense.finalDate, expense.paid, expense.price]);
+
   return (
     <Grid className={classes.details} container columnSpacing={15}>
       <Grid item md={6}>
@@ -76,10 +98,16 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
           </Typography>
         </div>
         <div className={classes.inline}>
-          <Typography color="GrayText" variant="subtitle1">
+          <Typography
+            color={isDeadline ? "error" : "GrayText"}
+            variant="subtitle1"
+          >
             Ostateczny termin zapłaty:
           </Typography>
-          <Typography color="primary" variant="subtitle1">
+          <Typography
+            color={isDeadline ? "error" : "primary"}
+            variant="subtitle1"
+          >
             {expense.finalDate &&
             new Date(expense.finalDate).getFullYear() > 1000
               ? formatDateWithHour(new Date(expense.finalDate))
@@ -91,7 +119,10 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
             Typ wydatku:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {expense.expensesCategory || "Brak"}
+            {getValueFromExpenseCategory(
+              expenseOptions || [],
+              expense.category
+            )}
           </Typography>
         </div>
       </Grid>

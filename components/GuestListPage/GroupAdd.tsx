@@ -91,7 +91,6 @@ interface GuestAddProps {
   guests: Guest[];
 }
 export default function GroupAdd({ open, handleClose, guests }: GuestAddProps) {
-  console.log(guests);
   const classes = useStyles();
   const [guestInList, setGuestInList] = useState<Guest[]>([]);
   const searchableGuests = useMemo(
@@ -108,7 +107,6 @@ export default function GroupAdd({ open, handleClose, guests }: GuestAddProps) {
     onSubmit: async (values) => {
       try {
         const x = await axios.post("/api/groupAdd", values);
-        console.log(values, x);
         if (x.data) {
           handleClose();
           store.addNotification({

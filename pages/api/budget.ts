@@ -6,15 +6,15 @@ import request from "../../config/requests";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const cookies = new Cookies(req, res);
   const token = cookies.get("jwt");
-  const { body } = req;
+
   try {
-    const response = await request.post("api/guest", body, {
+    const response = await request.get("api/stat/budget", {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
 
-    return res.status(200).json({ data: response.data });
+    return res.status(200).json(response.data);
   } catch (e: any) {
-    return res.status(400).json({
+    return res.status(401).json({
       status: "fail",
       response: e.response.data,
     });

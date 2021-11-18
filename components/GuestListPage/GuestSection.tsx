@@ -66,7 +66,6 @@ export default function GuestSection() {
     mutate: any;
     error: any;
   };
-  console.log(groupsData);
 
   const [filtredGuests, setFiltredGuests] = useState<Group[]>([
     {

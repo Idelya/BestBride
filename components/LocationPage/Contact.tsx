@@ -42,7 +42,6 @@ export default function Contact({
   const [anchor, setAnchor] = useState<[number, number]>([
     51.10984671890034, 17.032411219787605,
   ]);
-  console.log(anchor);
   return (
     <Grid container className={classes.container}>
       <Grid item md={6}></Grid>
