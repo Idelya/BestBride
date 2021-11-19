@@ -89,11 +89,16 @@ export type RoleType = "user" | "admin" | "firm";
 export type ServiceStatusType = "Wersja robocza";
 
 export type Service = {
-  id: number;
-  img: string;
-  status: ServiceStatusType;
-  name: string;
-  offer: string;
+  id?: number;
+  img?: string;
+  status?: ServiceStatusType;
+  name?: string;
+  details?: string;
+  styledDetails?: string;
+  rejectionDetails?: string;
+  fileLink?: string;
+  expenseId?: number;
+  category?: number;
 };
 
 export type Option = {

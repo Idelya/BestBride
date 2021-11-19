@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Button,
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { Service, ServiceStatusType } from "../../config/types";
 import { Map, Marker, Draggable, ZoomControl } from "pigeon-maps";
+import { ServiceContext } from "./ServiceContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,36 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-export default function Contact({
-  service,
-  mode = "view",
-}: {
-  service: Service;
-  mode?: "view" | "edit";
-}) {
+export default function Contact() {
   const classes = useStyles();
-  const [anchor, setAnchor] = useState<[number, number]>([
-    51.10984671890034, 17.032411219787605,
-  ]);
+
+  const { mode } = useContext(ServiceContext);
   return (
     <Grid container className={classes.container}>
       <Grid item md={6}></Grid>
-      <Grid item md={6}>
-        <Map
-          height={300}
-          defaultCenter={[51.10984671890034, 17.032411219787605]}
-          defaultZoom={11}
-        >
-          <ZoomControl />
-          {mode === "edit" ? (
-            <Draggable anchor={anchor} onDragEnd={setAnchor}>
-              <Marker width={50} color={"#64150F"} anchor={anchor} />
-            </Draggable>
-          ) : (
-            <Marker width={50} color={"#64150F"} anchor={anchor} />
-          )}
-        </Map>
-      </Grid>
     </Grid>
   );
 }

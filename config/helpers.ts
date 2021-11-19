@@ -39,3 +39,13 @@ export const formatDate = (date: Date) => {
   const month = `${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}`;
   return `${date.getFullYear()}-${month}-${day}`;
 };
+
+export const blockToText = (content: any) => {
+  if (content) {
+    let toStr = "";
+    for (var i = 0; i < content.blocks.length; i++) {
+      toStr += content.blocks[i].text + " ";
+    }
+    return toStr;
+  }
+};

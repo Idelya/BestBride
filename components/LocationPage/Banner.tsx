@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import startCompanies from "../../public/img/startCompanies.jpg";
@@ -10,6 +10,7 @@ import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
 import { Service } from "../../config/types";
+import { ServiceContext } from "./ServiceContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,14 +52,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Banner({
-  service,
-  mode = "view",
-}: {
-  service: Service;
-  mode?: "view" | "edit";
-}) {
+export default function Banner() {
   const classes = useStyles();
+
+  const { mode, currentService } = useContext(ServiceContext);
   return (
     <div className={classes.banner}>
       <div className={classes.content}>
@@ -68,7 +65,7 @@ export default function Banner({
           </Typography>
         </Link>
         <Typography variant="h3" color="primary">
-          {service.name}
+          {currentService?.name || ""}
         </Typography>
         <br />
         <Typography variant="h6" color="GrayText">
@@ -82,7 +79,14 @@ export default function Banner({
         </Typography>
       </div>
       <div className={classes.img}>
-        <Image src={service.img} alt="" layout="fill" objectFit="cover" />
+        {currentService?.img && (
+          <Image
+            src={currentService?.img}
+            alt=""
+            layout="fill"
+            objectFit="cover"
+          />
+        )}
       </div>
     </div>
   );
