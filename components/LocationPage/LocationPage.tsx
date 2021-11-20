@@ -110,7 +110,7 @@ export default function LocationPage() {
   const { data: categories } = useSWR("api/expensescategory", fetcher) as {
     data: ExpenseCategory[];
   };
-  console.log(categories);
+
   return (
     <ServiceContext.Provider
       value={{
