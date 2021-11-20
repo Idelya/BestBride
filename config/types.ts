@@ -99,6 +99,24 @@ export type Service = {
   fileLink?: string;
   expenseId?: number;
   category?: number;
+  contact?: Contact;
+  address?: Address;
+};
+
+export type Contact = {
+  email?: string;
+  phone?: string;
+  url?: string;
+  details?: string;
+};
+
+export type Address = {
+  country?: string;
+  city?: string;
+  region?: string;
+  street?: string;
+  streetNumber?: string;
+  streetNumber2?: string;
 };
 
 export type Option = {
