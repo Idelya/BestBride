@@ -23,6 +23,8 @@ import {
 import { flexbox } from "@mui/system";
 import RectangularButton from "../RectangularButton";
 import UploadImage from "../UploadFiles";
+import SETTINGS from "../../config/settings";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,13 +71,27 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function ProfilSection() {
   const classes = useStyles();
   const [image, setImage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const formik = useFormik({
     initialValues: initialValues,
-    validationSchema: profilSchemaValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      if (!file) {
+        return;
+      }
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", SETTINGS.upload_preset || "");
+      data.append("cloud_name", SETTINGS.cloud_name || "");
+      fetch(SETTINGS.cloud_link || "", { method: "post", body: data })
+        .then((resp) => resp.json())
+        .then((data) => {
+          setImage(data.url);
+        })
+        .catch((err) => console.log(err));
+      console.log(image);
     },
   });
+  console.log(image);
   return (
     <Container component="section" id="profil">
       <Divider>Profil</Divider>
@@ -97,7 +113,12 @@ export default function ProfilSection() {
                 <AccountBoxIcon sx={{ color: "#C0C0C0" }} fontSize="large" />
               )}
             </div>
-            <UploadImage onImageChange={setImage} />
+            <UploadImage
+              onImageChange={(url, file) => {
+                setImage(url);
+                setFile(file);
+              }}
+            />
           </div>
           <div className={classes.fields}>
             <TextField
