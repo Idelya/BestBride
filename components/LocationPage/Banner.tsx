@@ -235,9 +235,9 @@ export default function Banner() {
         )}
       </div>
       <div className={classes.img}>
-        {currentService?.img && (
+        {currentService?.fileLink && (
           <Image
-            src={currentService?.img}
+            src={currentService?.fileLink}
             alt=""
             layout="fill"
             objectFit="cover"

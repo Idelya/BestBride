@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Button,
@@ -9,37 +10,32 @@ import {
   CardMedia,
   Container,
   Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Theme,
   Typography,
 } from "@mui/material";
 import { ServiceStatusType } from "../../config/types";
 import ImageGallery from "react-image-gallery";
-
-const location = {
-  id: 1,
-  img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1974&q=80",
-  status: "Wersja robocza" as ServiceStatusType,
-  name: "Sklep 1",
-  offer: "",
-};
-
-const images = [
-  {
-    original: "https://picsum.photos/id/1018/1000/600/",
-    thumbnail: "https://picsum.photos/id/1018/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1015/1000/600/",
-    thumbnail: "https://picsum.photos/id/1015/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1019/1000/600/",
-    thumbnail: "https://picsum.photos/id/1019/250/150/",
-  },
-];
+import { ServiceContext } from "./ServiceContext";
+import UploadImage from "../UploadFiles";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    media: {
+      height: "200px",
+      width: "300px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+      "& > div": {
+        width: "100%",
+      },
+    },
     container: {
       margin: theme.spacing(5, 0),
       "& .image-gallery-thumbnail.active": {
@@ -56,9 +52,79 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function Gallery() {
   const classes = useStyles();
+
+  const { mode, currentService, setService } = useContext(ServiceContext);
   return (
     <div className={classes.container}>
-      <ImageGallery items={images} />
+      {mode === "edit" ? (
+        <List>
+          <Typography>
+            Dodawaj i usuwaj zdjęcia w sowjej galerii. Maksymalnie możesz
+            załadować 5 zdjęć. Jeżeli nie chcesz mieć zdjęć na swojej stronie,
+            wystarczy, że nie dodasz żadnego zdjęcia, a sekcja ta zostanie
+            ukryta.
+          </Typography>
+          <Typography>
+            Dodaj zdjęcie:
+            <UploadImage
+              onImageChange={(img) =>
+                setService({
+                  ...currentService,
+                  images: (currentService?.images
+                    ? currentService.images.concat([img])
+                    : [img]) as string[],
+                })
+              }
+            />
+          </Typography>
+
+          {currentService?.images &&
+            currentService?.images.map((link, i) => (
+              <ListItem
+                key={i}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() =>
+                      setService({
+                        ...currentService,
+                        images: (currentService.images || []).filter(
+                          (o) => o != link
+                        ),
+                      })
+                    }
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <div className={classes.media}>
+                  <Image
+                    className={classes.media}
+                    src={link}
+                    alt="gallery_img"
+                    layout="responsive"
+                    width={250}
+                    height={100}
+                    objectFit="contain"
+                  />
+                </div>
+              </ListItem>
+            ))}
+        </List>
+      ) : (
+        <ImageGallery
+          items={
+            currentService?.images?.map((link) => {
+              return {
+                original: link,
+                thumbnail: link,
+              };
+            }) || []
+          }
+        />
+      )}
     </div>
   );
 }

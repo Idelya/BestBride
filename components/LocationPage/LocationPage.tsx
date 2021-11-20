@@ -31,7 +31,8 @@ import { ServiceContext } from "./ServiceContext";
 
 const location = {
   id: 1,
-  img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1974&q=80",
+  fileLink:
+    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1974&q=80",
   status: "Wersja robocza" as ServiceStatusType,
   name: "Nowa usługa",
   category: 1,
@@ -51,12 +52,18 @@ const location = {
     streetNumber: "",
     streetNumber2: "",
   },
+  images: [
+    "https://picsum.photos/id/1018/1000/600/",
+    "https://picsum.photos/id/1015/1000/600/",
+    "https://picsum.photos/id/1019/1000/600/",
+  ],
 };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {},
     controls: {
+      zIndex: 5,
       position: "fixed",
       right: 0,
       top: "50%",
@@ -133,8 +140,12 @@ export default function LocationPage() {
           </div>
           <Divider>Oferta</Divider>
           <Offer />
-          <Divider textAlign="right">Galeria</Divider>
-          <Gallery />
+          {(mode === "edit" || currentService?.images) && (
+            <>
+              <Divider textAlign="right">Galeria</Divider>
+              <Gallery />
+            </>
+          )}
           <Divider>Kontakt</Divider>
           <Contact />
         </Container>

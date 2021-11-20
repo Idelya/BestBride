@@ -101,6 +101,7 @@ export type Service = {
   category?: number;
   contact?: Contact;
   address?: Address;
+  images?: string[];
 };
 
 export type Contact = {
