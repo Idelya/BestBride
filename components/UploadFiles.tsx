@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const UploadImage = ({
   onImageChange,
-}: { onImageChange: (values: string) => void } & ButtonProps) => {
+}: { onImageChange: (values: string, file: File) => void } & ButtonProps) => {
   const classes = useStyles();
 
   const handleOnClick = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       let img = e.target.files[0];
       const image = URL.createObjectURL(img);
-      onImageChange(image);
+      onImageChange(image, img);
     }
   };
 
