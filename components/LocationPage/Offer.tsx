@@ -1,20 +1,10 @@
 import React, { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
-import startCompanies from "../../public/img/startCompanies.jpg";
-import Logo from "../Logo";
-import { flexbox } from "@mui/system";
 import { Link, Theme, Typography } from "@mui/material";
-import { ROUTES } from "../../config/configNav";
-import RectangularButton from "../RectangularButton";
-import UnderlinedLink from "../UnderlinedLink";
-import DecorationTypography from "../DecorationTypography";
-import { Service } from "../../config/types";
-import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import dynamic from "next/dynamic";
 import { stateToHTML } from "draft-js-export-html";
 import { ServiceContext } from "./ServiceContext";
-import { blockToText } from "../../config/helpers";
 
 const Editor = dynamic(
   //@ts-ignore
@@ -43,16 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Offer() {
   const classes = useStyles();
 
-  const { mode, currentService, setService } = useContext(ServiceContext);
+  const { mode, currentService, setService, editorState, setEditorState } =
+    useContext(ServiceContext);
 
-  const [editorState, setEditorState] = useState(
-    currentService?.styledDetails
-      ? EditorState.createWithContent(
-          convertFromRaw(JSON.parse(currentService?.styledDetails))
-        )
-      : EditorState.createEmpty()
-  );
-  console.log(blockToText(convertToRaw(editorState.getCurrentContent())));
   return (
     <div className={classes.content}>
       <div

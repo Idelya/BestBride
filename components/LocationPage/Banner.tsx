@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "relative",
       height: "70vh",
       width: "100%",
+      backgroundColor: theme.palette.primary.main,
     },
     banner: {
       position: "relative",

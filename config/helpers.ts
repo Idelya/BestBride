@@ -44,7 +44,7 @@ export const blockToText = (content: any) => {
   if (content) {
     let toStr = "";
     for (var i = 0; i < content.blocks.length; i++) {
-      toStr += content.blocks[i].text + " ";
+      toStr += content.blocks[i].text + "\n ";
     }
     return toStr;
   }

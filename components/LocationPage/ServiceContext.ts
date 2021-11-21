@@ -1,3 +1,4 @@
+import { EditorState } from "draft-js";
 import React, { createContext } from "react";
 import { ExpenseCategory, Service } from "../../config/types";
 
@@ -8,6 +9,8 @@ export const ServiceContext = createContext<{
   setService: (newService: Service) => void;
   profileImg?: File;
   setProfileImg: (profileImg: File) => void;
+  editorState?: EditorState;
+  setEditorState?: (state: EditorState) => void;
 }>({
   currentService: undefined,
   setService: (newService) => {},
@@ -15,4 +18,6 @@ export const ServiceContext = createContext<{
   mode: "view",
   profileImg: undefined,
   setProfileImg: (file) => {},
+  editorState: undefined,
+  setEditorState: (_) => {},
 });

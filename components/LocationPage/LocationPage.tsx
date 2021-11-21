@@ -28,6 +28,7 @@ import useSWR from "swr";
 import axios from "axios";
 import request from "../../config/requests";
 import { ServiceContext } from "./ServiceContext";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 
 const location = {
   id: 1,
@@ -81,7 +82,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const fetcher = (url: string) => request.get(url).then((res) => res.data);
-const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
 export default function LocationPage() {
   const classes = useStyles();
   const router = useRouter();
@@ -90,6 +90,7 @@ export default function LocationPage() {
     id === "new" ? "edit" : "view"
   );
 
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [currentService, setCurrentService] = useState<Service>(location);
   const [file, setFile] = useState<File>();
 
@@ -121,6 +122,8 @@ export default function LocationPage() {
         setService: setCurrentService,
         profileImg: file,
         setProfileImg: setFile,
+        editorState: editorState,
+        setEditorState: setEditorState,
       }}
     >
       <div>
@@ -143,7 +146,8 @@ export default function LocationPage() {
           </div>
           <Divider>Oferta</Divider>
           <Offer />
-          {(mode === "edit" || currentService?.images) && (
+          {(mode === "edit" ||
+            (currentService?.images && currentService.images.length > 0)) && (
             <>
               <Divider textAlign="right">Galeria</Divider>
               <Gallery />
