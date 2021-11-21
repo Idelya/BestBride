@@ -11,6 +11,7 @@ import {
   Grid,
   Theme,
   Typography,
+  Paper,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "../Divider";
@@ -23,6 +24,8 @@ import Loading from "../Loading";
 import { ServicesContext } from "./ServicesContext";
 import Search from "../Search";
 import ServicesList from "./ServicesList";
+import { TreeView, TreeItem } from "@mui/lab";
+import { getValueFromExpenseCategory } from "../../config/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,6 +80,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       minHeight: "50px",
     },
+    filters: {
+      padding: theme.spacing(3, 1),
+    },
   })
 );
 
@@ -122,7 +128,28 @@ export default function ServicesCategories({
       >
         {currentCategory != null ? (
           <>
-            <Grid item md={3}></Grid>
+            <Grid item md={3}>
+              <Paper className={classes.filters}>
+                <Typography>Kategorie</Typography>
+                <TreeView
+                  sx={{
+                    height: 240,
+                    flexGrow: 1,
+                    maxWidth: 400,
+                    overflowY: "auto",
+                  }}
+                >
+                  {expenseOptions.map((cat) => (
+                    <TreeItem
+                      key={cat.id}
+                      nodeId={cat.id.toString()}
+                      label={cat.name}
+                      onClick={() => setCurrentCategory(cat.id)}
+                    />
+                  ))}
+                </TreeView>
+              </Paper>
+            </Grid>
             <Grid item md={9}>
               <ServicesList list={servicesMock} />
             </Grid>

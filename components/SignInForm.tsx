@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SignInFormProps {
-  routeSignUp: Route;
+  routeSignUp?: Route;
 }
 
 const Loading = dynamic(import("./Loading"));
@@ -83,7 +83,7 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
         size="small"
         variant="outlined"
         margin="normal"
-        type="email"
+        type={routeSignUp && "email"}
         value={formik.values.email}
         onChange={formik.handleChange}
       />
@@ -112,10 +112,14 @@ export default function SignInForm({ routeSignUp }: SignInFormProps) {
       >
         Zaloguj się
       </RectangularButton>
-      <Typography color="GrayText" variant="body2">
-        Chcesz założyć konto?
-      </Typography>
-      <UnderlinedLink route={routeSignUp} />
+      {routeSignUp && (
+        <>
+          <Typography color="GrayText" variant="body2">
+            Chcesz założyć konto?
+          </Typography>
+          <UnderlinedLink route={routeSignUp} />
+        </>
+      )}
     </form>
   );
 }

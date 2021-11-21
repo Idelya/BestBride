@@ -87,11 +87,10 @@ export default function CompaniesLocationsListPage() {
   const redirectToNewPage = async () => {
     await router.push(`services/new`);
   };
-  /*
+
   const { data: locations } = useSWR("api/locations", fetcher) as {
     data: Service[];
-  };*/
-  const locations: Service[] = [];
+  };
 
   console.log(locations);
 

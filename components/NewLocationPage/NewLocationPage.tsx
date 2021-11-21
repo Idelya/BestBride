@@ -100,7 +100,10 @@ export default function LocationPage() {
         styledDetails: JSON.stringify(
           convertToRaw(editorState.getCurrentContent())
         ),
+        status: 0,
       };
+
+      const { contact, address, ...formData } = service;
       await schema.validate(service);
 
       let url;
@@ -120,7 +123,9 @@ export default function LocationPage() {
       try {
         const x = await axios.post(
           "/api/serviceAdd",
-          url ? { ...service, fileLink: url } : service
+          url
+            ? { ...formData, fileLink: url, innerKey: 1, status: 0 }
+            : formData
         );
         await router.push("/companies-locations-list");
         store.addNotification({
