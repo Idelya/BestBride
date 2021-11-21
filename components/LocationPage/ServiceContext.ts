@@ -6,9 +6,13 @@ export const ServiceContext = createContext<{
   categories?: ExpenseCategory[];
   mode: "view" | "edit";
   setService: (newService: Service) => void;
+  profileImg?: File;
+  setProfileImg: (profileImg: File) => void;
 }>({
   currentService: undefined,
   setService: (newService) => {},
   categories: undefined,
   mode: "view",
+  profileImg: undefined,
+  setProfileImg: (file) => {},
 });

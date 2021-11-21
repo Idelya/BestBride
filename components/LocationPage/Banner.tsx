@@ -15,6 +15,7 @@ import { getValueFromExpenseCategory } from "../../config/helpers";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import UploadImage from "../UploadFiles";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,15 +66,26 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       margin: theme.spacing(0.5, 0),
     },
+    upload: {
+      position: "absolute",
+      zIndex: 2,
+      top: theme.spacing(15),
+      right: theme.spacing(10),
+      margin: theme.spacing(0, 2),
+      backgroundColor: "rgba(255,255,255,0.95)",
+      boxShadow: "rgba(0, 0, 0, 0.26) 0px 1px 5px",
+      padding: theme.spacing(3),
+    },
   })
 );
 
 export default function Banner() {
   const classes = useStyles();
 
-  const { mode, currentService, categories, setService } =
+  const { mode, currentService, categories, setService, setProfileImg } =
     useContext(ServiceContext);
   const router = useRouter();
+
   return (
     <div className={classes.banner}>
       <div className={classes.content}>
@@ -234,6 +246,17 @@ export default function Banner() {
           </div>
         )}
       </div>
+      {mode == "edit" && (
+        <div className={classes.upload}>
+          Zmień zdjęcie
+          <UploadImage
+            onImageChange={(url, file) => {
+              setService({ ...currentService, fileLink: url });
+              setProfileImg(file);
+            }}
+          />
+        </div>
+      )}
       <div className={classes.img}>
         {currentService?.fileLink && (
           <Image

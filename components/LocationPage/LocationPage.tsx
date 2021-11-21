@@ -91,6 +91,7 @@ export default function LocationPage() {
   );
 
   const [currentService, setCurrentService] = useState<Service>(location);
+  const [file, setFile] = useState<File>();
 
   const handleReset = () => {
     //cofnij zmiany
@@ -118,6 +119,8 @@ export default function LocationPage() {
         currentService: currentService,
         mode: mode,
         setService: setCurrentService,
+        profileImg: file,
+        setProfileImg: setFile,
       }}
     >
       <div>
