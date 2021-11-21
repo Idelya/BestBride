@@ -37,7 +37,7 @@ export default function Search({
   };
 
   return (
-    <Box>
+    <Box sx={{ backgroundColor: "white", borderRadius: "4px" }}>
       <TextField
         id="search"
         InputProps={{
@@ -46,6 +46,9 @@ export default function Search({
               <SearchIcon />
             </InputAdornment>
           ),
+        }}
+        inputProps={{
+          style: { backgroundColor: "white", borderRadius: "4px" },
         }}
         onChange={handleSearch}
         variant="outlined"

@@ -4,9 +4,10 @@ import Head from "next/head";
 import Image from "next/image";
 import React from "react";
 import Layout from "../components/common/Layout";
+import { ServicesPage } from "../components/ServicesPage";
 
 const Services: NextPage = () => {
-  return <div>Services</div>;
+  return <ServicesPage />;
 };
 
 export default Services;

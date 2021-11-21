@@ -14,7 +14,7 @@ export let schema = yup.object().shape({
           "Należy podać przynajmniej jedną daną kontaktową: numer telefonu, email lub link so strony",
           function (value) {
             const { phone, url } = this.parent;
-            if (!phone && !url) return value != null;
+            if (!phone && !url) return !!value;
             return true;
           }
         ),
@@ -25,7 +25,7 @@ export let schema = yup.object().shape({
           "Należy podać przynajmniej jedną daną kontaktową: numer telefonu, email lub link so strony",
           function (value) {
             const { email, url } = this.parent;
-            if (!email && !url) return value != null;
+            if (!email && !url) return !!value;
             return true;
           }
         ),
@@ -36,7 +36,7 @@ export let schema = yup.object().shape({
           "Należy podać przynajmniej jedną daną kontaktową: numer telefonu, email lub link do strony",
           function (value) {
             const { email, phone } = this.parent;
-            if (!email && !phone) return value != null;
+            if (!email && !phone) return !!value;
             return true;
           }
         ),
