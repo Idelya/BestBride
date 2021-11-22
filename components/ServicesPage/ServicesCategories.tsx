@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Card,
@@ -104,12 +104,22 @@ export default function ServicesCategories({
   setCurrentCategory: (cat: number) => void;
 }) {
   const classes = useStyles();
-  const [servicesList, setServicesList] = useState(servicesMock);
+  const [servicesList, setServicesList] = useState<Service[]>([]);
+  const [filtredList, setFiltredList] = useState<Service[]>([]);
   const { expenseOptions } = useContext(ServicesContext);
 
-  if (!expenseOptions) {
+  const { data: locations } = useSWR("/api/locations", fetcher) as {
+    data: Service[];
+  };
+  console.log(locations);
+
+  useEffect(() => {
+    setServicesList(locations);
+  }, [locations]);
+
+  if (!expenseOptions || !locations) {
     return (
-      <Container className={classes.container}>
+      <Container sx={{ display: "flex" }}>
         <Loading />
       </Container>
     );
@@ -118,7 +128,7 @@ export default function ServicesCategories({
     <Container className={classes.container}>
       <div className={classes.search}>
         {currentCategory != null && (
-          <Search handleChange={setServicesList} list={servicesList} />
+          <Search handleChange={setServicesList} list={locations || []} />
         )}
       </div>
       <Grid
@@ -151,7 +161,7 @@ export default function ServicesCategories({
               </Paper>
             </Grid>
             <Grid item md={9}>
-              <ServicesList list={servicesMock} />
+              <ServicesList list={servicesList} />
             </Grid>
           </>
         ) : (
