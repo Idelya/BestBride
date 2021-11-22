@@ -43,5 +43,5 @@ export let schema = yup.object().shape({
     })
     .required("Kontakt jest obligatoryjny."),
   details: yup.string().required("Opis oferty jest obligatoryjny."),
-  styledDetails: yup.string().required("Opis oferty jest obligatoryjny."),
+  detailsStyle: yup.string().required("Opis oferty jest obligatoryjny."),
 });

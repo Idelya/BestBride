@@ -86,15 +86,13 @@ export const ROLE = {
 };
 export type RoleType = "user" | "admin" | "firm";
 
-export type ServiceStatusType = "Wersja robocza";
-
 export type Service = {
   id?: number;
   img?: string;
-  status?: ServiceStatusType;
+  status?: number;
   name?: string;
   details?: string;
-  styledDetails?: string;
+  detailsStyle?: string;
   rejectionDetails?: string;
   fileLink?: string;
   expenseId?: number;

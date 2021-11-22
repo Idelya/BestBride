@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -16,11 +17,7 @@ import Divider from "../Divider";
 import { number } from "yup";
 import { useRouter } from "next/router";
 import Banner from "./Banner";
-import {
-  ExpenseCategory,
-  Service,
-  ServiceStatusType,
-} from "../../config/types";
+import { ExpenseCategory, Service, Option } from "../../config/types";
 import Offer from "./Offer";
 import Gallery from "./Gallery";
 import Contact from "./Contact";
@@ -29,15 +26,17 @@ import axios from "axios";
 import request from "../../config/requests";
 import { ServiceContext } from "./ServiceContext";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import Loading from "../Loading";
+import { store } from "react-notifications-component";
 
 const location = {
   id: 1,
   fileLink:
     "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1974&q=80",
-  status: "Wersja robocza" as ServiceStatusType,
+  status: 0,
   name: "Nowa usługa",
   category: 1,
-  styledDetails:
+  detailsStyle:
     '{"blocks":[{"key":"444a","text":"Nagłówek","type":"header-one","depth":0,"inlineStyleRanges":[{"offset":0,"length":8,"style":"BOLD"}],"entityRanges":[],"data":{}},{"key":"1kga8","text":"Lorem ipsum dolor sit amet, mandamus iracundia quo an. No feugiat partiendo abhorreant nam. Cu sea dicant ornatus, his euismod inermis no. Ipsum assum ad vel. Mei ad perfecto inimicus scribentur, nihil appetere interpretaris te quo, ut ius quot ceteros delicatissimi. Mel vocent epicurei cu, ex est lorem menandri. Tation iudicabit at per, ad has case nemore phaedrum. Laoreet expetendis his id. Unum vulputate neglegentur an pri, no quo decore platonem.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"ab3b6","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"e0h6n","text":"Et debet omnium usu, sit fuisset torquatos abhorreant ea, at dissentiet interpretaris his. Affert doming scribentur pri ut, usu at graeco fuisset probatus. An eros sonet delectus pro. Id mel sententiae reformidans. Qui ei reque praesent.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"abfoh","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"540rm","text":"Lorem ipsum dolor sit amet, mandamus iracundia quo an. No feugiat partiendo abhorreant nam. Cu sea dicant ornatus, his euismod inermis no. Ipsum assum ad vel.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"2h62n","text":"dfs","type":"unordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"dhqbl","text":"fdsf","type":"unordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"co76m","text":"fd","type":"unordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8t5gu","text":"Mei ad perfecto inimicus scribentur, nihil appetere interpretaris te quo, ut ius quot ceteros delicatissimi. Mel vocent epicurei cu, ex est lorem menandri. Tation iudicabit at per, ad has case nemore phaedrum. Laoreet expetendis his id. Unum vulputate neglegentur an pri, no quo decore platonem.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"c1i2s","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"1n4uo","text":"Et debet omnium usu, sit fuisset torquatos abhorreant ea, at dissentiet interpretaris his. Affert doming scribentur pri ut, usu at graeco fuisset probatus. An eros sonet delectus pro. Id mel sententiae reformidans. Qui ei reque praesent.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"fn6gq","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
   contact: {
     email: "",
@@ -62,7 +61,10 @@ const location = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {},
+    container: {
+      marginTop: theme.spacing(10),
+      minHeight: "100vh",
+    },
     controls: {
       zIndex: 5,
       position: "fixed",
@@ -82,36 +84,114 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const fetcher = (url: string) => request.get(url).then((res) => res.data);
+const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
 export default function LocationPage() {
   const classes = useStyles();
   const router = useRouter();
+  const [currentService, setCurrentService] = useState<Service>(location);
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { id } = router.query;
   const [mode, setMode] = useState<"edit" | "view">(
     id === "new" ? "edit" : "view"
   );
+  /*
+  const { data } = useSWR("api/service/" + id, fetcher);
+  const { data: isOwner } = useSWR("api/isservice/" + id, fetcher);*/
+  const { data: locations } = useSWR("/api/locations", fetcherAuth) as {
+    data: Service[];
+  };
+  useEffect(() => {
+    const getLocation = (locations || []).find((e) => e.id == id) || location;
+    setCurrentService(getLocation);
 
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [currentService, setCurrentService] = useState<Service>(location);
+    if (getLocation.detailsStyle) {
+      setEditorState(
+        EditorState.createWithContent(
+          convertFromRaw(JSON.parse(getLocation.detailsStyle))
+        )
+      );
+    }
+  }, [id, locations]);
   const [file, setFile] = useState<File>();
-
   const handleReset = () => {
-    //cofnij zmiany
     setMode("view");
     setCurrentService(location);
   };
 
   const handleViewVersion = () => {
-    //aktualizuj zmiany
     setMode("view");
   };
 
-  const publicVersion = () => {
-    //send to verification
+  const publicVersion = async () => {
+    if (currentService === location) {
+      store.addNotification({
+        title: "Uwaga",
+        //@ts-ignore
+        message: "Przed przesłaniem do weryfikacji zapisz stronę.",
+        type: "info",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true,
+        },
+      });
+      return;
+    }
+    try {
+      const x = await axios.put("/api/serviceToVerify/" + id);
+      store.addNotification({
+        title: "Sukces",
+        //@ts-ignore
+        message: "Usługa została przesłana do weryfikacji administratora.",
+        type: "success",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true,
+        },
+      });
+    } catch (postErr) {
+      store.addNotification({
+        title: "Błąd",
+        //@ts-ignore
+        message: "Przepraszamy. Nie można przesłac strony do weryfikacji",
+        type: "danger",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true,
+        },
+      });
+    }
   };
 
   const { data: categories } = useSWR("api/expensescategory", fetcher) as {
     data: ExpenseCategory[];
   };
+
+  const { data: statusOptions } = useSWR("api/servicestatus", fetcher) as {
+    data: Option[];
+  };
+
+  console.log(statusOptions);
+  if (!locations) {
+    return (
+      <Container className={classes.container}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Loading />
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <ServiceContext.Provider
@@ -124,6 +204,7 @@ export default function LocationPage() {
         setProfileImg: setFile,
         editorState: editorState,
         setEditorState: setEditorState,
+        statusOptions: statusOptions,
       }}
     >
       <div>
@@ -134,7 +215,7 @@ export default function LocationPage() {
               <>
                 <Button onClick={publicVersion}>Zapisz wersję</Button>
                 <Button onClick={() => setMode("edit")}>Edytuj</Button>
-                <Button>Publikuj wersję</Button>
+                <Button onClick={publicVersion}>Publikuj wersję</Button>
               </>
             ) : (
               <>

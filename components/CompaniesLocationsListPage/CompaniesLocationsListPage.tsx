@@ -10,6 +10,7 @@ import {
   Container,
   Grid,
   Theme,
+  Box,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,8 +19,10 @@ import { number } from "yup";
 import { useRouter } from "next/router";
 import axios from "axios";
 import useSWR from "swr";
-import { Service } from "../../config/types";
+import { Service, Option } from "../../config/types";
 import Loading from "../Loading";
+import { getValue } from "../../config/helpers";
+import request from "../../config/requests";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,13 +70,12 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100%",
     },
     btn: {
-      textDecoration: "none",
-      "& *": {
-        textDecoration: "none",
-      },
+      textTransform: "none",
     },
   })
 );
+
+const fetcherUnauth = (url: string) => request.get(url).then((res) => res.data);
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function CompaniesLocationsListPage() {
@@ -92,12 +94,19 @@ export default function CompaniesLocationsListPage() {
     data: Service[];
   };
 
-  console.log(locations);
+  const { data: statusOptions } = useSWR(
+    "api/servicestatus",
+    fetcherUnauth
+  ) as {
+    data: Option[];
+  };
 
   if (!locations) {
     return (
       <Container className={classes.container}>
-        <Loading />
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Loading />
+        </Box>
       </Container>
     );
   }
@@ -147,7 +156,7 @@ export default function CompaniesLocationsListPage() {
                     sx={{ backgroundColor: "#FDFFE6" }}
                   >
                     <Typography color="primary" variant="subtitle1">
-                      {loc.status}
+                      {getValue(statusOptions || [], loc.status)}
                     </Typography>
                   </CardContent>
                 </CardActionArea>

@@ -15,11 +15,7 @@ import {
 import Divider from "../Divider";
 import { number } from "yup";
 import { useRouter } from "next/router";
-import {
-  ExpenseCategory,
-  Service,
-  ServiceStatusType,
-} from "../../config/types";
+import { ExpenseCategory, Service, Option } from "../../config/types";
 import useSWR from "swr";
 import axios from "axios";
 import request from "../../config/requests";
@@ -38,11 +34,11 @@ import SETTINGS from "../../config/settings";
 const location = {
   id: 1,
   fileLink: "",
-  status: "Wersja robocza" as ServiceStatusType,
+  status: 0,
   name: "Nowa usługa",
   category: 1,
   details: "",
-  styledDetails: "",
+  detailsStyle: "",
   contact: {
     email: "",
     phone: "",
@@ -97,10 +93,9 @@ export default function LocationPage() {
       const service = {
         ...currentService,
         details: blockToText(convertToRaw(editorState.getCurrentContent())),
-        styledDetails: JSON.stringify(
+        detailsStyle: JSON.stringify(
           convertToRaw(editorState.getCurrentContent())
         ),
-        status: 0,
       };
 
       const { contact, address, ...formData } = service;
@@ -123,9 +118,7 @@ export default function LocationPage() {
       try {
         const x = await axios.post(
           "/api/serviceAdd",
-          url
-            ? { ...formData, fileLink: url, innerKey: 1, status: 0 }
-            : formData
+          url ? { ...formData, fileLink: url, innerKey: 1 } : formData
         );
         await router.push("/companies-locations-list");
         store.addNotification({
@@ -133,7 +126,7 @@ export default function LocationPage() {
           //@ts-ignore
           message:
             "Dodano usługę. Wybierz publikuj, jeżeli chcesz, aby ją udostepnić.",
-          type: "danger",
+          type: "success",
           insert: "top",
           container: "bottom-center",
           animationIn: ["animate__animated", "animate__fadeIn"],
@@ -171,6 +164,10 @@ export default function LocationPage() {
     data: ExpenseCategory[];
   };
 
+  const { data: statusOptions } = useSWR("api/servicestatus", fetcher) as {
+    data: Option[];
+  };
+
   return (
     <ServiceContext.Provider
       value={{
@@ -182,6 +179,7 @@ export default function LocationPage() {
         setProfileImg: setFile,
         editorState: editorState,
         setEditorState: setEditorState,
+        statusOptions: statusOptions,
       }}
     >
       <div>
