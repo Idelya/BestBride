@@ -106,7 +106,15 @@ export default function GroupAdd({ open, handleClose, guests }: GuestAddProps) {
     validationSchema: groupSchemaValidation,
     onSubmit: async (values) => {
       try {
-        const x = await axios.post("/api/groupAdd", values);
+        const x = await axios.post("api/groupAdd", {
+          ...values,
+          guests: guestInList.map((g) => g.id),
+        });
+        console.log(x);
+        const y = await axios.post("/api/guestToGroup", {
+          group: x?.data?.data.id,
+          guests: guestInList.map((g) => g.id),
+        });
         if (x.data) {
           handleClose();
           store.addNotification({

@@ -39,10 +39,6 @@ export const ROUTES = {
     name: "Budżet",
     link: "/budget",
   },
-  calendar: {
-    name: "Kalendarz",
-    link: "/calendar",
-  },
   weddingSettings: {
     name: "Dane ślubu",
     link: "/profil/#weddingSettings",
@@ -64,7 +60,6 @@ export const USER_ROUTES_NAV = [
   ROUTES.guestList,
   ROUTES.services,
   ROUTES.budget,
-  ROUTES.calendar,
 ];
 
 export const USER_MENU = [ROUTES.profil, ROUTES.weddingSettings];

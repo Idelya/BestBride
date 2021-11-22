@@ -95,8 +95,8 @@ export default function LocationPage() {
     id === "new" ? "edit" : "view"
   );
   /*
-  const { data } = useSWR("api/service/" + id, fetcher);
-  const { data: isOwner } = useSWR("api/isservice/" + id, fetcher);*/
+  const { data: isOwner } = useSWR("api/isservice/" + id, fetcherAuth);
+*/
   const { data: locations } = useSWR("/api/locations", fetcherAuth) as {
     data: Service[];
   };
