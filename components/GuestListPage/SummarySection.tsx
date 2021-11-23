@@ -11,6 +11,7 @@ import {
 import Divider from "../Divider";
 import axios from "axios";
 import useSWR from "swr";
+import Loading from "../Loading";
 
 const names = {
   accomodation: "Z noclegiem:",
@@ -18,7 +19,6 @@ const names = {
   canceled: "Odrzucone zaproszenia:",
   children: "Liczba dzieci:",
   confirmed: "Potwierdzeni:",
-  dietCount: "Diety:",
   invited: "Zaproszeni",
   notInvited: "Nie zaproszeni:",
   planned: "Planowani:",
@@ -46,10 +46,6 @@ const groupConfig = {
     order: 0,
     group: 1,
   },
-  dietCount: {
-    order: 0,
-    group: 3,
-  },
   invited: {
     order: 2,
     group: 0,
@@ -68,7 +64,7 @@ const groupConfig = {
   },
 };
 
-const groupedLabels = ["", "", "", "Diety"];
+const groupedLabels = ["", "", ""];
 
 const summary = [
   {
@@ -235,11 +231,26 @@ export default function SummarySection() {
     error: any;
   };
 
+  const { data: dietsStats } = useSWR("api/diets", fetcher) as {
+    data: {
+      name: string;
+      count: number;
+    }[];
+  };
+
   const grouped = useMemo(
     () => group(Object.keys(stats || {}), stats || {}),
     [stats]
   );
-
+  console.log(grouped, stats, dietsStats);
+  if (!stats || !dietsStats) {
+    return (
+      <section>
+        <Divider component="h2">Podsumowanie</Divider>
+        <Loading />
+      </section>
+    );
+  }
   return (
     <section>
       <Divider component="h2">Podsumowanie</Divider>
@@ -247,6 +258,16 @@ export default function SummarySection() {
         {(grouped || []).map((group, i) => (
           <ListGroup key={i} list={group.list} label={group.label} />
         ))}
+        <ListGroup
+          key={grouped.length}
+          list={dietsStats.map((diet) => {
+            return {
+              name: diet.name,
+              value: diet.count,
+            };
+          })}
+          label={"Diety:"}
+        />
       </Grid>
     </section>
   );
