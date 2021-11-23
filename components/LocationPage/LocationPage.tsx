@@ -28,6 +28,7 @@ import { ServiceContext } from "./ServiceContext";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import Loading from "../Loading";
 import { store } from "react-notifications-component";
+import { getValue } from "../../config/helpers";
 
 const location = {
   id: 1,
@@ -83,39 +84,37 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const statusTocolor = ["#FDFFE6", "#E6FFFC", "#D4FFD7", "#FFE6E6", "#000000"];
 const fetcher = (url: string) => request.get(url).then((res) => res.data);
 const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
 export default function LocationPage() {
   const classes = useStyles();
   const router = useRouter();
-  const [currentService, setCurrentService] = useState<Service>(location);
+  const [currentService, setCurrentService] = useState<Service>();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { id } = router.query;
   const [mode, setMode] = useState<"edit" | "view">(
     id === "new" ? "edit" : "view"
   );
-  /*
-  const { data: isOwner } = useSWR("api/isservice/" + id, fetcherAuth);
-*/
-  const { data: locations } = useSWR("/api/locations", fetcherAuth) as {
-    data: Service[];
-  };
-  useEffect(() => {
-    const getLocation = (locations || []).find((e) => e.id == id) || location;
-    setCurrentService(getLocation);
 
-    if (getLocation.detailsStyle) {
+  const { data } = useSWR("api/service/" + id, fetcher) as { data: Service };
+  /*const { data: isOwner } = useSWR("api/isservice/" + id, fetcherAuth);*/
+  useEffect(() => {
+    if (!data) return;
+    setCurrentService(data);
+
+    if (data.detailsStyle) {
       setEditorState(
         EditorState.createWithContent(
-          convertFromRaw(JSON.parse(getLocation.detailsStyle))
+          convertFromRaw(JSON.parse(data.detailsStyle))
         )
       );
     }
-  }, [id, locations]);
+  }, [id, data]);
   const [file, setFile] = useState<File>();
   const handleReset = () => {
     setMode("view");
-    setCurrentService(location);
+    setCurrentService(data);
   };
 
   const handleViewVersion = () => {
@@ -174,6 +173,8 @@ export default function LocationPage() {
     }
   };
 
+  const handleDelete = () => {};
+
   const { data: categories } = useSWR("api/expensescategory", fetcher) as {
     data: ExpenseCategory[];
   };
@@ -182,8 +183,7 @@ export default function LocationPage() {
     data: Option[];
   };
 
-  console.log(statusOptions);
-  if (!locations) {
+  if (!data) {
     return (
       <Container className={classes.container}>
         <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -211,9 +211,14 @@ export default function LocationPage() {
         <Banner />
         <Container>
           <div className={classes.controls}>
+            <Box sx={{ backgroundColor: statusTocolor[data.status || 0] }}>
+              <Typography>{getValue(statusOptions, data.status)}</Typography>
+            </Box>
             {mode != "edit" ? (
               <>
-                <Button onClick={publicVersion}>Zapisz wersję</Button>
+                <Button onClick={() => console.log("educja")}>
+                  Zapisz wersję
+                </Button>
                 <Button onClick={() => setMode("edit")}>Edytuj</Button>
                 <Button onClick={publicVersion}>Publikuj wersję</Button>
               </>
@@ -221,7 +226,7 @@ export default function LocationPage() {
               <>
                 <Button onClick={handleViewVersion}>Podgląd wersji</Button>
                 <Button onClick={handleReset}>Cofnij zmiany</Button>
-                <Button>Usuń</Button>
+                <Button onClick={handleDelete}>Usuń</Button>
               </>
             )}
           </div>

@@ -108,7 +108,7 @@ export default function ServicesCategories({
   const [filtredList, setFiltredList] = useState<Service[]>([]);
   const { expenseOptions } = useContext(ServicesContext);
 
-  const { data: locations } = useSWR("/api/locations", fetcher) as {
+  const { data: locations } = useSWR("/api/servicesPublic", fetcher) as {
     data: Service[];
   };
   console.log(locations);
@@ -119,7 +119,7 @@ export default function ServicesCategories({
 
   if (!expenseOptions || !locations) {
     return (
-      <Container sx={{ display: "flex" }}>
+      <Container sx={{ display: "flex", minHeight: "50vh" }}>
         <Loading />
       </Container>
     );

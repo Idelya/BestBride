@@ -55,8 +55,12 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export default function AdminPanelPage() {
   const classes = useStyles();
-  const { data: locations } = useSWR("/api/servicesToVerify", fetcher) as {
+  const { data: locations, mutate } = useSWR(
+    "/api/servicesToVerify",
+    fetcher
+  ) as {
     data: Service[];
+    mutate: any;
   };
 
   const [rejectModal, setRejectModal] = useState<number | null>(null);
@@ -97,6 +101,7 @@ export default function AdminPanelPage() {
           onScreen: true,
         },
       });
+      mutate();
     }
   };
 
@@ -132,6 +137,7 @@ export default function AdminPanelPage() {
           onScreen: true,
         },
       });
+      mutate();
     }
   };
 

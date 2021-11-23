@@ -189,13 +189,12 @@ export default function LocationPage() {
             {mode != "edit" ? (
               <>
                 <Button onClick={handleAddService}>Dodaj usługę</Button>
-                <Button onClick={() => setMode("edit")}>Edytuj</Button>
+                <Button onClick={() => setMode("edit")}>Podgląd edycji</Button>
                 <Button disabled>Publikuj</Button>
               </>
             ) : (
               <>
                 <Button onClick={handleViewVersion}>Podgląd wersji</Button>
-                <Button>Usuń</Button>
               </>
             )}
           </div>

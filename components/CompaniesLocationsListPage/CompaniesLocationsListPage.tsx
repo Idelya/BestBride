@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const statusTocolor = ["#FDFFE6", "#E6FFFC", "#D4FFD7", "#FFE6E6", "#000000"];
 const fetcherUnauth = (url: string) => request.get(url).then((res) => res.data);
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
@@ -153,7 +154,7 @@ export default function CompaniesLocationsListPage() {
                   </CardContent>
                   <CardContent
                     className={classes.status}
-                    sx={{ backgroundColor: "#FDFFE6" }}
+                    sx={{ backgroundColor: statusTocolor[loc?.status || 0] }}
                   >
                     <Typography color="primary" variant="subtitle1">
                       {getValue(statusOptions || [], loc.status)}
