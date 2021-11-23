@@ -104,8 +104,14 @@ export default function LocationPage() {
       };
 
       const { contact, address, ...formData } = service;
-      await schema.validate(service);
 
+      await schema.validate(service);
+      const threePack = {
+        ...formData,
+        ...contact,
+        ...address,
+        mode: 0,
+      };
       let url;
       if (file) {
         const data = new FormData();
@@ -123,18 +129,18 @@ export default function LocationPage() {
       const galleryLinks: string[] = [];
       if (gallery.length > 0) {
         const uploaders = gallery.map((img) => {
-          const formData = new FormData();
-          formData.append("file", img);
-          formData.append("upload_preset", SETTINGS.upload_preset || "");
-          formData.append("cloud_name", SETTINGS.cloud_name || "");
+          const galleryForm = new FormData();
+          galleryForm.append("file", img);
+          galleryForm.append("upload_preset", SETTINGS.upload_preset || "");
+          galleryForm.append("cloud_name", SETTINGS.cloud_name || "");
           return fetch(SETTINGS.cloud_link || "", {
             method: "post",
-            body: formData,
+            body: galleryForm,
           })
             .then((resp) => resp.json())
             .then((data) => {
-              url = data.url;
-              galleryLinks.push(url);
+              const imgLink = data.url;
+              galleryLinks.push(imgLink);
             });
         });
         await Promise.all(uploaders);
@@ -144,12 +150,14 @@ export default function LocationPage() {
           "/api/serviceAdd",
           url
             ? {
-                ...formData,
+                ...threePack,
                 fileLink: url,
-                innerKey: 4,
                 galleryFile: galleryLinks.join(";"),
               }
-            : formData
+            : {
+                ...threePack,
+                galleryFile: galleryLinks.join(";"),
+              }
         );
         await router.push("/companies-locations-list");
         store.addNotification({
@@ -189,7 +197,6 @@ export default function LocationPage() {
   };
 
   const handleViewVersion = () => {
-    //aktualizuj zmiany
     setMode("view");
   };
 

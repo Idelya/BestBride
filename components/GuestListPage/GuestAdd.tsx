@@ -332,35 +332,6 @@ export default function GuestAdd({
                     ))}
                   </TextField>
                 </div>
-                <div>
-                  <List>
-                    <Typography color="GrayText" variant="h6">
-                      Grupy:
-                    </Typography>
-                    <Select
-                      name="guestsGroupGuests"
-                      fullWidth
-                      id="guestsGroupGuests"
-                      size="small"
-                      multiple
-                      value={formik.values.guestsGroupGuests}
-                      onChange={formik.handleChange}
-                      input={
-                        <OutlinedInput
-                          name="guestsGroupGuests"
-                          id="guestsGroupGuests"
-                        />
-                      }
-                      renderValue={(selected) => selected.join(", ")}
-                    >
-                      {[].map((e, i) => (
-                        <MenuItem key={i} value={e}>
-                          {e}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </List>
-                </div>
               </Grid>
               <Grid item md={12}>
                 <div className={classes.block}>

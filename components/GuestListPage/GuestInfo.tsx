@@ -29,6 +29,7 @@ import { GuestContext } from "./GuestContext";
 import Loading from "../Loading";
 import axios from "axios";
 import { store } from "react-notifications-component";
+import GuestEdit from "./GuestEdit";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,6 +80,7 @@ export default function GuestInfo({
   update,
 }: GuestInfoProps) {
   const classes = useStyles();
+  const [editMode, setEditMode] = useState(false);
   const { genderOptions, dietsOptions, statusOptions } =
     useContext(GuestContext);
 
@@ -130,13 +132,22 @@ export default function GuestInfo({
     <Modal open={open} onClose={handleClose}>
       <Box className={classes.main}>
         <Box className={classes.btn}>
-          <Button startIcon={<EditIcon />}>Edytuj</Button>
-          <Button
-            startIcon={<DeleteIcon />}
-            onClick={() => handleDelete(guest.id)}
-          >
-            Usuń
-          </Button>
+          {!editMode && (
+            <>
+              <Button
+                startIcon={<EditIcon />}
+                onClick={() => setEditMode(true)}
+              >
+                Edytuj
+              </Button>
+              <Button
+                startIcon={<DeleteIcon />}
+                onClick={() => handleDelete(guest.id)}
+              >
+                Usuń
+              </Button>
+            </>
+          )}
         </Box>
         <Divider
           component="p"
@@ -144,92 +155,103 @@ export default function GuestInfo({
           secondary="Gość"
           textMargin="64px"
         >{`${guest.name}`}</Divider>
-        <Grid container>
-          <Grid item xs={12} md={6} pr={8}>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Płeć:</Typography>
-              <Typography color="primary">
-                {getValue(genderOptions || [], guest.gender)}
-              </Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Mail:</Typography>
-              <Typography color="primary">{guest.email}</Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Tel:</Typography>
-              <Typography color="primary">{guest.phone}</Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Miasto:</Typography>
-              <Typography color="primary">{guest.city}</Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Dzieci:</Typography>
-              <Typography color="primary">{guest.children}</Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Status zaproszenia:</Typography>
-              <Typography color="primary">
-                {getValue(statusOptions || [], guest.status)}
-              </Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Jest świadkiem:</Typography>
-              <Typography color="primary">
-                {guest.isWitness ? "Tak" : "Nie"}
-              </Typography>
-            </div>
+        {editMode ? (
+          <GuestEdit
+            guest={guest}
+            handleSave={() => {
+              setEditMode(false);
+              handleClose();
+              update();
+            }}
+          />
+        ) : (
+          <Grid container>
+            <Grid item xs={12} md={6} pr={8}>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Płeć:</Typography>
+                <Typography color="primary">
+                  {getValue(genderOptions || [], guest.gender)}
+                </Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Mail:</Typography>
+                <Typography color="primary">{guest.email}</Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Tel:</Typography>
+                <Typography color="primary">{guest.phone}</Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Miasto:</Typography>
+                <Typography color="primary">{guest.city}</Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Dzieci:</Typography>
+                <Typography color="primary">{guest.children}</Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Status zaproszenia:</Typography>
+                <Typography color="primary">
+                  {getValue(statusOptions || [], guest.status)}
+                </Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Jest świadkiem:</Typography>
+                <Typography color="primary">
+                  {guest.isWitness ? "Tak" : "Nie"}
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={12} md={6} pr={8} pl={8}>
+              <div className={classes.block}>
+                <Typography color="GrayText">Osoba towarzysząca:</Typography>
+                <Typography color="primary">
+                  {guest.partnerName || "Nie"}
+                </Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Nocleg:</Typography>
+                <Typography color="primary">
+                  {guest.accommodation ? "Tak" : "Nie"}
+                </Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Dojazd:</Typography>
+                <Typography color="primary">
+                  {guest.transport ? "Tak" : "Nie"}
+                </Typography>
+              </div>
+              <div className={classes.inline}>
+                <Typography color="GrayText">Dieta:</Typography>
+                <Typography color="primary">
+                  {getValueFromDiet(dietsOptions || [], guest.diet)}
+                </Typography>
+              </div>
+              <div>
+                <List>
+                  <Typography color="GrayText">Grupy:</Typography>
+                  {!guest.groups ? (
+                    <ListItemText color="primary">Brak</ListItemText>
+                  ) : (
+                    guest.groups.map((group, i) => (
+                      <ListItemText color="primary" key={i}>
+                        {group.name || ""}
+                      </ListItemText>
+                    ))
+                  )}
+                </List>
+              </div>
+            </Grid>
+            <Grid item md={12}>
+              <div className={classes.block}>
+                <Typography color="GrayText">Uwagi:</Typography>
+                <Typography color="primary">
+                  {guest.additionalInfo || "Brak uwag"}
+                </Typography>
+              </div>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6} pr={8} pl={8}>
-            <div className={classes.block}>
-              <Typography color="GrayText">Osoba towarzysząca:</Typography>
-              <Typography color="primary">
-                {guest.partnerName || "Nie"}
-              </Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Nocleg:</Typography>
-              <Typography color="primary">
-                {guest.accommodation ? "Tak" : "Nie"}
-              </Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Dojazd:</Typography>
-              <Typography color="primary">
-                {guest.transport ? "Tak" : "Nie"}
-              </Typography>
-            </div>
-            <div className={classes.inline}>
-              <Typography color="GrayText">Dieta:</Typography>
-              <Typography color="primary">
-                {getValueFromDiet(dietsOptions || [], guest.diet)}
-              </Typography>
-            </div>
-            <div>
-              <List>
-                <Typography color="GrayText">Grupy:</Typography>
-                {!guest.groups ? (
-                  <ListItemText color="primary">Brak</ListItemText>
-                ) : (
-                  guest.groups.map((group, i) => (
-                    <ListItemText color="primary" key={i}>
-                      {group.name || ""}
-                    </ListItemText>
-                  ))
-                )}
-              </List>
-            </div>
-          </Grid>
-          <Grid item md={12}>
-            <div className={classes.block}>
-              <Typography color="GrayText">Uwagi:</Typography>
-              <Typography color="primary">
-                {guest.additionalInfo || "Brak uwag"}
-              </Typography>
-            </div>
-          </Grid>
-        </Grid>
+        )}
       </Box>
     </Modal>
   );
