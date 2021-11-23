@@ -189,7 +189,6 @@ export default function LocationPage() {
   const { data: statusOptions } = useSWR("api/servicestatus", fetcher) as {
     data: Option[];
   };
-  console.log(data);
   if (!data) {
     return (
       <Container className={classes.container}>

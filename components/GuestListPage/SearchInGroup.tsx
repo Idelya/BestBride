@@ -22,7 +22,7 @@ export default function SearchInGroup({
       handleChange(
         list.map((group) => {
           return {
-            name: group.name,
+            ...group,
             guests: group.guests.filter((obj: any) =>
               Object.values(obj)
                 .flat()

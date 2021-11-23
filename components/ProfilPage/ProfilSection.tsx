@@ -88,10 +88,8 @@ export default function ProfilSection() {
           setImage(data.url);
         })
         .catch((err) => console.log(err));
-      console.log(image);
     },
   });
-  console.log(image);
   return (
     <Container component="section" id="profil">
       <Divider>Profil</Divider>

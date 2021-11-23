@@ -53,12 +53,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
   const classes = useStyles();
 
   const { expenseOptions } = useContext(ExpenseContext);
-  console.log(
-    getDiffInHours(
-      new Date(),
-      expense.finalDate ? new Date(expense.finalDate) : new Date()
-    )
-  );
+
   const isDeadline = useMemo(() => {
     return (
       !!expense.finalDate &&

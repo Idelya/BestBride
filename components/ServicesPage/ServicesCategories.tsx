@@ -111,7 +111,6 @@ export default function ServicesCategories({
   const { data: locations } = useSWR("/api/servicesPublic", fetcher) as {
     data: Service[];
   };
-  console.log(locations);
 
   useEffect(() => {
     setServicesList(locations);

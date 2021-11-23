@@ -35,7 +35,7 @@ export type Guest = {
   transport: boolean;
   age?: number;
   gender?: number;
-  groups: number[];
+  groups: Group[];
   diet: number;
   additionalInfo?: string;
 };

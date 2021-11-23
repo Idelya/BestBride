@@ -242,7 +242,7 @@ export default function SummarySection() {
     () => group(Object.keys(stats || {}), stats || {}),
     [stats]
   );
-  console.log(grouped, stats, dietsStats);
+
   if (!stats || !dietsStats) {
     return (
       <section>

@@ -91,7 +91,7 @@ export default function LocationPage() {
   const [loader, setLoader] = useState<boolean>(false);
   const [file, setFile] = useState<File>();
   const [gallery, setGallery] = useState<File[]>([]);
-  console.log(gallery);
+
   const handleAddService = async () => {
     try {
       setLoader(true);
@@ -137,18 +137,16 @@ export default function LocationPage() {
               galleryLinks.push(url);
             });
         });
-        console.log(galleryLinks);
         await Promise.all(uploaders);
       }
       try {
-        console.log(galleryLinks.join(";"));
         const x = await axios.post(
           "/api/serviceAdd",
           url
             ? {
                 ...formData,
                 fileLink: url,
-                innerKey: 2,
+                innerKey: 4,
                 galleryFile: galleryLinks.join(";"),
               }
             : formData

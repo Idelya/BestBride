@@ -92,10 +92,12 @@ export default function GuestList({
   addGuest,
   data,
   error,
+  update,
 }: {
   addGuest: () => void;
   data: Guest[] | undefined;
   error: boolean;
+  update: () => void;
 }) {
   const classes = useStyles();
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
@@ -126,6 +128,7 @@ export default function GuestList({
           open={!!showGuest}
           handleClose={() => setShowGuest(undefined)}
           guest={showGuest}
+          update={update}
         />
       )}
       <div className={classes.main}>

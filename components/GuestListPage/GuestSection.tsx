@@ -176,12 +176,15 @@ export default function GuestSection() {
           addGroup={() => setAddGroup(true)}
           data={searchGuests || []}
           error={!!errorGuests}
+          updateGuest={mutate}
+          updateGroups={updateGroups}
         />
       ) : (
         <GuestList
           addGuest={() => setAddGuest(true)}
           data={searchGuests.map((group) => group.guests).flat() || []}
           error={!!errorGuests}
+          update={mutate}
         />
       )}
     </section>

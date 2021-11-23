@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import {
@@ -23,6 +24,8 @@ import GroupEdit from "./GroupEdit";
 import { getValue } from "../../config/helpers";
 import Loading from "../Loading";
 import { GuestContext } from "./GuestContext";
+import { store } from "react-notifications-component";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,6 +86,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1),
       justifyContent: "center",
     },
+    spacing: {
+      marginLeft: theme.spacing(3),
+    },
   })
 );
 
@@ -90,17 +96,57 @@ export default function GroupList({
   addGroup,
   data,
   error,
+  updateGuest,
+  updateGroups,
 }: {
   addGroup: () => void;
   data: Group[];
   error: boolean;
+  updateGuest: () => void;
+  updateGroups: () => void;
 }) {
   const classes = useStyles();
   const [showGroup, setShowGroup] = useState<Group | undefined>();
   const [showGuest, setShowGuest] = useState<Guest | undefined>();
 
   const { statusOptions } = useContext(GuestContext);
-
+  const handleDeleteGroup = async (id: number) => {
+    try {
+      const x = await axios.delete("/api/groupDel/" + id);
+      if (x.data) {
+        store.addNotification({
+          title: "Success",
+          message: "Usunieto grupę.",
+          type: "success",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+        updateGroups();
+      } else {
+        store.addNotification({
+          title: "Bląd",
+          message: "Spróbuj ponownie później",
+          type: "danger",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   if (error)
     return (
       <div className={classes.main}>
@@ -126,6 +172,7 @@ export default function GroupList({
           open={!!showGuest}
           handleClose={() => setShowGuest(undefined)}
           guest={showGuest}
+          update={updateGuest}
         />
       )}
       {showGroup && (
@@ -169,13 +216,26 @@ export default function GroupList({
                   <ListItem
                     key={group.name}
                     secondaryAction={
-                      <IconButton
-                        edge="end"
-                        aria-label="edit"
-                        onClick={() => setShowGroup(group)}
-                      >
-                        <EditIcon color="primary" />
-                      </IconButton>
+                      <Box>
+                        <IconButton
+                          edge="end"
+                          aria-label="edit"
+                          onClick={() => setShowGroup(group)}
+                          className={classes.spacing}
+                        >
+                          <EditIcon color="primary" />
+                        </IconButton>
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() =>
+                            group.id && handleDeleteGroup(group.id)
+                          }
+                          className={classes.spacing}
+                        >
+                          <DeleteIcon color="primary" />
+                        </IconButton>
+                      </Box>
                     }
                     disablePadding
                     className={classes.groupItem}

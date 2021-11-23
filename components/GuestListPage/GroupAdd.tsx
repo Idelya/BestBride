@@ -110,7 +110,6 @@ export default function GroupAdd({ open, handleClose, guests }: GuestAddProps) {
           ...values,
           guests: guestInList.map((g) => g.id),
         })) as any;
-        console.log(x);
         const y = await axios.post("/api/guestToGroup", {
           group: x?.data?.data.id,
           guests: guestInList.map((g) => g.id),

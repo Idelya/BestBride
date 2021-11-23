@@ -54,7 +54,7 @@ export default function Gallery() {
 
   const { mode, currentService, setService, gallery, setGallery } =
     useContext(ServiceContext);
-  console.log(gallery);
+
   return (
     <div className={classes.container}>
       {mode === "edit" ? (
@@ -70,15 +70,12 @@ export default function Gallery() {
             <UploadImage
               id="gallery"
               onImageChange={(img, file) => {
-                console.log("on Image change");
-                console.log(img, file);
                 setService({
                   ...currentService,
                   images: (currentService?.images
                     ? currentService.images.concat([img])
                     : [img]) as string[],
                 });
-                console.log(currentService);
                 setGallery((gallery || []).concat([file]));
               }}
             />

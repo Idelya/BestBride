@@ -93,7 +93,7 @@ export default function Filters({
   const handleSubmitFilters = (values: ValuesTypes) => {
     const filtr = guests.map((groups) => {
       return {
-        name: groups.name,
+        ...groups,
         guests: groups.guests
           ?.filter(
             (guest) =>
