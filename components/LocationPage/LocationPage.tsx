@@ -91,6 +91,7 @@ export default function LocationPage() {
   const classes = useStyles();
   const router = useRouter();
   const [currentService, setCurrentService] = useState<Service>();
+  const [gallery, setGallery] = useState<File[]>([]);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { id } = router.query;
   const [mode, setMode] = useState<"edit" | "view">(
@@ -101,7 +102,10 @@ export default function LocationPage() {
   /*const { data: isOwner } = useSWR("api/isservice/" + id, fetcherAuth);*/
   useEffect(() => {
     if (!data) return;
-    setCurrentService(data);
+    setCurrentService({
+      ...data,
+      images: data?.galleryFile?.split(";"),
+    });
 
     if (data.detailsStyle) {
       setEditorState(
@@ -114,7 +118,10 @@ export default function LocationPage() {
   const [file, setFile] = useState<File>();
   const handleReset = () => {
     setMode("view");
-    setCurrentService(data);
+    setCurrentService({
+      ...data,
+      images: data?.galleryFile?.split(";"),
+    });
   };
 
   const handleViewVersion = () => {
@@ -182,7 +189,7 @@ export default function LocationPage() {
   const { data: statusOptions } = useSWR("api/servicestatus", fetcher) as {
     data: Option[];
   };
-
+  console.log(data);
   if (!data) {
     return (
       <Container className={classes.container}>
@@ -202,6 +209,8 @@ export default function LocationPage() {
         setService: setCurrentService,
         profileImg: file,
         setProfileImg: setFile,
+        gallery: gallery,
+        setGallery: setGallery,
         editorState: editorState,
         setEditorState: setEditorState,
         statusOptions: statusOptions,

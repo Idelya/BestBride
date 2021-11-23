@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -30,6 +31,7 @@ import { store } from "react-notifications-component";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { blockToText } from "../../config/helpers";
 import SETTINGS from "../../config/settings";
+import Loading from "../Loading";
 
 const location = {
   id: 1,
@@ -86,10 +88,13 @@ export default function LocationPage() {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [currentService, setCurrentService] = useState<Service>(location);
+  const [loader, setLoader] = useState<boolean>(false);
   const [file, setFile] = useState<File>();
-
+  const [gallery, setGallery] = useState<File[]>([]);
+  console.log(gallery);
   const handleAddService = async () => {
     try {
+      setLoader(true);
       const service = {
         ...currentService,
         details: blockToText(convertToRaw(editorState.getCurrentContent())),
@@ -115,10 +120,38 @@ export default function LocationPage() {
           .catch((err) => console.log(err));
       }
 
+      const galleryLinks: string[] = [];
+      if (gallery.length > 0) {
+        const uploaders = gallery.map((img) => {
+          const formData = new FormData();
+          formData.append("file", img);
+          formData.append("upload_preset", SETTINGS.upload_preset || "");
+          formData.append("cloud_name", SETTINGS.cloud_name || "");
+          return fetch(SETTINGS.cloud_link || "", {
+            method: "post",
+            body: formData,
+          })
+            .then((resp) => resp.json())
+            .then((data) => {
+              url = data.url;
+              galleryLinks.push(url);
+            });
+        });
+        console.log(galleryLinks);
+        await Promise.all(uploaders);
+      }
       try {
+        console.log(galleryLinks.join(";"));
         const x = await axios.post(
           "/api/serviceAdd",
-          url ? { ...formData, fileLink: url, innerKey: 1 } : formData
+          url
+            ? {
+                ...formData,
+                fileLink: url,
+                innerKey: 2,
+                galleryFile: galleryLinks.join(";"),
+              }
+            : formData
         );
         await router.push("/companies-locations-list");
         store.addNotification({
@@ -152,6 +185,8 @@ export default function LocationPage() {
           onScreen: true,
         },
       });
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -168,6 +203,21 @@ export default function LocationPage() {
     data: Option[];
   };
 
+  if (loader) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Loading />
+      </Box>
+    );
+  }
+
   return (
     <ServiceContext.Provider
       value={{
@@ -177,6 +227,8 @@ export default function LocationPage() {
         setService: setCurrentService,
         profileImg: file,
         setProfileImg: setFile,
+        gallery: gallery,
+        setGallery: setGallery,
         editorState: editorState,
         setEditorState: setEditorState,
         statusOptions: statusOptions,

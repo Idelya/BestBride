@@ -22,7 +22,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const UploadImage = ({
   onImageChange,
-}: { onImageChange: (values: string, file: File) => void } & ButtonProps) => {
+  id = "icon-button-file",
+}: {
+  id?: string;
+  onImageChange: (values: string, file: File) => void;
+} & ButtonProps) => {
   const classes = useStyles();
 
   const handleOnClick = (e: ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +38,10 @@ const UploadImage = ({
   };
 
   return (
-    <label htmlFor="icon-button-file">
+    <label htmlFor={id}>
       <input
         accept="image/*"
-        id="icon-button-file"
+        id={id}
         type="file"
         className={classes.hide}
         onChange={handleOnClick}

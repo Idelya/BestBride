@@ -95,6 +95,7 @@ export type Service = {
   detailsStyle?: string;
   rejectionDetails?: string;
   fileLink?: string;
+  galleryFile?: string;
   expenseId?: number;
   category?: number;
   contact?: Contact;

@@ -17,7 +17,6 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { ServiceStatusType } from "../../config/types";
 import ImageGallery from "react-image-gallery";
 import { ServiceContext } from "./ServiceContext";
 import UploadImage from "../UploadFiles";
@@ -53,7 +52,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Gallery() {
   const classes = useStyles();
 
-  const { mode, currentService, setService } = useContext(ServiceContext);
+  const { mode, currentService, setService, gallery, setGallery } =
+    useContext(ServiceContext);
+  console.log(gallery);
   return (
     <div className={classes.container}>
       {mode === "edit" ? (
@@ -67,14 +68,19 @@ export default function Gallery() {
           <Typography>
             Dodaj zdjęcie:
             <UploadImage
-              onImageChange={(img) =>
+              id="gallery"
+              onImageChange={(img, file) => {
+                console.log("on Image change");
+                console.log(img, file);
                 setService({
                   ...currentService,
                   images: (currentService?.images
                     ? currentService.images.concat([img])
                     : [img]) as string[],
-                })
-              }
+                });
+                console.log(currentService);
+                setGallery((gallery || []).concat([file]));
+              }}
             />
           </Typography>
 
@@ -86,14 +92,17 @@ export default function Gallery() {
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={() =>
+                    onClick={() => {
                       setService({
                         ...currentService,
                         images: (currentService.images || []).filter(
                           (o) => o != link
                         ),
-                      })
-                    }
+                      });
+                      setGallery(
+                        (gallery || []).filter((_, index) => index != i)
+                      );
+                    }}
                   >
                     <DeleteIcon />
                   </IconButton>

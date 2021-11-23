@@ -6,20 +6,24 @@ export const ServiceContext = createContext<{
   currentService?: Service;
   categories?: ExpenseCategory[];
   mode: "view" | "edit";
-  setService: (newService: Service) => void;
+  setService: (_newService: Service) => void;
   profileImg?: File;
-  setProfileImg: (profileImg: File) => void;
+  setProfileImg: (_file: File) => void;
+  gallery?: File[];
+  setGallery: (_galleryImg: File[]) => void;
   editorState?: EditorState;
-  setEditorState?: (state: EditorState) => void;
+  setEditorState?: (_state: EditorState) => void;
   statusOptions?: Option[];
 }>({
   currentService: undefined,
-  setService: (newService) => {},
+  setService: () => {},
   categories: undefined,
   mode: "view",
   profileImg: undefined,
-  setProfileImg: (file) => {},
+  setProfileImg: (_file: any) => {},
+  gallery: [],
+  setGallery: (_: any) => {},
   editorState: undefined,
-  setEditorState: (_) => {},
+  setEditorState: (_: any) => {},
   statusOptions: [],
 });
