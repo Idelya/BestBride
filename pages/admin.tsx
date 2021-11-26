@@ -6,6 +6,10 @@ import { User } from "../config/types";
 import { setUser } from "../store/slices/auth";
 import { authPage } from "../store/auth";
 import { AdminPanelPage } from "../components/AdminPanelPage";
+import { CompaniesLocationsListPage } from "../components/CompaniesLocationsListPage";
+import { User } from "../config/types";
+import { setUser } from "../store/slices/auth";
+import { authPage } from "../store/auth";
 
 const AdminAuthGuard = dynamic<{}>(() =>
   import("../components/Guards/AdminAuthGuard").then(
