@@ -6,7 +6,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const cookies = new Cookies(req, res);
   try {
     const response = await request.post("api/logout");
-
     cookies.set("jwt");
 
     return res.status(200).json({

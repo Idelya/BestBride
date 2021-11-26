@@ -4,7 +4,7 @@ import { Typography, Box, Theme } from "@mui/material";
 import DecorationTypography from "./DecorationTypography";
 import { makeStyles } from "@mui/styles";
 
-interface LogoProps {
+interface DividerProps {
   children?: string;
   variant?:
     | "h1"
@@ -20,6 +20,9 @@ interface LogoProps {
     | "body2"
     | "overline";
   textAlign?: "left" | "right" | "center";
+  component?: "h1" | "h2" | "p";
+  secondary?: string;
+  textMargin?: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,11 +45,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   text: {
     padding: theme.spacing(0.5, 2),
     backgroundColor: "white",
+    position: "relative",
+  },
+  spacing: {
     margin: theme.spacing(0, 20),
   },
   alignCenter: { justifyContent: "center" },
   alignRight: {
     justifyContent: "flex-end",
+  },
+  secondary: {
+    position: "absolute",
+    textAlign: "center",
+    marginLeft: theme.spacing(-2),
+    width: "100%",
+    transform: "translateY(-100%)",
   },
 }));
 
@@ -54,7 +67,10 @@ const Divider = ({
   children,
   variant = "h4",
   textAlign = "left",
-}: LogoProps) => {
+  component = "h1",
+  secondary,
+  textMargin,
+}: DividerProps) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -69,10 +85,16 @@ const Divider = ({
       >
         <Typography
           variant={variant}
-          component="h1"
           color="primary"
-          className={classes.text}
+          className={classes.text + " " + (!textMargin && classes.spacing)}
+          component={component}
+          sx={textMargin ? { margin: "0 " + textMargin } : undefined}
         >
+          {secondary && (
+            <Typography color="gray" className={classes.secondary}>
+              {secondary}
+            </Typography>
+          )}
           {children}
         </Typography>
       </div>

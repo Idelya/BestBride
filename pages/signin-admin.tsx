@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useDispatch } from "react-redux";
 import Head from "next/head";
 import Image from "next/image";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import Layout from "../components/common/Layout";
 import { SignInAdminPage } from "../components/SignInAdminPage";
 import { setUser } from "../store/slices/auth";
@@ -24,7 +24,9 @@ const SignInAdmin: NextPage<{ user: User; children?: ReactNode }> = ({
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
-  dispatch(setUser(user));
+  useEffect(() => {
+    dispatch(setUser({ me: user }));
+  });
   return (
     <UnauthGuard>
       <SignInAdminPage />

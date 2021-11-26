@@ -32,20 +32,20 @@ export const ROUTES = {
     link: "/profil/#profil",
   },
   organizer: {
-    name: "Orgaznizer",
-    link: "/organizer",
+    name: "Planner",
+    link: "/planner",
   },
   budget: {
     name: "Budżet",
     link: "/budget",
   },
-  calendar: {
-    name: "Kalendarz",
-    link: "/calendar",
-  },
   weddingSettings: {
     name: "Dane ślubu",
     link: "/profil/#weddingSettings",
+  },
+  guestList: {
+    name: "Lista gości",
+    link: "/guest-list",
   },
 };
 
@@ -57,9 +57,9 @@ export const GUEST_ROUTES_NAV = [
 
 export const USER_ROUTES_NAV = [
   ROUTES.organizer,
+  ROUTES.guestList,
   ROUTES.services,
   ROUTES.budget,
-  ROUTES.calendar,
 ];
 
 export const USER_MENU = [ROUTES.profil, ROUTES.weddingSettings];

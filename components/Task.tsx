@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       margin: theme.spacing(2),
-      padding: theme.spacing(3, 0),
+      padding: theme.spacing(2, 0),
       border: "1px solid " + theme.palette.primary.main,
       boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
       display: "flex",
@@ -15,16 +15,20 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       justifyContent: "space-around",
       height: "100px",
+      backgroundColor: "white",
     },
   })
 );
 
-export default function Task() {
+interface TaskProps {
+  children?: string;
+}
+export default function Task({ children }: TaskProps) {
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <Typography variant="h6" color="primary">
-        Tytuł zadania
+        {children}
       </Typography>
     </div>
   );

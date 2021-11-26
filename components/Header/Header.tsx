@@ -6,6 +6,7 @@ import Logo from "../Logo";
 import Account from "./Account";
 import Nav from "./Nav";
 import NavLink from "./NavLink";
+import ReactNotification from "react-notifications-component";
 
 const useStyles = makeStyles({
   root: {
@@ -15,6 +16,9 @@ const useStyles = makeStyles({
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
+  },
+  marginNotification: {
+    margin: "32px",
   },
 });
 
@@ -27,6 +31,7 @@ const Header = () => {
       className={classes.root}
       color="inherit"
     >
+      <ReactNotification className={classes.marginNotification} />
       <Toolbar variant="dense" className={classes.toolbar}>
         <Logo />
         <Nav />

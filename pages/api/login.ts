@@ -31,10 +31,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
     return null;
   } catch (e) {
+    console.log(e);
     return res.status(401).json({
       status: "fail",
       // @ts-ignore
-      message: e.response?.data.message,
+      message: e.response.data,
     });
   }
 };

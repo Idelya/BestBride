@@ -2,6 +2,7 @@ import React from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Card,
+  Button,
   CardActionArea,
   CardContent,
   CardHeader,
@@ -9,37 +10,20 @@ import {
   Container,
   Grid,
   Theme,
+  Box,
   Typography,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import Divider from "../Divider";
 import { number } from "yup";
-
-const locations = [
-  {
-    id: 1,
-    img: "https://restauracjaakademia.pl/wp-content/uploads//2018/04/restauracja-akademia-trendy-gastronomiczne-blog.jpg",
-    status: "Wersja robocza",
-    name: "Sklep 1",
-  },
-  {
-    id: 2,
-    img: "",
-    status: "Wersja robocza",
-    name: "Sklep 2",
-  },
-  {
-    id: 3,
-    img: "",
-    status: "Wersja robocza",
-    name: "Sklep 3",
-  },
-  {
-    id: 4,
-    img: "",
-    status: "Wersja robocza",
-    name: "Sklep 4",
-  },
-];
+import { useRouter } from "next/router";
+import axios from "axios";
+import useSWR from "swr";
+import { Service, Option } from "../../config/types";
+import Loading from "../Loading";
+import { getValue } from "../../utils/helpers";
+import request from "../../config/requests";
+import { sortBy } from "lodash";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,49 +64,108 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     background: {
       backgroundColor: "#F8F8F8",
-
       position: "absolute",
       top: 0,
       left: 0,
       width: "100%",
       height: "100%",
     },
+    btn: {
+      textTransform: "none",
+    },
   })
 );
+
+const statusTocolor = ["#FDFFE6", "#E6FFFC", "#D4FFD7", "#FFE6E6", "#000000"];
+const fetcherUnauth = (url: string) => request.get(url).then((res) => res.data);
+
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function CompaniesLocationsListPage() {
   const classes = useStyles();
+  const router = useRouter();
+
+  const redirectToLocationPage = async (id: number) => {
+    await router.push(`services/${id}`);
+  };
+
+  const redirectToNewPage = async () => {
+    await router.push(`/services/new`);
+  };
+
+  const { data: locations } = useSWR("api/locations", fetcher) as {
+    data: Service[];
+  };
+  console.log(locations);
+  const { data: statusOptions } = useSWR(
+    "api/servicestatus",
+    fetcherUnauth
+  ) as {
+    data: Option[];
+  };
+
+  if (!locations) {
+    return (
+      <Container className={classes.container}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Loading />
+        </Box>
+      </Container>
+    );
+  }
+
   return (
     <Container className={classes.container}>
-      <Divider textAlign="center">Twoje lokalizacje</Divider>
+      <Button
+        startIcon={<AddIcon />}
+        onClick={redirectToNewPage}
+        className={classes.btn}
+      >
+        Dodaj usługę
+      </Button>
+      <Divider textAlign="center">Twoje usługi</Divider>
       <Grid container spacing={4} className={classes.grid}>
-        {locations.map((loc) => (
-          <Grid item md={4} key={loc.id}>
-            <Card className={classes.card}>
-              <CardActionArea>
-                {!loc.img && <CardContent className={classes.background} />}
-                <CardMedia
-                  component="img"
-                  height="250"
-                  image={loc.img}
-                  alt=""
-                />
-                <CardContent className={classes.content}>
-                  <Typography color="primary" variant="h5">
-                    {loc.name}
-                  </Typography>
-                </CardContent>
-                <CardContent
-                  className={classes.status}
-                  sx={{ backgroundColor: "#FDFFE6" }}
-                >
-                  <Typography color="primary" variant="subtitle1">
-                    {loc.status}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
+        {!locations || locations.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography>Nie masz jeszcze żadnych usług.</Typography>
           </Grid>
-        ))}
+        ) : (
+          sortBy(locations, ["innerKey", "status"]).map((loc) => (
+            <Grid item md={4} key={loc.id}>
+              <Card className={classes.card}>
+                <CardActionArea
+                  onClick={async () =>
+                    loc.id
+                      ? await redirectToLocationPage(loc.id)
+                      : console.error("Lokalizacja nie istnieje")
+                  }
+                >
+                  {!loc.fileLink && (
+                    <CardContent className={classes.background} />
+                  )}
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={loc.fileLink}
+                    alt=""
+                  />
+                  <CardContent className={classes.content}>
+                    <Typography color="primary" variant="h5">
+                      {loc.name}
+                    </Typography>
+                  </CardContent>
+                  <CardContent
+                    className={classes.status}
+                    sx={{ backgroundColor: statusTocolor[loc?.status || 0] }}
+                  >
+                    <Typography color="primary" variant="subtitle1">
+                      {getValue(statusOptions || [], loc.status)}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          ))
+        )}
       </Grid>
     </Container>
   );

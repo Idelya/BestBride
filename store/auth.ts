@@ -32,7 +32,6 @@ export const authPage = async (ctx: { req: { cookies: { jwt: any } } }) => {
 export const unauthPage = async (ctx: { req: { cookies: { jwt: any } } }) => {
   const token = ctx.req.cookies.jwt;
   let apiResponse;
-
   if (!token) {
     return {
       props: {

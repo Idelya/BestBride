@@ -19,7 +19,7 @@ const SignUpCompanies: NextPage<{ user: User; children?: ReactNode }> = ({
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
-  dispatch(setUser(user));
+  dispatch(setUser({ me: user }));
   return (
     <UnauthGuard>
       <SignUpCompaniesPage />
