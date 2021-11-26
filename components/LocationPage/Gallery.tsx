@@ -106,15 +106,17 @@ export default function Gallery() {
                 }
               >
                 <div className={classes.media}>
-                  <Image
-                    className={classes.media}
-                    src={link}
-                    alt="gallery_img"
-                    layout="responsive"
-                    width={250}
-                    height={100}
-                    objectFit="contain"
-                  />
+                  {link && (
+                    <Image
+                      className={classes.media}
+                      src={link}
+                      alt="gallery_img"
+                      layout="responsive"
+                      width={250}
+                      height={100}
+                      objectFit="contain"
+                    />
+                  )}
                 </div>
               </ListItem>
             ))}

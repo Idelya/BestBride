@@ -1,5 +1,5 @@
 import { getHours } from "date-fns";
-import { Diet, ExpenseCategory, Option } from "./types";
+import { Diet, ExpenseCategory, Option } from "../config/types";
 export const getValue = (options: Option[], key?: number): string =>
   key || key === 0
     ? options.find((option) => option.key === key)?.value || "Brak danych"

@@ -24,7 +24,7 @@ import Filters from "./Filters";
 import GuestList from "./GuestList";
 import { Guest } from "../../config/types";
 import { style } from "@mui/system";
-import { getValue, getValueFromDiet } from "../../config/helpers";
+import { getValue, getValueFromDiet } from "../../utils/helpers";
 import { GuestContext } from "./GuestContext";
 import Loading from "../Loading";
 import axios from "axios";

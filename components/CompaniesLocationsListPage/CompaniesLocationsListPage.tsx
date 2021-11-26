@@ -21,8 +21,9 @@ import axios from "axios";
 import useSWR from "swr";
 import { Service, Option } from "../../config/types";
 import Loading from "../Loading";
-import { getValue } from "../../config/helpers";
+import { getValue } from "../../utils/helpers";
 import request from "../../config/requests";
+import { sortBy } from "lodash";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,13 +89,13 @@ export default function CompaniesLocationsListPage() {
   };
 
   const redirectToNewPage = async () => {
-    await router.push(`services/new`);
+    await router.push(`/services/new`);
   };
 
   const { data: locations } = useSWR("api/locations", fetcher) as {
     data: Service[];
   };
-
+  console.log(locations);
   const { data: statusOptions } = useSWR(
     "api/servicestatus",
     fetcherUnauth
@@ -128,7 +129,7 @@ export default function CompaniesLocationsListPage() {
             <Typography>Nie masz jeszcze żadnych usług.</Typography>
           </Grid>
         ) : (
-          locations.map((loc) => (
+          sortBy(locations, ["innerKey", "status"]).map((loc) => (
             <Grid item md={4} key={loc.id}>
               <Card className={classes.card}>
                 <CardActionArea

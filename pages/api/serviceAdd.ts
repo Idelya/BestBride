@@ -7,11 +7,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const cookies = new Cookies(req, res);
   const token = cookies.get("jwt");
   const { body } = req;
+
+  console.log(body);
   try {
-    const response = await request.post("api/service", body, {
+    const response = await request.post("api/fullservice", body, {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
-
+    console.log(response);
     return res.status(200).json({ data: response.data });
   } catch (e: any) {
     console.log(e);

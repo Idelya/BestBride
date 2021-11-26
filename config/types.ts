@@ -88,6 +88,7 @@ export type RoleType = "user" | "admin" | "firm";
 
 export type Service = {
   id?: number;
+  innerKey?: number;
   img?: string;
   status?: number;
   name?: string;
@@ -101,6 +102,36 @@ export type Service = {
   contact?: Contact;
   address?: Address;
   images?: string[];
+  version?: number;
+};
+
+export type FullService = {
+  id?: number;
+  innerKey?: number;
+  img?: string;
+  status?: number;
+  name?: string;
+  details?: string;
+  detailsStyle?: string;
+  rejectionDetails?: string;
+  fileLink?: string;
+  galleryFile?: string;
+  expenseId?: number;
+  category?: number;
+  contact?: Contact;
+  address?: Address;
+  images?: string[];
+  version?: number;
+  email?: string;
+  phone?: string;
+  url?: string;
+  contactDetails?: string;
+  country?: string;
+  city?: string;
+  region?: string;
+  street?: string;
+  streetNumber?: string;
+  streetNumber2?: string;
 };
 
 export type Contact = {

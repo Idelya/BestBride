@@ -13,7 +13,7 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { Service, ServiceStatusType } from "../../config/types";
+import { Service } from "../../config/types";
 import { Map, Marker, Draggable, ZoomControl } from "pigeon-maps";
 import { ServiceContext } from "./ServiceContext";
 
@@ -57,7 +57,7 @@ export default function Contact() {
   return (
     <Grid container className={classes.container}>
       <Grid item md={6}>
-        {(mode === "edit" || currentService?.contact?.email) && (
+        {(mode === "edit" || currentService?.email) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Email:
@@ -71,25 +71,22 @@ export default function Contact() {
                 className={classes.spacing}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
-                value={currentService?.contact?.email || ""}
+                value={currentService?.email || ""}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      email: e.target.value,
-                    },
+                    email: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.contact?.email}
+                {currentService?.email}
               </Typography>
             )}
           </div>
         )}
-        {(mode === "edit" || currentService?.contact?.phone) && (
+        {(mode === "edit" || currentService?.phone) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Telefon:
@@ -100,27 +97,24 @@ export default function Contact() {
                 name="phone"
                 size="small"
                 className={classes.spacing}
-                value={currentService?.contact?.phone || ""}
+                value={currentService?.phone || ""}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      phone: e.target.value,
-                    },
+                    phone: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.contact?.phone}
+                {currentService?.phone}
               </Typography>
             )}
           </div>
         )}
-        {(mode === "edit" || currentService?.contact?.url) && (
+        {(mode === "edit" || currentService?.url) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Strona:
@@ -131,16 +125,13 @@ export default function Contact() {
                 name="website"
                 size="small"
                 className={classes.spacing}
-                value={currentService?.contact?.url || ""}
+                value={currentService?.url || ""}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      url: e.target.value,
-                    },
+                    url: e.target.value,
                   })
                 }
               />
@@ -149,50 +140,47 @@ export default function Contact() {
                 color="primary"
                 className={classes.spacing}
                 component="a"
-                href={"https://" + currentService?.contact?.url}
+                href={"https://" + currentService?.url}
                 target="_blank"
               >
-                {currentService?.contact?.url}
+                {currentService?.url}
               </Typography>
             )}
           </div>
         )}
 
-        {(mode === "edit" || currentService?.contact?.details) && (
+        {(mode === "edit" || currentService?.contactDetails) && (
           <div>
             <Typography variant="subtitle1" color="GrayText">
               Dodatkowe informacje:
             </Typography>
             {mode === "edit" ? (
               <TextField
-                id="details"
-                name="details"
+                id="contactDetails"
+                name="contactDetails"
                 multiline
                 rows={4}
                 fullWidth
-                value={currentService?.contact?.details || ""}
+                value={currentService?.contactDetails || ""}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      details: e.target.value,
-                    },
+                    contactDetails: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.contact?.details}
+                {currentService?.contactDetails}
               </Typography>
             )}
           </div>
         )}
       </Grid>
       <Grid item md={6}>
-        {(mode === "edit" || currentService?.address?.street) && (
+        {(mode === "edit" || currentService?.street) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Ulica:
@@ -205,26 +193,23 @@ export default function Contact() {
                 className={classes.spacing}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
-                value={currentService?.address?.street || ""}
+                value={currentService?.street || ""}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    address: {
-                      ...currentService?.address,
-                      street: e.target.value,
-                    },
+                    street: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.address?.street}
+                {currentService?.street}
               </Typography>
             )}
           </div>
         )}
 
-        {(mode === "edit" || currentService?.address?.streetNumber) && (
+        {(mode === "edit" || currentService?.streetNumber) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Numer mieszkania:
@@ -237,25 +222,22 @@ export default function Contact() {
                 className={classes.spacing}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
-                value={currentService?.address?.streetNumber || ""}
+                value={currentService?.streetNumber || ""}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    address: {
-                      ...currentService?.address,
-                      streetNumber: e.target.value,
-                    },
+                    streetNumber: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.address?.streetNumber}
+                {currentService?.streetNumber}
               </Typography>
             )}
           </div>
         )}
-        {(mode === "edit" || currentService?.address?.city) && (
+        {(mode === "edit" || currentService?.city) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Miasto:
@@ -268,25 +250,22 @@ export default function Contact() {
                 className={classes.spacing}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
-                value={currentService?.address?.city || ""}
+                value={currentService?.city || ""}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    address: {
-                      ...currentService?.address,
-                      city: e.target.value,
-                    },
+                    city: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.address?.city}
+                {currentService?.city}
               </Typography>
             )}
           </div>
         )}
-        {(mode === "edit" || currentService?.address?.region) && (
+        {(mode === "edit" || currentService?.region) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Region:
@@ -299,20 +278,17 @@ export default function Contact() {
                 className={classes.spacing}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
-                value={currentService?.address?.region || ""}
+                value={currentService?.region || ""}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    address: {
-                      ...currentService?.address,
-                      region: e.target.value,
-                    },
+                    region: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.address?.region}
+                {currentService?.region}
               </Typography>
             )}
           </div>

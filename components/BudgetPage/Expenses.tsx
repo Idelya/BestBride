@@ -14,7 +14,7 @@ import useSWR from "swr";
 import Loading from "../Loading";
 import RectangularButton from "../RectangularButton";
 import { groupBy } from "lodash";
-import { formatDate } from "../../config/helpers";
+import { formatDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

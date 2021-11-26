@@ -86,6 +86,7 @@ export default function AdminPanelPage() {
           onScreen: true,
         },
       });
+      mutate();
     } catch (postErr) {
       store.addNotification({
         title: "Błąd",
@@ -101,13 +102,16 @@ export default function AdminPanelPage() {
           onScreen: true,
         },
       });
-      mutate();
     }
   };
 
   const handleReject = async (id: number) => {
     try {
-      const x = await axios.put("/api/serviceReject/" + id);
+      const x = await axios.put("/api/serviceReject/" + id, {
+        rejectionDetails: rejectMessage,
+      });
+      setRejectModal(null);
+      mutate();
       store.addNotification({
         title: "Sukces",
         //@ts-ignore
@@ -137,7 +141,6 @@ export default function AdminPanelPage() {
           onScreen: true,
         },
       });
-      mutate();
     }
   };
 

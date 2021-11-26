@@ -29,7 +29,7 @@ import { schema } from "../../schema/ServiceSchema";
 import { store } from "react-notifications-component";
 
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
-import { blockToText } from "../../config/helpers";
+import { blockToText } from "../../utils/helpers";
 import SETTINGS from "../../config/settings";
 import Loading from "../Loading";
 
@@ -41,20 +41,16 @@ const location = {
   category: 1,
   details: "",
   detailsStyle: "",
-  contact: {
-    email: "",
-    phone: "",
-    url: "",
-    details: "",
-  },
-  address: {
-    country: "",
-    city: "",
-    region: "",
-    street: "",
-    streetNumber: "",
-    streetNumber2: "",
-  },
+  email: "",
+  phone: "",
+  url: "",
+  contactDetails: "",
+  country: "",
+  city: "",
+  region: "",
+  street: "",
+  streetNumber: "",
+  streetNumber2: "",
   images: [],
 };
 
@@ -101,17 +97,9 @@ export default function LocationPage() {
         detailsStyle: JSON.stringify(
           convertToRaw(editorState.getCurrentContent())
         ),
-      };
-
-      const { contact, address, ...formData } = service;
-
-      await schema.validate(service);
-      const threePack = {
-        ...formData,
-        ...contact,
-        ...address,
         mode: 0,
       };
+
       let url;
       if (file) {
         const data = new FormData();
@@ -121,7 +109,7 @@ export default function LocationPage() {
         await fetch(SETTINGS.cloud_link || "", { method: "post", body: data })
           .then((resp) => resp.json())
           .then((data) => {
-            url = data.url;
+            url = data.secure_url;
           })
           .catch((err) => console.log(err));
       }
@@ -139,49 +127,32 @@ export default function LocationPage() {
           })
             .then((resp) => resp.json())
             .then((data) => {
-              const imgLink = data.url;
+              const imgLink = data.secure_url;
               galleryLinks.push(imgLink);
             });
         });
         await Promise.all(uploaders);
       }
-      try {
-        const x = await axios.post(
-          "/api/serviceAdd",
-          url
-            ? {
-                ...threePack,
-                fileLink: url,
-                galleryFile: galleryLinks.join(";"),
-              }
-            : {
-                ...threePack,
-                galleryFile: galleryLinks.join(";"),
-              }
-        );
-        await router.push("/companies-locations-list");
-        store.addNotification({
-          title: "Sukces",
-          //@ts-ignore
-          message:
-            "Dodano usługę. Wybierz publikuj, jeżeli chcesz, aby ją udostepnić.",
-          type: "success",
-          insert: "top",
-          container: "bottom-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 5000,
-            onScreen: true,
-          },
-        });
-      } catch (postErr) {}
-    } catch (err) {
+      const x = await axios.post(
+        "/api/serviceAdd",
+        url
+          ? {
+              ...service,
+              fileLink: url,
+              galleryFile: galleryLinks.join(";"),
+            }
+          : {
+              ...service,
+              galleryFile: galleryLinks.join(";"),
+            }
+      );
+      await router.push("/companies-locations-list");
       store.addNotification({
-        title: "Bląd walidacji",
+        title: "Sukces",
         //@ts-ignore
-        message: err?.errors.join(" "),
-        type: "danger",
+        message:
+          "Dodano usługę. Wybierz publikuj, jeżeli chcesz, aby ją udostepnić.",
+        type: "success",
         insert: "top",
         container: "bottom-center",
         animationIn: ["animate__animated", "animate__fadeIn"],
@@ -191,6 +162,7 @@ export default function LocationPage() {
           onScreen: true,
         },
       });
+    } catch (postErr) {
     } finally {
       setLoader(false);
     }

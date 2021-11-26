@@ -21,7 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import GuestInfo from "./GuestInfo";
 import { Group, Guest } from "../../config/types";
 import GroupEdit from "./GroupEdit";
-import { getValue } from "../../config/helpers";
+import { getValue } from "../../utils/helpers";
 import Loading from "../Loading";
 import { GuestContext } from "./GuestContext";
 import { store } from "react-notifications-component";

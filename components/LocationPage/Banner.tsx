@@ -11,7 +11,7 @@ import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
 import { Service } from "../../config/types";
 import { ServiceContext } from "./ServiceContext";
-import { getValueFromExpenseCategory } from "../../config/helpers";
+import { getValueFromExpenseCategory } from "../../utils/helpers";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -146,7 +146,7 @@ export default function Banner() {
         <Typography variant="h6" color="GrayText">
           {mode == "edit" ? "Główny kontakt" : "Kontakt"}
         </Typography>
-        {(mode === "edit" || currentService?.contact?.email) && (
+        {(mode === "edit" || currentService?.email) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Email:
@@ -160,25 +160,22 @@ export default function Banner() {
                 className={classes.spacing}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
-                value={currentService?.contact?.email || ""}
+                value={currentService?.email || ""}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      email: e.target.value,
-                    },
+                    email: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.contact?.email}
+                {currentService?.email}
               </Typography>
             )}
           </div>
         )}
-        {(mode === "edit" || currentService?.contact?.phone) && (
+        {(mode === "edit" || currentService?.phone) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Telefon:
@@ -189,27 +186,24 @@ export default function Banner() {
                 name="phone"
                 size="small"
                 className={classes.spacing}
-                value={currentService?.contact?.phone || ""}
+                value={currentService?.phone || ""}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      phone: e.target.value,
-                    },
+                    phone: e.target.value,
                   })
                 }
               />
             ) : (
               <Typography color="primary" className={classes.spacing}>
-                {currentService?.contact?.phone}
+                {currentService?.phone}
               </Typography>
             )}
           </div>
         )}
-        {(mode === "edit" || currentService?.contact?.url) && (
+        {(mode === "edit" || currentService?.url) && (
           <div className={classes.inline}>
             <Typography variant="subtitle1" color="GrayText">
               Strona:
@@ -220,16 +214,13 @@ export default function Banner() {
                 name="website"
                 size="small"
                 className={classes.spacing}
-                value={currentService?.contact?.url || ""}
+                value={currentService?.url || ""}
                 inputProps={{ style: { padding: "3px 5px" } }}
                 InputLabelProps={{ style: { padding: "3px 5px" } }}
                 onChange={(e) =>
                   setService({
                     ...currentService,
-                    contact: {
-                      ...currentService?.contact,
-                      url: e.target.value,
-                    },
+                    url: e.target.value,
                   })
                 }
               />
@@ -238,10 +229,10 @@ export default function Banner() {
                 color="primary"
                 className={classes.spacing}
                 component="a"
-                href={"https://" + currentService?.contact?.url}
+                href={"https://" + currentService?.url}
                 target="_blank"
               >
-                {currentService?.contact?.url}
+                {currentService?.url}
               </Typography>
             )}
           </div>

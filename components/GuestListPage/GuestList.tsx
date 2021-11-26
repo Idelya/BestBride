@@ -24,7 +24,7 @@ import request from "../../config/requests";
 import user from "../../pages/api/user";
 import Loading from "../Loading";
 import axios from "axios";
-import { getValue } from "../../config/helpers";
+import { getValue } from "../../utils/helpers";
 import guest from "../../pages/api/guest";
 import { GuestContext } from "./GuestContext";
 

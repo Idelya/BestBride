@@ -25,7 +25,7 @@ import { ServicesContext } from "./ServicesContext";
 import Search from "../Search";
 import ServicesList from "./ServicesList";
 import { TreeView, TreeItem } from "@mui/lab";
-import { getValueFromExpenseCategory } from "../../config/helpers";
+import { getValueFromExpenseCategory } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

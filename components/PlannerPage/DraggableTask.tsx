@@ -22,7 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RectangularButton from "../RectangularButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TaskDetails from "../TaskDetails";
-import { getValue } from "../../config/helpers";
+import { getValue } from "../../utils/helpers";
 import { PlannerContext } from "./PlannerContext";
 
 const useStyles = makeStyles((theme: Theme) =>

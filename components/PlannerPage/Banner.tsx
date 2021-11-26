@@ -65,9 +65,7 @@ export default function Banner() {
       <Grid item className={classes.headingBox} md={7}>
         <Heading>Planner</Heading>
         <div className={classes.decorator} />
-        <div className={classes.img}>
-          <Image alt="" src={img} />
-        </div>
+        <div className={classes.img}>{img && <Image alt="" src={img} />}</div>
       </Grid>
       <Grid item md={5} className={classes.summary}>
         <Typography

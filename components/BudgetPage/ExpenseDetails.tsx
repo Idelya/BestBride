@@ -19,7 +19,7 @@ import {
   formatDateWithHour,
   getDiffInHours,
   getValueFromExpenseCategory,
-} from "../../config/helpers";
+} from "../../utils/helpers";
 import { ExpenseContext } from "./ExpenseContext";
 
 const useStyles = makeStyles((theme: Theme) =>

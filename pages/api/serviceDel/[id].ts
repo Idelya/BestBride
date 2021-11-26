@@ -8,18 +8,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = cookies.get("jwt");
   const { id } = req.query;
   try {
-    const response = await request.put(
-      "api/servicestatusadmin/" + id,
-      { status: 2 },
-      {
-        headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
-      }
-    );
-
-    return res.status(200).json({ data: response.data });
+    const response = await request.delete(`api/service/${id}`, {
+      headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
+    });
+    return res.status(200).json({ data: "sukces" });
   } catch (e: any) {
     console.log(e);
-    return res.status(400).json({
+    return res.status(401).json({
       status: "fail",
       response: e.response.data,
     });

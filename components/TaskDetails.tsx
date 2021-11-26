@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Task } from "../config/types";
-import { formatDate, formatDateWithHour, getValue } from "../config/helpers";
+import { formatDate, formatDateWithHour, getValue } from "../utils/helpers";
 import { PlannerContext } from "./PlannerPage/PlannerContext";
 
 const useStyles = makeStyles((theme: Theme) =>

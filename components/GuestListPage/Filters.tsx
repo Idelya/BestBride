@@ -19,7 +19,7 @@ import { Group, Guest } from "../../config/types";
 import { Field, Formik, useFormik, useFormikContext } from "formik";
 import { groupBy, uniq } from "lodash";
 import { GuestContext } from "./GuestContext";
-import { getValueFromDiet, getValue } from "../../config/helpers";
+import { getValueFromDiet, getValue } from "../../utils/helpers";
 import SearchInGroup from "./SearchInGroup";
 
 const useStyles = makeStyles((theme: Theme) =>
