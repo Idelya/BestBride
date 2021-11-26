@@ -25,6 +25,13 @@ import RectangularButton from "../RectangularButton";
 import UploadImage from "../UploadFiles";
 import SETTINGS from "../../config/settings";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { User, Option } from "../../config/types";
+import request from "../../config/requests";
+import useSWR from "swr";
+import FullLoading from "../FullLoading";
+import { omit } from "lodash";
+import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,28 +75,74 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ProfilSection() {
+export default function ProfilSection({
+  me,
+  genderOptions,
+}: {
+  me: User;
+  genderOptions: Option[];
+}) {
   const classes = useStyles();
   const [image, setImage] = useState("");
   const [file, setFile] = useState<File | null>(null);
+
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: omit(me, ["id", "role"]),
     onSubmit: async (values) => {
-      if (!file) {
-        return;
+      try {
+        let url = "";
+        if (!!file) {
+          const data = new FormData();
+          data.append("file", file);
+          data.append("upload_preset", SETTINGS.upload_preset || "");
+          data.append("cloud_name", SETTINGS.cloud_name || "");
+          await fetch(SETTINGS.cloud_link || "", { method: "post", body: data })
+            .then((resp) => resp.json())
+            .then((data) => {
+              setImage(data.secure_url);
+              url = data.secure_url;
+            })
+            .catch((err) => console.log(err));
+        }
+        const x = await axios.put(
+          "/api/userEdit/" + me.id,
+          url ? { ...values, photo: url } : values
+        );
+
+        store.addNotification({
+          title: "Success",
+          message: "Profil edytowano.",
+          type: "success",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      } catch (error) {
+        store.addNotification({
+          title: "Błąd",
+          message: "Zapis nie powiódł się. Proszę spróbować później.",
+          type: "danger",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
       }
-      const data = new FormData();
-      data.append("file", file);
-      data.append("upload_preset", SETTINGS.upload_preset || "");
-      data.append("cloud_name", SETTINGS.cloud_name || "");
-      fetch(SETTINGS.cloud_link || "", { method: "post", body: data })
-        .then((resp) => resp.json())
-        .then((data) => {
-          setImage(data.url);
-        })
-        .catch((err) => console.log(err));
     },
   });
+
+  if (!genderOptions) {
+    return <FullLoading />;
+  }
   return (
     <Container component="section" id="profil">
       <Divider>Profil</Divider>
@@ -97,10 +150,11 @@ export default function ProfilSection() {
         <div className={classes.fullWidth}>
           <div className={classes.fields}>
             <div className={classes.media}>
-              {image ? (
+              {image || me.photo ? (
                 <Image
                   className={classes.media}
-                  src={image}
+                  //@ts-ignore
+                  src={image || me.photo}
                   alt="profile_img"
                   layout="responsive"
                   width={350}
@@ -120,17 +174,17 @@ export default function ProfilSection() {
           </div>
           <div className={classes.fields}>
             <TextField
-              id="role"
+              id="gender"
               select
-              name="role"
+              name="gender"
               size="small"
               label=""
-              value={formik.values.role}
+              value={formik.values.gender}
               onChange={formik.handleChange}
             >
-              {roleOptions.map((option, i) => (
-                <MenuItem key={i} value={option}>
-                  {option}
+              {genderOptions.map((e, i) => (
+                <MenuItem key={i} value={e.key}>
+                  {e.value}
                 </MenuItem>
               ))}
             </TextField>
@@ -146,32 +200,11 @@ export default function ProfilSection() {
               helperText={formik.touched.email && formik.errors.email}
             />
             <TextField
-              id="password"
-              name="password"
-              label="Hasło"
-              size="small"
-              type="password"
-              disabled
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-            <br />
-            <TextField
               id="name"
               name="name"
               size="small"
-              label="Imię"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-            />
-            <TextField
-              id="surname"
-              name="surname"
-              label="Nazwisko"
-              size="small"
-              value={formik.values.password}
+              label="Imię i nazwisko"
+              value={formik.values.name}
               onChange={formik.handleChange}
             />
           </div>
