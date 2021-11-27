@@ -124,6 +124,12 @@ export default function Stages() {
     mutate();
   }, [mutate, update]);
 
+  useEffect(() => {
+    if (phases && currPhase) {
+      setCurrPhase(phases.find((p) => p.id === currPhase.id) || null);
+    }
+  }, [phases]);
+
   if (errorPhase)
     return (
       <Box
