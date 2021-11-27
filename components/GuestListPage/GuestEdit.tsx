@@ -258,8 +258,8 @@ export default function GuestEdit({
                   Jest świadkiem:
                 </Typography>
                 <Checkbox
-                  id="isWithness"
-                  name="isWithness"
+                  id="isWitness"
+                  name="isWitness"
                   value={formik.values.isWitness}
                   onChange={formik.handleChange}
                 />

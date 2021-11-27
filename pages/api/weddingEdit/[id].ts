@@ -1,21 +1,22 @@
 import axios from "axios";
 import Cookies from "cookies";
 import { NextApiRequest, NextApiResponse } from "next";
-import request from "../../config/requests";
+import request from "../../../config/requests";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const cookies = new Cookies(req, res);
   const token = cookies.get("jwt");
-
+  const { id } = req.query;
+  const { body } = req;
   try {
-    const response = await request.get("api/wedding", {
+    const response = await request.put("api/wedding/" + id, body, {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
 
-    return res.status(200).json(response.data);
+    return res.status(200).json({ data: response.data });
   } catch (e: any) {
     console.log(e);
-    return res.status(401).json({
+    return res.status(400).json({
       status: "fail",
       response: e.response.data,
     });

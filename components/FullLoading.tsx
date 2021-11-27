@@ -9,8 +9,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     minHeight: "100vh",
     position: "fixed",
+    justifyContent: "center",
+    alignItems: "center",
     top: 0,
-    minwidth: "100vw",
+    minWidth: "100vw",
   },
 }));
 export default function FullLoading({

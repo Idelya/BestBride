@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -23,9 +23,15 @@ import RectangularButton from "../RectangularButton";
 import UploadImage from "../UploadFiles";
 import {
   initialValues,
-  roleOptions,
   weddingSchemaValidation,
 } from "../../schema/WeddingDataSchema";
+import { Diet, Guest, Wedding, Option } from "../../config/types";
+import { isEqual } from "lodash";
+import axios from "axios";
+import { store } from "react-notifications-component";
+import GuestAdd from "../GuestListPage/GuestAdd";
+import useSWR from "swr";
+import request from "../../config/requests";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,60 +60,144 @@ const useStyles = makeStyles((theme: Theme) =>
       "& :hover": {
         color: theme.palette.primary.main,
       },
+      textTransform: "none",
     },
   })
 );
 
-export default function WeddingSection() {
+const fetcher = (url: string) => request.get(url).then((res) => res.data);
+
+export default function WeddingSection({
+  wedding,
+  mutate,
+  guests,
+  mutateGuests,
+}: {
+  wedding: Wedding;
+  mutate: () => void;
+  guests: Guest[];
+  mutateGuests: () => void;
+}) {
+  const { data: dietsOptions } = useSWR("api/diet", fetcher) as {
+    data: Diet[];
+  };
+  const { data: genderOptions } = useSWR("api/gender", fetcher) as {
+    data: Option[];
+  };
+
+  const { data: statusOptions } = useSWR("api/guestStatus", fetcher) as {
+    data: Option[];
+  };
   const classes = useStyles();
-  const [value, setValue] = useState<Date | null>(new Date());
+  const [value, setValue] = useState<Date | null>(
+    //@ts-ignore
+    wedding.date || new Date().setFullYear(new Date().getFullYear() + 1)
+  );
+  const witnesses = guests.filter((e) => e.isWitness);
+  const [witness1, setWitness1] = useState<number | null>(
+    witnesses.length > 0 ? witnesses[0].id : null
+  );
+  const [witness2, setWitness2] = useState<number | null>(
+    witnesses.length > 1 ? witnesses[1].id : null
+  );
+
+  useEffect(() => {
+    setWitness1(witness1);
+  }, [witness1]);
+  useEffect(() => {
+    setWitness2(witness2);
+  }, [witness2]);
+
+  const [addGuest, setAddGuest] = useState<boolean>(false);
+
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: { ...initialValues, ...wedding },
     validationSchema: weddingSchemaValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const x = await axios.put("/api/weddingEdit/" + wedding.id, {
+          ...values,
+          date: value,
+        });
+        if (witness1 !== (witnesses.length > 0 ? witnesses[0].id : null)) {
+          if (witnesses.length > 0) {
+            await axios.put("/api/guestEdit/" + witnesses[0].id, {
+              ...witnesses[0],
+              isWitness: false,
+            });
+          }
+          if (witness1) {
+            await axios.put("/api/guestEdit/" + witness1, {
+              ...guests.find((g) => g.id === witness1),
+              isWitness: true,
+            });
+          }
+        }
+        if (witness2 !== (witnesses.length > 1 ? witnesses[1].id : null)) {
+          if (witnesses.length > 1) {
+            await axios.put("/api/guestEdit/" + witnesses[1].id, {
+              ...witnesses[1],
+              isWitness: false,
+            });
+          }
+          if (witness2) {
+            await axios.put("/api/guestEdit/" + witness2, {
+              ...guests.find((g) => g.id === witness2),
+              isWitness: true,
+            });
+          }
+        }
+        if (x.data) {
+          store.addNotification({
+            title: "Success",
+            message: "Edytowano dane ślubu.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+          mutate();
+          mutateGuests();
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
   return (
     <Container component="section" id="weddingSettings">
       <Divider textAlign="right">Dane ślubu</Divider>
+      <GuestAdd
+        open={addGuest}
+        handleClose={() => {
+          setAddGuest(false);
+          mutateGuests();
+        }}
+        guests={guests}
+        genderOptions={genderOptions}
+        dietsOptions={dietsOptions}
+        statusOptions={statusOptions}
+      />
       <form onSubmit={formik.handleSubmit} className={classes.form}>
-        <div>
-          <TextField
-            id="role"
-            select
-            name="role"
-            size="small"
-            label=""
-            value={formik.values.role}
-            onChange={formik.handleChange}
-            className={classes.spacing}
-          >
-            {roleOptions.map((option, i) => (
-              <MenuItem key={i} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="namePartner"
-            name="namePartner"
-            size="small"
-            label="Imię partnera"
-            value={formik.values.namePartner}
-            onChange={formik.handleChange}
-            className={classes.spacing}
-          />
-          <TextField
-            id="surnamePartner"
-            name="surnamePartner"
-            label="Nazwisko partnera"
-            size="small"
-            value={formik.values.surnamePartner}
-            onChange={formik.handleChange}
-            className={classes.spacing}
-          />
-        </div>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
             renderInput={(props) => (
@@ -121,36 +211,60 @@ export default function WeddingSection() {
           />
         </LocalizationProvider>
         <TextField
-          id="church"
-          name="church"
-          label="Kościół"
-          value={formik.values.church}
+          id="children"
+          name="children"
+          size="small"
+          label="Budżet"
+          InputProps={{ inputProps: { min: 0 } }}
+          type="number"
+          value={formik.values.budget}
           onChange={formik.handleChange}
+          error={formik.touched.budget && Boolean(formik.errors.budget)}
+          helperText={formik.touched.budget && formik.errors.budget}
         />
-
-        <Autocomplete
-          options={[]}
-          value={formik.values.witness1}
+        <TextField
+          id="plannedGuestAmmount"
+          name="plannedGuestAmmount"
+          size="small"
+          label="Planowana liczba gości"
+          InputProps={{ inputProps: { min: 0 } }}
+          type="number"
+          value={formik.values.plannedGuestAmmount}
           onChange={formik.handleChange}
+          error={
+            formik.touched.plannedGuestAmmount &&
+            Boolean(formik.errors.plannedGuestAmmount)
+          }
+          helperText={
+            formik.touched.plannedGuestAmmount &&
+            formik.errors.plannedGuestAmmount
+          }
+        />
+        <Autocomplete
+          options={guests.filter((g) => g.id !== witness2)}
           sx={{ width: 250 }}
           renderInput={(params) => (
-            <TextField name="witness1" label="Świadek" {...params} />
+            <TextField name="witness1" label="Świadek 1" {...params} />
           )}
+          value={guests.find((g) => g.id === witness1)}
+          getOptionLabel={(option) => option.name}
+          onChange={(e, value) => setWitness1(value?.id || null)}
         />
         <Autocomplete
-          options={[]}
-          value={formik.values.witness2}
-          onChange={formik.handleChange}
+          options={guests.filter((g) => g.id !== witness1)}
           sx={{ width: 250 }}
           renderInput={(params) => (
-            <TextField name="witness2" label="Świadek" {...params} />
+            <TextField name="witness2" label="Świadek 2" {...params} />
           )}
+          value={guests.find((g) => g.id === witness2)}
+          getOptionLabel={(option) => option.name}
+          onChange={(e, value) => setWitness2(value?.id || null)}
         />
-        <Link href="#" className={classes.btnAdd}>
+        <Button className={classes.btnAdd} onClick={() => setAddGuest(true)}>
           <Typography color="GrayText" variant="body2">
             Dodaj gościa
           </Typography>
-        </Link>
+        </Button>
         <RectangularButton
           color="primary"
           variant="outlined"

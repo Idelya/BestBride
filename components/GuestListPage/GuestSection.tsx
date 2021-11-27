@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Button, ButtonGroup, Theme } from "@mui/material";
 import Divider from "../Divider";
@@ -14,6 +14,7 @@ import axios from "axios";
 import { Group, Guest } from "../../config/types";
 import Search from "../Search";
 import { ConstructionOutlined } from "@mui/icons-material";
+import { GuestContext } from "./GuestContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,9 +44,11 @@ export default function GuestSection() {
   const classes = useStyles();
 
   const [groups, setGroups] = useState<boolean>(false);
-  const [smallList, setSmallList] = useState<boolean>(false);
   const [addGuest, setAddGuest] = useState<boolean>(false);
   const [addGroup, setAddGroup] = useState<boolean>(false);
+
+  const { genderOptions, dietsOptions, statusOptions } =
+    useContext(GuestContext);
 
   const {
     data: guests,
@@ -106,6 +109,9 @@ export default function GuestSection() {
         open={addGuest}
         handleClose={() => setAddGuest(false)}
         guests={guests}
+        genderOptions={genderOptions}
+        dietsOptions={dietsOptions}
+        statusOptions={statusOptions}
       />
       <GroupAdd
         open={addGroup}

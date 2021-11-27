@@ -18,7 +18,7 @@ import Divider from "../Divider";
 import { useFormik } from "formik";
 import { guestSchemaValidation, initialValues } from "../../schema/GuestSchema";
 import { store } from "react-notifications-component";
-import { Guest } from "../../config/types";
+import { Diet, Guest, Option } from "../../config/types";
 import Loading from "../Loading";
 import axios from "axios";
 import { GuestContext } from "./GuestContext";
@@ -54,6 +54,9 @@ interface GuestAddProps {
   open: boolean;
   handleClose: () => void;
   guests?: Guest[];
+  genderOptions?: Option[];
+  dietsOptions?: Diet[];
+  statusOptions?: Option[];
 }
 
 const getFlterPartners = (guests: Guest[]) =>
@@ -63,17 +66,19 @@ export default function GuestAdd({
   open,
   handleClose,
   guests = [],
+  genderOptions = [],
+  dietsOptions = [],
+  statusOptions = [],
 }: GuestAddProps) {
   const classes = useStyles();
   const [partner, setPartner] = useState<number | null>(null);
 
-  const { genderOptions, dietsOptions, statusOptions } =
-    useContext(GuestContext);
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: async (values) => {
       const { guestsGroupGuests, ...formData } = values;
       const guest = !!partner ? { ...formData, partner: partner } : formData;
+      console.log(guest);
       try {
         const x = await axios.post("/api/guestAdd", {
           ...guest,
@@ -270,8 +275,8 @@ export default function GuestAdd({
                     Jest świadkiem:
                   </Typography>
                   <Checkbox
-                    id="isWithness"
-                    name="isWithness"
+                    id="isWitness"
+                    name="isWitness"
                     value={formik.values.isWitness}
                     onChange={formik.handleChange}
                   />

@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import start from "../../public/img/signup.jpg";
-import { User, Option } from "../../config/types";
+import { User, Option, Guest, Wedding } from "../../config/types";
 import Logo from "../Logo";
 import {
   Box,
@@ -27,6 +27,7 @@ import FullLoading from "../FullLoading";
 import { AuthStates } from "../../store/slices/auth";
 import request from "../../config/requests";
 import useSWR from "swr";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const fetcher = (url: string) => request.get(url).then((res) => res.data);
+const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
 export default function ProfilPage() {
   const { loading, me } = useSelector((state: OurStore) => state.authReducer);
   const classes = useStyles();
@@ -46,13 +48,40 @@ export default function ProfilPage() {
     data: Option[];
   };
 
-  if (!me || loading === AuthStates.LOADING || !genderOptions) {
+  const { data: guests, mutate: mutateGuests } = useSWR(
+    "api/guest",
+    fetcherAuth
+  ) as {
+    data: Guest[];
+    mutate: any;
+    error: any;
+  };
+
+  const { data: wedding, mutate } = useSWR("api/wedding", fetcherAuth) as {
+    data: Wedding;
+    mutate: any;
+    error: any;
+  };
+
+  if (
+    !me ||
+    loading === AuthStates.LOADING ||
+    !genderOptions ||
+    !guests ||
+    !wedding
+  ) {
     return <FullLoading />;
   }
+
   return (
     <div className={classes.container}>
       <ProfilSection me={me} genderOptions={genderOptions} />
-      <WeddingSection />
+      <WeddingSection
+        guests={guests}
+        wedding={wedding}
+        mutate={mutate}
+        mutateGuests={mutateGuests}
+      />
     </div>
   );
 }
