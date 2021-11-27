@@ -7,7 +7,7 @@ import Expenses from "./Expenses";
 import { ExpenseContext } from "./ExpenseContext";
 import useSWR from "swr";
 import request from "../../config/requests";
-import { ExpenseCategory } from "../../config/types";
+import { ExpenseCategory, Wedding } from "../../config/types";
 import axios from "axios";
 import { number } from "yup/lib/locale";
 
@@ -40,8 +40,16 @@ export default function BudgetPage() {
     data: ExpenseCategory[];
   };
 
-  const { data: budgetSummary } = useSWR("api/budget", fetcherAuth) as {
+  const { data: budgetSummary, mutate: mutateBudget } = useSWR(
+    "api/budget",
+    fetcherAuth
+  ) as {
     data: StatsCount & StatsSum;
+    mutate: () => void;
+  };
+
+  const { data: wedding } = useSWR("api/wedding", fetcherAuth) as {
+    data: Wedding;
   };
 
   return (
@@ -49,6 +57,8 @@ export default function BudgetPage() {
       value={{
         expenseOptions: expenseOptions || [],
         budgetStats: budgetSummary,
+        mutateBudget: mutateBudget,
+        wedding: wedding,
       }}
     >
       <div>

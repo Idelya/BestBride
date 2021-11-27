@@ -28,7 +28,7 @@ import {
 } from "../../schema/ExpenseSchema";
 import { LocalizationProvider, DateTimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { OPTIONS_STATUS } from "../../config/types";
+import { Expense, OPTIONS_STATUS } from "../../config/types";
 import axios from "axios";
 import { store } from "react-notifications-component";
 import { ExpenseContext } from "./ExpenseContext";
@@ -63,38 +63,45 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface ExpenseAddProps {
+interface ExpenseEditProps {
   open: boolean;
   handleClose: () => void;
   update: () => void;
+  expense: Expense;
 }
-export default function ExpenseAdd({
+export default function ExpenseEdit({
   open,
   handleClose,
   update,
-}: ExpenseAddProps) {
+  expense,
+}: ExpenseEditProps) {
   const { expenseOptions, wedding } = useContext(ExpenseContext);
 
   const classes = useStyles();
-  const [paymentDate, setPaymentDate] = useState<Date | null>(null);
+  const [paymentDate, setPaymentDate] = useState<Date | null>(
+    expense.paymentDate || null
+  );
   const [deadline, setDeadline] = useState<Date | null>(
-    wedding ? wedding.date || new Date() : new Date()
+    expense.finalDate || (wedding ? wedding.date || new Date() : new Date())
   );
 
   const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: expenseSchemaValidation,
+    initialValues: { ...initialValues, ...expense },
     onSubmit: async (values) => {
       const data = !deadline ? values : { ...values, finalDate: deadline };
       const dataWithDates = !paymentDate
         ? data
         : { ...data, paymentDate: paymentDate };
+      console.log({ ...expense, ...dataWithDates });
       try {
-        const x = await axios.post("/api/expenseAdd", dataWithDates);
+        const x = await axios.put("/api/expenseEdit/" + expense.id, {
+          ...expense,
+          ...dataWithDates,
+        });
         if (x.data) {
           store.addNotification({
             title: "Success",
-            message: "Dodano nowy wydatek.",
+            message: "Edytowano wydatek.",
             type: "success",
             insert: "top",
             container: "bottom-center",
@@ -132,7 +139,7 @@ export default function ExpenseAdd({
     <Modal open={open} onClose={handleClose}>
       <form onSubmit={formik.handleSubmit} className={classes.main}>
         <Divider component="p" variant="h5" textMargin="64px">
-          Dodawanie wydatku
+          Edycja wydatku
         </Divider>
         <Grid container>
           <Grid item xs={12} md={6} pr={8}>

@@ -21,6 +21,8 @@ import {
   getValueFromExpenseCategory,
 } from "../../utils/helpers";
 import { ExpenseContext } from "./ExpenseContext";
+import axios from "axios";
+import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,8 +50,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ExpenseDetails {
   expense: Expense;
+  onEditClick: () => void;
+  update: () => void;
 }
-export default function ExpenseDetails({ expense }: ExpenseDetails) {
+export default function ExpenseDetails({
+  expense,
+  onEditClick,
+  update,
+}: ExpenseDetails) {
   const classes = useStyles();
 
   const { expenseOptions } = useContext(ExpenseContext);
@@ -61,6 +69,44 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
       getDiffInHours(new Date(), new Date(expense.finalDate)) <= 24
     );
   }, [expense.finalDate, expense.paid, expense.price]);
+
+  const handleDelete = async () => {
+    try {
+      const x = await axios.delete("/api/expenseDel/" + expense.id);
+      if (x.data) {
+        store.addNotification({
+          title: "Success",
+          message: "Usunieto wydatek.",
+          type: "success",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+        update();
+      } else {
+        store.addNotification({
+          title: "Bląd",
+          message: "Spróbuj ponownie później",
+          type: "danger",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Grid className={classes.details} container columnSpacing={15}>
@@ -150,8 +196,12 @@ export default function ExpenseDetails({ expense }: ExpenseDetails) {
         </div>
       </Grid>
       <Grid item md={11} className={classes.btn}>
-        <Button startIcon={<EditIcon />}>Edytuj</Button>
-        <Button startIcon={<DeleteIcon />}>Usuń</Button>
+        <Button startIcon={<EditIcon />} onClick={onEditClick}>
+          Edytuj
+        </Button>
+        <Button startIcon={<DeleteIcon />} onClick={handleDelete}>
+          Usuń
+        </Button>
       </Grid>
     </Grid>
   );
