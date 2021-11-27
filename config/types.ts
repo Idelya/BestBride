@@ -71,6 +71,8 @@ export type User = {
   email: string;
   id?: number;
   role: string;
+  photo?: string;
+  gender?: null;
 };
 
 export type UserPlanner = {

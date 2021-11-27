@@ -85,12 +85,12 @@ export default function Account() {
             <Tooltip title="Jesteś zalogowany">
               <Button
                 onClick={handleClick}
-                startIcon={<Avatar />}
+                startIcon={<Avatar src={me.photo} />}
                 className={classes.root}
                 size="small"
                 sx={{ ml: 2 }}
               >
-                {me.email}
+                {me.name || me.email}
               </Button>
             </Tooltip>
           </Box>
