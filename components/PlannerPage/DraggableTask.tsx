@@ -95,7 +95,7 @@ interface DraggableTaskProps {
 export default function DraggableTask({ task, index }: DraggableTaskProps) {
   const classes = useStyles();
 
-  const { todoOptions } = useContext(PlannerContext);
+  const { todoOptions, setEditedTask, setUpdate } = useContext(PlannerContext);
   return (
     <Draggable draggableId={task.order.toString()} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
@@ -126,7 +126,11 @@ export default function DraggableTask({ task, index }: DraggableTaskProps) {
               </div>
             </AccordionSummary>
             <AccordionDetails>
-              <TaskDetails task={task} />
+              <TaskDetails
+                task={task}
+                onEditClick={() => setEditedTask(task)}
+                update={setUpdate}
+              />
             </AccordionDetails>
           </Accordion>
         );

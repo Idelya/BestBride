@@ -28,7 +28,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import axios from "axios";
 import { PlannerContext } from "./PlannerContext";
 import useSWR from "swr";
-import { Expense, Option, Phase, UserPlanner } from "../../config/types";
+import { Expense, Option, Phase, Task, UserPlanner } from "../../config/types";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -92,15 +92,17 @@ interface AddTaskProps {
   open: boolean;
   handleClose: () => void;
   update: () => void;
+  task: Task;
   phase: Phase;
 }
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-export default function AddTask({
+export default function EditTask({
   open,
   handleClose,
   update,
+  task,
   phase,
 }: AddTaskProps) {
   const classes = useStyles();
@@ -127,8 +129,7 @@ export default function AddTask({
   };
 
   const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: taskSchemaValidation,
+    initialValues: { ...initialValues, ...task },
     onSubmit: async (values) => {
       const formData = !!user ? { ...values, assigned: user.id } : values;
       const taskWithExp =
@@ -136,9 +137,9 @@ export default function AddTask({
           ? { ...formData, expenses: expenseInList.map((exp) => exp.id) }
           : formData;
       try {
-        const x = await axios.post("/api/taskAdd", {
+        const x = await axios.post("/api/taskEdit/" + task.id, {
+          ...task,
           ...taskWithExp,
-          order: 0,
           date: value,
           phaseId: phase.id,
         });
@@ -147,7 +148,7 @@ export default function AddTask({
           update();
           store.addNotification({
             title: "Sukces",
-            message: "Dodano nowe zadanie.",
+            message: "Edytowano zadanie.",
             type: "success",
             insert: "top",
             container: "bottom-center",
@@ -183,7 +184,7 @@ export default function AddTask({
   return (
     <Modal open={open} onClose={handleClose}>
       <form onSubmit={formik.handleSubmit} className={classes.main}>
-        <Divider variant="h5">Dodawanie zadania</Divider>
+        <Divider variant="h5">Edycja zadania</Divider>
         <Grid container>
           <Grid item xs={12} md={7} pr={10}>
             <div className={classes.inline}>

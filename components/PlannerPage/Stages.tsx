@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -19,6 +19,7 @@ import AddPhase from "./AddPhase";
 import axios from "axios";
 import useSWR from "swr";
 import Loading from "../Loading";
+import { PlannerContext } from "./PlannerContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -107,6 +108,8 @@ export default function Stages() {
     setCurrPhase(stage === currPhase ? null : stage);
   };
 
+  const { update } = useContext(PlannerContext);
+
   const {
     data: phases,
     mutate,
@@ -116,6 +119,10 @@ export default function Stages() {
     mutate: any;
     error: any;
   };
+
+  useEffect(() => {
+    mutate();
+  }, [mutate, update]);
 
   if (errorPhase)
     return (

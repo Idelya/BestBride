@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Accordion,
@@ -15,8 +15,6 @@ import {
 import { Phase, Task } from "../../config/types";
 import AddIcon from "@mui/icons-material/Add";
 import RectangularButton from "../RectangularButton";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TaskDetails from "../TaskDetails";
 import {
   DragDropContext,
   Droppable,
@@ -31,6 +29,7 @@ import useSWR from "swr";
 import Loading from "../Loading";
 import axios from "axios";
 import { PlannerContext } from "./PlannerContext";
+import EditTask from "./EditTask";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,7 +116,8 @@ export default function TasksList({ phase }: TasksListProps) {
   const [filtrList, setFiltrList] = useState<number>(1);
   const [openTaskAdd, setOpenTaskAdd] = useState<boolean>(false);
 
-  const { todoOptions } = useContext(PlannerContext);
+  const { todoOptions, editedTask, update, setUpdate, setEditedTask } =
+    useContext(PlannerContext);
   const {
     data: tasks,
     mutate,
@@ -127,6 +127,10 @@ export default function TasksList({ phase }: TasksListProps) {
     mutate: any;
     error: any;
   };
+
+  useEffect(() => {
+    mutate();
+  }, [mutate, update]);
 
   const [localItems, setLocalItems] = useState<Array<Task>>(tasks || []);
 
@@ -184,6 +188,16 @@ export default function TasksList({ phase }: TasksListProps) {
         update={mutate}
         phase={phase}
       />
+
+      {editedTask && (
+        <EditTask
+          open={!!editedTask}
+          handleClose={() => setEditedTask(null)}
+          update={setUpdate}
+          task={editedTask}
+          phase={phase}
+        />
+      )}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4" color="primary">
           {phase.name}
@@ -244,9 +258,12 @@ export default function TasksList({ phase }: TasksListProps) {
                 {...droppableProvided.droppableProps}
                 ref={droppableProvided.innerRef}
               >
-                {tasks.sort().map((task, index) => (
-                  <DraggableTask key={task.order} task={task} index={index} />
-                ))}
+                {tasks
+                  .filter((todo) => todo.status === filtrList)
+                  .sort()
+                  .map((task, index) => (
+                    <DraggableTask key={task.order} task={task} index={index} />
+                  ))}
                 {droppableProvided.placeholder}
               </div>
             )}
