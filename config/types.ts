@@ -81,6 +81,12 @@ export type UserPlanner = {
   id?: number;
 };
 
+export type UserPlanner = {
+  name?: string;
+  email: string;
+  id?: number;
+};
+
 export const ROLE = {
   USER: "user",
   ADMIN: "admin",
