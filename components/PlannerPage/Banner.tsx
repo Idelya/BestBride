@@ -168,7 +168,6 @@ export default function Banner() {
     data: any;
     mutate: () => void;
   };
-  console.log(statsGeneral);
   const { update, phases, statsByPhase, generalPhase } =
     useContext(PlannerContext);
 

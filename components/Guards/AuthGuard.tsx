@@ -12,12 +12,6 @@ export const AuthGuard: React.FC = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
-      console.log(loading != AuthStates.LOADING && !me);
-    }, 1000);
-  }, [loading, me]);
-
-  useEffect(() => {
     async function redirect() {
       await router.push("/");
     }
@@ -29,7 +23,6 @@ export const AuthGuard: React.FC = ({ children }) => {
       await router.push("/admin");
     }
 
-    console.log(me);
     if (loading != AuthStates.LOADING && !me) {
       redirect();
     } else if (

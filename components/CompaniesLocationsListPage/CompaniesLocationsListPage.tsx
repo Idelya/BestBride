@@ -95,7 +95,6 @@ export default function CompaniesLocationsListPage() {
   const { data: locations } = useSWR("api/locations", fetcher) as {
     data: Service[];
   };
-  console.log(locations);
   const { data: statusOptions } = useSWR(
     "api/servicestatus",
     fetcherUnauth

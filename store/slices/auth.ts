@@ -23,7 +23,7 @@ export interface AuthSliceState {
 // That's what we will store in the auth slice.
 const internalInitialState: AuthSliceState = {
   accessToken: "",
-  loading: AuthStates.IDLE,
+  loading: AuthStates.LOADING,
   me: null,
   error: {},
 };
@@ -101,6 +101,7 @@ export const authSlice = createSlice({
     reset: () => internalInitialState,
     setUser(state: AuthSliceState, action: PayloadAction<{ me: User | null }>) {
       state.me = action.payload.me;
+      state.loading = AuthStates.IDLE;
     },
   },
   extraReducers: (builder) => {
