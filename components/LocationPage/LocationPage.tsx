@@ -185,6 +185,7 @@ export default function LocationPage() {
         await Promise.all(uploaders);
       }
       */
+      console.log(urlToProfile);
       const { id, version, images, status, ...editedService } = service;
       const x = await axios.post(
         "/api/serviceAdd",
@@ -199,6 +200,19 @@ export default function LocationPage() {
               //galleryFile: galleryLinks.join(";"),
             }
       );
+      console.log(
+        urlToProfile
+          ? {
+              ...editedService,
+              fileLink: urlToProfile,
+              //galleryFile: galleryLinks.join(";"),
+            }
+          : {
+              ...editedService,
+              //galleryFile: galleryLinks.join(";"),
+            }
+      );
+      console.log(x);
       mutate();
       store.addNotification({
         title: "Sukces",
