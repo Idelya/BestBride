@@ -233,6 +233,7 @@ export default function TasksList({ phase }: TasksListProps) {
         sx={{
           display: "flex",
           margin: "32px",
+          height: "100vh",
         }}
       >
         <Loading />

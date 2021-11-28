@@ -74,7 +74,6 @@ export default function PlannerPage() {
     mutate: any;
     error: any;
   };
-
   useEffect(() => {
     mutateStats();
     mutatePhase();

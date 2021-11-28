@@ -105,7 +105,6 @@ const CuerrentTasks = ({ phase }: { phase: Phase }) => {
   if (!tasks || !todoOptions) {
     return <Loading />;
   }
-  console.log(currTask);
   return (
     <>
       {currTask && (
@@ -183,7 +182,7 @@ export default function Banner() {
   }, [mutateStats, update]);
 
   if (!phases) {
-    return <FullLoading />;
+    return null;
   }
   return (
     <Grid container className={classes.container}>

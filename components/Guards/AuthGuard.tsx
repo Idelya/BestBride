@@ -12,6 +12,12 @@ export const AuthGuard: React.FC = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
+    setTimeout(() => {
+      console.log(loading != AuthStates.LOADING && !me);
+    }, 1000);
+  }, [loading, me]);
+
+  useEffect(() => {
     async function redirect() {
       await router.push("/");
     }

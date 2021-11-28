@@ -101,6 +101,7 @@ export default function Stages() {
       <Box
         sx={{
           display: "flex",
+          width: "100vh",
         }}
       >
         <Loading />

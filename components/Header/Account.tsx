@@ -63,7 +63,7 @@ export default function Account() {
   return (
     <Box>
       {!me && (
-        <>
+        <Box sx={{ display: "inline" }}>
           <NavLink route={signUpClient} />
           <Link href={signInClient.link} passHref>
             <RectangularButton
@@ -75,7 +75,7 @@ export default function Account() {
               {signInClient.name}
             </RectangularButton>
           </Link>
-        </>
+        </Box>
       )}
       {!!me && (
         <>
