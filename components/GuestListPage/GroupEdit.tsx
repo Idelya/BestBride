@@ -5,174 +5,30 @@ import without from "lodash";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
+  Box,
   Button,
+  ButtonGroup,
+  Checkbox,
   Grid,
   IconButton,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
   TextField,
   Theme,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import Divider from "../Divider";
 import { Form, useFormik } from "formik";
 import { groupSchemaValidation, initialValues } from "../../schema/GroupSchema";
-import { Group, Guest } from "../../config/types";
-
-const rows = [
-  {
-    name: "Wrocław",
-    items: [
-      {
-        id: 1,
-        surname: "Snow",
-        name: "Jon",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-
-      {
-        id: 4,
-        surname: "Stark",
-        name: "Arya",
-        invitationAccepted: "Nie",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 5,
-        surname: "Targaryen",
-        name: "Daenerys",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-  {
-    name: "Kielce",
-    items: [
-      {
-        id: 2,
-        surname: "Lannister",
-        name: "Cersei",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 3,
-        surname: "Lannister",
-        name: "Jaime",
-        invitationAccepted: "?",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 6,
-        surname: "Lannister",
-        name: "Tyrion",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-  {
-    name: "Winterfell",
-    items: [
-      {
-        id: 7,
-        surname: "Sansa",
-        name: "Stark",
-        invitationAccepted: "Tak",
-        invitationSend: true,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 8,
-        surname: "Arya",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-      {
-        id: 9,
-        surname: "Robb",
-        name: "Stark",
-        invitationAccepted: "?",
-        invitationSend: false,
-        mail: "adres@mail.com",
-        phone: "999 000 543",
-        children: 0,
-        isWithness: false,
-        accommodation: false,
-        transport: false,
-        groups: [],
-        diets: [],
-      },
-    ],
-  },
-];
+import { Guest } from "../../config/types";
+import axios from "axios";
+import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -229,33 +85,72 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface GroupAddProps {
+interface GroupEditProps {
   open: boolean;
   handleClose: () => void;
-  group: Group;
+  guests: Guest[];
 }
-export default function GroupAdd({ open, handleClose, group }: GroupAddProps) {
+export default function GroupEdit({
+  open,
+  handleClose,
+  guests,
+}: GroupEditProps) {
   const classes = useStyles();
-  const [guestInList, setGuestInList] = useState<Guest[]>(
-    group ? group.guests : []
-  );
+  const [guestInList, setGuestInList] = useState<Guest[]>([]);
   const searchableGuests = useMemo(
-    () =>
-      rows
-        .map((item) => item.items)
-        .flat()
-        //@ts-ignore
-        .filter((o) => !guestInList.includes(o)),
-    [guestInList]
+    () => guests.filter((o) => !guestInList.includes(o)),
+    [guestInList, guests]
   );
+
   const [searchedGuest, setSearchedGuest] = useState(null);
   const [clear, setClear] = useState(false);
 
   const formik = useFormik({
-    initialValues: { ...initialValues, ...group },
+    initialValues: initialValues,
     validationSchema: groupSchemaValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify({ ...values, list: guestInList }, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const x = (await axios.post("api/groupAdd", {
+          ...values,
+          guests: guestInList.map((g) => g.id),
+        })) as any;
+        const y = await axios.post("/api/guestToGroup", {
+          group: x?.data?.data.id,
+          guests: guestInList.map((g) => g.id),
+        });
+        if (x.data) {
+          handleClose();
+          store.addNotification({
+            title: "Success",
+            message: "Edytowano grupę.",
+            type: "success",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        } else {
+          store.addNotification({
+            title: "Bląd",
+            message: "Spróbuj ponownie później",
+            type: "danger",
+            insert: "top",
+            container: "bottom-center",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
@@ -293,9 +188,7 @@ export default function GroupAdd({ open, handleClose, group }: GroupAddProps) {
                 options={searchableGuests}
                 value={searchedGuest}
                 className={classes.select}
-                getOptionLabel={(option) =>
-                  option ? option.name + " " + option.surname : ""
-                }
+                getOptionLabel={(option) => option.name}
                 //@ts-ignore
                 onChange={(e, v) => setSearchedGuest(v)}
                 renderInput={(params) => (
@@ -337,7 +230,7 @@ export default function GroupAdd({ open, handleClose, group }: GroupAddProps) {
                     </IconButton>
                   }
                 >
-                  <ListItemText primary={`${guest?.name} ${guest?.surname}`} />
+                  <ListItemText primary={`${guest.name}`} />
                 </ListItem>
               ))}
             </List>

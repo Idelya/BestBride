@@ -5,8 +5,12 @@ export const GuestContext = createContext<{
   dietsOptions?: Diet[];
   genderOptions?: Option[];
   statusOptions?: Option[];
+  update: boolean;
+  setUpdate: () => void;
 }>({
   dietsOptions: undefined,
   genderOptions: undefined,
   statusOptions: undefined,
+  update: false,
+  setUpdate: () => {},
 });

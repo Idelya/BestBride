@@ -84,6 +84,10 @@ export default function GuestAdd({
           ...guest,
           surname: "",
         });
+        console.log({
+          ...guest,
+          surname: "",
+        });
         if (x.data) {
           store.addNotification({
             title: "Success",
@@ -286,9 +290,9 @@ export default function GuestAdd({
                     Nocleg:
                   </Typography>
                   <Checkbox
-                    id="accommodation"
-                    name="accommodation"
-                    value={formik.values.accommodation}
+                    id="accomodation"
+                    name="accomodation"
+                    value={formik.values.accomodation}
                     onChange={formik.handleChange}
                   />
                 </div>

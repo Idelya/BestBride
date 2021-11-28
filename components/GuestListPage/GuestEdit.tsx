@@ -21,6 +21,7 @@ import { Guest } from "../../config/types";
 import Loading from "../Loading";
 import axios from "axios";
 import { GuestContext } from "./GuestContext";
+import useSWR from "swr";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,27 +57,30 @@ interface GuestEditProps {
 }
 
 const getFlterPartners = (guests: Guest[]) =>
-  guests.filter((guest) => !guest.partner && !guest.partnerName);
-
-export default function GuestEdit({
-  handleSave,
-  guests = [],
-  guest,
-}: GuestEditProps) {
-  const classes = useStyles();
-  const [partner, setPartner] = useState<number | null>(
-    guest.partner ? guest.partner : null
+  guests.filter(
+    (guest) => !guest.partner && !guest.partnerName && !guest.partnerId
   );
 
-  const { genderOptions, dietsOptions, statusOptions } =
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+export default function GuestEdit({ handleSave, guest }: GuestEditProps) {
+  const classes = useStyles();
+  const [partner, setPartner] = useState<number | null>(
+    guest.partnerId ? guest.partnerId : null
+  );
+  const { data: guests } = useSWR("api/guest", fetcher) as {
+    data: Guest[];
+  };
+  console.log(partner, guests, getFlterPartners(guests));
+  const { genderOptions, dietsOptions, statusOptions, setUpdate } =
     useContext(GuestContext);
   const formik = useFormik({
     initialValues: guest,
     onSubmit: async (values) => {
-      const guest = !!partner ? { ...values, partner: partner } : values;
+      const guestData = !!partner ? { ...values, partner: partner } : values;
       try {
         const x = await axios.put("/api/guestEdit/" + guest.id, {
           ...guest,
+          ...guestData,
           surname: "",
         });
         if (x.data) {
@@ -93,6 +97,7 @@ export default function GuestEdit({
               onScreen: true,
             },
           });
+          setUpdate();
           handleSave();
         } else {
           store.addNotification({
@@ -114,7 +119,7 @@ export default function GuestEdit({
       }
     },
   });
-
+  console.log(formik.values);
   return (
     <form onSubmit={formik.handleSubmit} className={classes.main}>
       {!genderOptions || !dietsOptions || !statusOptions ? (
@@ -245,6 +250,7 @@ export default function GuestEdit({
                 <Autocomplete
                   id="partner-autocomplete"
                   options={getFlterPartners(guests)}
+                  value={guests.find((g) => g.id === partner) || null}
                   getOptionLabel={(option) => option.name}
                   onChange={(e, value) => setPartner(value?.id || null)}
                   includeInputInList
@@ -260,6 +266,7 @@ export default function GuestEdit({
                 <Checkbox
                   id="isWitness"
                   name="isWitness"
+                  defaultChecked={guest.isWitness}
                   value={formik.values.isWitness}
                   onChange={formik.handleChange}
                 />
@@ -269,9 +276,10 @@ export default function GuestEdit({
                   Nocleg:
                 </Typography>
                 <Checkbox
-                  id="accommodation"
-                  name="accommodation"
-                  value={formik.values.accommodation}
+                  id="accomodation"
+                  name="accomodation"
+                  defaultChecked={guest.accomodation}
+                  value={formik.values.accomodation}
                   onChange={formik.handleChange}
                 />
               </div>
@@ -282,6 +290,7 @@ export default function GuestEdit({
                 <Checkbox
                   id="transport"
                   name="transport"
+                  defaultChecked={guest.transport}
                   value={formik.values.transport}
                   onChange={formik.handleChange}
                 />

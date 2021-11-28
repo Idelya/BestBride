@@ -212,7 +212,7 @@ export default function GuestInfo({
               <div className={classes.inline}>
                 <Typography color="GrayText">Nocleg:</Typography>
                 <Typography color="primary">
-                  {guest.accommodation ? "Tak" : "Nie"}
+                  {guest.accomodation ? "Tak" : "Nie"}
                 </Typography>
               </div>
               <div className={classes.inline}>

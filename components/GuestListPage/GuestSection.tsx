@@ -47,7 +47,7 @@ export default function GuestSection() {
   const [addGuest, setAddGuest] = useState<boolean>(false);
   const [addGroup, setAddGroup] = useState<boolean>(false);
 
-  const { genderOptions, dietsOptions, statusOptions } =
+  const { genderOptions, dietsOptions, statusOptions, setUpdate } =
     useContext(GuestContext);
 
   const {
@@ -59,7 +59,7 @@ export default function GuestSection() {
     mutate: any;
     error: any;
   };
-
+  console.log(guests);
   const {
     data: groupsData,
     mutate: updateGroups,
@@ -107,7 +107,10 @@ export default function GuestSection() {
     <section className={classes.main}>
       <GuestAdd
         open={addGuest}
-        handleClose={() => setAddGuest(false)}
+        handleClose={() => {
+          setAddGuest(false);
+          setUpdate();
+        }}
         guests={guests}
         genderOptions={genderOptions}
         dietsOptions={dietsOptions}
@@ -190,7 +193,10 @@ export default function GuestSection() {
           addGuest={() => setAddGuest(true)}
           data={searchGuests.map((group) => group.guests).flat() || []}
           error={!!errorGuests}
-          update={mutate}
+          update={() => {
+            mutate();
+            setUpdate();
+          }}
         />
       )}
     </section>

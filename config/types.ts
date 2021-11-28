@@ -30,8 +30,9 @@ export type Guest = {
   children: number;
   isWitness: boolean;
   partner?: number;
+  partnerId?: number;
   partnerName?: string;
-  accommodation: boolean;
+  accomodation: boolean;
   transport: boolean;
   age?: number;
   gender?: number;

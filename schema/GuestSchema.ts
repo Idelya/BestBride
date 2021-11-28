@@ -11,7 +11,7 @@ export const initialValues = {
   status: 0,
   children: 0,
   partner: undefined,
-  accommodation: false,
+  accomodation: false,
   transport: false,
   guestsGroupGuests: [],
   diet: 4,
@@ -48,7 +48,7 @@ export const guestSchemaValidation: any = yup.object({
     (val: number | undefined) => (val ? val >= 0 : true)
   ),
   partner: yup.number(),
-  accommodation: yup.boolean(),
+  accomodation: yup.boolean(),
   transport: yup.boolean(),
   guestsGroupGuests: yup.array(),
   diet: yup.array(),

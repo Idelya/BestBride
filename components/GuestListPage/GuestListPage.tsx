@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Container, Theme } from "@mui/material";
 import Banner from "./Banner";
@@ -21,6 +21,7 @@ const fetcher = (url: string) => request.get(url).then((res) => res.data);
 
 export default function ProfilPage() {
   const classes = useStyles();
+  const [updated, setUpdated] = useState(false);
 
   const { data: dietsOptions } = useSWR("api/diet", fetcher) as {
     data: Diet[];
@@ -39,6 +40,8 @@ export default function ProfilPage() {
         dietsOptions: dietsOptions,
         genderOptions: genderOptions,
         statusOptions: statusOptions,
+        update: updated,
+        setUpdate: () => setUpdated(!updated),
       }}
     >
       <Container className={classes.container}>
