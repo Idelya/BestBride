@@ -149,7 +149,7 @@ export default function TasksList({ phase }: TasksListProps) {
     mutate: any;
     error: any;
   };
-
+  console.log(tasks);
   useEffect(() => {
     mutate();
   }, [mutate, update]);

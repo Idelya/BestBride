@@ -1,5 +1,12 @@
 import React, { createContext } from "react";
-import { Option, Task, Wedding, PhaseStat, Phase } from "../../config/types";
+import {
+  Option,
+  Task,
+  Wedding,
+  PhaseStat,
+  Phase,
+  UserPlanner,
+} from "../../config/types";
 
 export const PlannerContext = createContext<{
   todoOptions?: Option[];
@@ -13,6 +20,7 @@ export const PlannerContext = createContext<{
   generalPhase?: Phase;
   editedPhase?: Phase | null;
   setEditedPhase: (phase?: Phase | null) => void;
+  weddingUsers?: UserPlanner[];
 }>({
   todoOptions: undefined,
   wedding: undefined,
@@ -25,4 +33,5 @@ export const PlannerContext = createContext<{
   generalPhase: undefined,
   editedPhase: null,
   setEditedPhase: () => {},
+  weddingUsers: [],
 });

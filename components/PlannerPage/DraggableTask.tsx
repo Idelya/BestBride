@@ -100,10 +100,15 @@ export default function DraggableTask({
 }: DraggableTaskProps) {
   const classes = useStyles();
 
-  const { todoOptions, setEditedTask, setEditedPhase, setUpdate } =
-    useContext(PlannerContext);
+  const {
+    todoOptions,
+    setEditedTask,
+    setEditedPhase,
+    setUpdate,
+    weddingUsers,
+  } = useContext(PlannerContext);
   return (
-    <Draggable draggableId={task.order.toString()} index={index}>
+    <Draggable draggableId={task.id.toString()} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
         return (
           <Accordion
@@ -139,6 +144,7 @@ export default function DraggableTask({
                   setEditedPhase(phase);
                 }}
                 update={setUpdate}
+                users={weddingUsers}
               />
             </AccordionDetails>
           </Accordion>

@@ -6,7 +6,14 @@ import Stages from "./Stages";
 import request from "../../config/requests";
 import useSWR from "swr";
 import { PlannerContext } from "./PlannerContext";
-import { Option, Phase, PhaseStat, Task, Wedding } from "../../config/types";
+import {
+  Option,
+  Phase,
+  PhaseStat,
+  Task,
+  UserPlanner,
+  Wedding,
+} from "../../config/types";
 import axios from "axios";
 import EditTask from "./EditTask";
 
@@ -29,6 +36,16 @@ export default function PlannerPage() {
   const [editedPhase, setEditedPhase] = useState<Phase | null>();
   const { data: todoOptions } = useSWR("api/todostatus", fetcher) as {
     data: Option[];
+  };
+
+  const { data: wedding } = useSWR("api/wedding", fetcherAuth) as {
+    data: Wedding;
+    mutate: any;
+    error: any;
+  };
+
+  const { data: weddingUsers } = useSWR("api/usersWedding", fetcherAuth) as {
+    data: UserPlanner[];
   };
 
   const { data: statsByPhase, mutate: mutateStats } = useSWR(
@@ -90,6 +107,8 @@ export default function PlannerPage() {
         generalPhase: currentPhase,
         editedPhase: editedPhase,
         setEditedPhase: setEditedPhase,
+        wedding: wedding,
+        weddingUsers: weddingUsers,
       }}
     >
       <Container className={classes.container}>

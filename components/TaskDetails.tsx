@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Task } from "../config/types";
+import { Task, UserPlanner } from "../config/types";
 import { formatDate, formatDateWithHour, getValue } from "../utils/helpers";
 import { PlannerContext } from "./PlannerPage/PlannerContext";
 import axios from "axios";
@@ -46,8 +46,14 @@ interface TaskProps {
   task: Task;
   onEditClick?: () => void;
   update: () => void;
+  users?: UserPlanner[];
 }
-export default function TaskDetails({ task, onEditClick, update }: TaskProps) {
+export default function TaskDetails({
+  task,
+  onEditClick,
+  update,
+  users = [],
+}: TaskProps) {
   const classes = useStyles();
 
   const { todoOptions } = useContext(PlannerContext);
@@ -113,7 +119,9 @@ export default function TaskDetails({ task, onEditClick, update }: TaskProps) {
             Przypisano:
           </Typography>
           <Typography color="primary" variant="subtitle1">
-            {task.assigned?.name || task?.assigned?.email || "Brak"}
+            {users.find((u) => u.id === task.assigned)?.name ||
+              users.find((u) => u.id === task.assigned)?.email ||
+              "Brak"}
           </Typography>
         </div>
       </Grid>

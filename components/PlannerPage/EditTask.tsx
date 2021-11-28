@@ -105,11 +105,15 @@ export default function EditTask({
   task,
   phase,
 }: AddTaskProps) {
+  const { wedding, weddingUsers, todoOptions } = useContext(PlannerContext);
   const classes = useStyles();
-  const [value, setValue] = useState<Date | null>(new Date());
-  const [user, setUser] = useState<UserPlanner | null>(null);
+  const [value, setValue] = useState<Date | null>(
+    task.date || wedding?.date || new Date()
+  );
+  const [user, setUser] = useState<UserPlanner | null>(
+    weddingUsers?.find((u) => u.id === task.assigned) || null
+  );
 
-  const { todoOptions } = useContext(PlannerContext);
   const { data: expenses } = useSWR("api/expenses", fetcher) as {
     data: Expense[];
   };
@@ -123,10 +127,6 @@ export default function EditTask({
   const [searchedExpense, setSearchedExpense] = useState(null);
 
   const [clear, setClear] = useState(false);
-
-  const { data: users } = useSWR("api/usersWedding", fetcher) as {
-    data: UserPlanner[];
-  };
 
   const formik = useFormik({
     initialValues: { ...initialValues, ...task },
@@ -179,12 +179,12 @@ export default function EditTask({
       }
     },
   });
-  if (!users || !expenses) return null;
+  if (!weddingUsers || !expenses) return null;
 
   return (
     <Modal open={open} onClose={handleClose}>
       <form onSubmit={formik.handleSubmit} className={classes.main}>
-        <Divider variant="h5">Edycja zadania</Divider>
+        <Divider variant="h5">Dodawanie zadania</Divider>
         <Grid container>
           <Grid item xs={12} md={7} pr={10}>
             <div className={classes.inline}>
@@ -235,6 +235,8 @@ export default function EditTask({
                 />
               </LocalizationProvider>
             </div>
+          </Grid>
+          <Grid item md={5} pr={10}>
             <div className={classes.block}>
               <Typography color="GrayText" variant="h6">
                 Przypisano do:
@@ -243,7 +245,7 @@ export default function EditTask({
                 disablePortal
                 id="assigned"
                 size="small"
-                options={users}
+                options={weddingUsers}
                 getOptionLabel={(option) => option.name || option.email}
                 value={user}
                 onChange={(e, v) => setUser(v)}
@@ -252,9 +254,29 @@ export default function EditTask({
                 )}
               />
             </div>
-          </Grid>
-          <Grid item md={5} pr={10}>
             <div className={classes.block}>
+              <Typography component="label" color="GrayText" variant="h6">
+                Wydatek powiązany z zadaniem:
+              </Typography>
+              <Autocomplete
+                size="small"
+                key={clear.toString()}
+                options={searchableExpenses}
+                value={searchedExpense}
+                className={classes.select}
+                getOptionLabel={(option) => option.name}
+                //@ts-ignore
+                onChange={(e, v) => setSearchedExpense(v)}
+                renderInput={(params) => (
+                  <TextField
+                    name="expenses"
+                    placeholder="wybierz powiązany wydatek"
+                    {...params}
+                  />
+                )}
+              />
+            </div>
+            {/*<div className={classes.block}>
               <Typography component="label" color="GrayText" variant="h6">
                 Wydatki powiązane z zadaniem:
               </Typography>
@@ -288,7 +310,7 @@ export default function EditTask({
               >
                 Dodaj
               </Button>
-            </div>
+            </div>*
             <List className={classes.list}>
               {expenseInList.map((exp) => (
                 <ListItem
@@ -308,7 +330,7 @@ export default function EditTask({
                   <ListItemText primary={`${exp.name}`} />
                 </ListItem>
               ))}
-            </List>
+                </List>*/}
           </Grid>
           <Grid item md={12} pr={10}>
             <div className={classes.block}>
