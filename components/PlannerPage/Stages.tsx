@@ -101,7 +101,10 @@ export default function Stages() {
       <Box
         sx={{
           display: "flex",
-          width: "100vh",
+          height: "100vh",
+          width: "100vw",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Loading />

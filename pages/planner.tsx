@@ -20,7 +20,6 @@ const Planner: NextPage<{ user: User; children?: ReactNode }> = ({
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("setUser", user);
     dispatch(setUser({ me: user }));
   });
   return (
