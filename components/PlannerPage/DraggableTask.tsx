@@ -90,12 +90,18 @@ const useStyles = makeStyles((theme: Theme) =>
 interface DraggableTaskProps {
   task: Task;
   index: number;
+  phase: Phase;
 }
 
-export default function DraggableTask({ task, index }: DraggableTaskProps) {
+export default function DraggableTask({
+  task,
+  index,
+  phase,
+}: DraggableTaskProps) {
   const classes = useStyles();
 
-  const { todoOptions, setEditedTask, setUpdate } = useContext(PlannerContext);
+  const { todoOptions, setEditedTask, setEditedPhase, setUpdate } =
+    useContext(PlannerContext);
   return (
     <Draggable draggableId={task.order.toString()} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
@@ -128,7 +134,10 @@ export default function DraggableTask({ task, index }: DraggableTaskProps) {
             <AccordionDetails>
               <TaskDetails
                 task={task}
-                onEditClick={() => setEditedTask(task)}
+                onEditClick={() => {
+                  setEditedTask(task);
+                  setEditedPhase(phase);
+                }}
                 update={setUpdate}
               />
             </AccordionDetails>

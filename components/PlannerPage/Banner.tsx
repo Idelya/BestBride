@@ -14,6 +14,7 @@ import Loading from "../Loading";
 import { getValue } from "../../utils/helpers";
 import TaskDetails from "../TaskDetails";
 import Divider from "../Divider";
+import FullLoading from "../FullLoading";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
@@ -77,13 +78,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const tasks = ["zadanie 1", "zadanie 2", "zadanie 3"];
 const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
 const CuerrentTasks = ({ phase }: { phase: Phase }) => {
   const classes = useStyles();
   const [currTask, setCurrTask] = useState<Task | null>();
-  const { update, todoOptions, setUpdate, setEditedTask } =
-    useContext(PlannerContext);
+  const {
+    update,
+    todoOptions,
+    setUpdate,
+    setEditedTask,
+    setEditedPhase,
+    generalPhase,
+  } = useContext(PlannerContext);
   const { data: tasks, mutate } = useSWR(
     `api/task/${phase.id}`,
     fetcherAuth
@@ -99,6 +105,7 @@ const CuerrentTasks = ({ phase }: { phase: Phase }) => {
   if (!tasks || !todoOptions) {
     return <Loading />;
   }
+  console.log(currTask);
   return (
     <>
       {currTask && (
@@ -110,6 +117,7 @@ const CuerrentTasks = ({ phase }: { phase: Phase }) => {
               update={setUpdate}
               onEditClick={() => {
                 setCurrTask(null);
+                setEditedPhase(generalPhase);
                 setEditedTask(currTask);
               }}
             />
@@ -120,6 +128,7 @@ const CuerrentTasks = ({ phase }: { phase: Phase }) => {
         Bieżące zadania
       </Typography>
       {(sortBy(tasks || [], ["date", "status"]) || [])
+        .filter((t) => t.status != 2)
         .filter((_, i) => i < 3)
         .map((task, i) => (
           <TaskComponent key={i}>
@@ -161,31 +170,21 @@ export default function Banner() {
     mutate: () => void;
   };
   console.log(statsGeneral);
-  const { update, phases, statsByPhase } = useContext(PlannerContext);
-
-  const currentPhase = useMemo(
-    () =>
-      phases
-        ? phases.find((p) => {
-            const stats = statsByPhase?.find((s) => s.phaseId === p.id);
-            if (stats) {
-              return stats.inProgress !== 0 || stats.notStarted !== 0;
-            }
-            return false;
-          })
-        : null,
-    [phases, statsByPhase]
-  );
+  const { update, phases, statsByPhase, generalPhase } =
+    useContext(PlannerContext);
 
   const currentPhaseStats = useMemo(
-    () => statsByPhase?.find((s) => s.phaseId === currentPhase?.id),
-    [currentPhase, statsByPhase]
+    () => statsByPhase?.find((s) => s.phaseId === generalPhase?.id),
+    [generalPhase, statsByPhase]
   );
 
   useEffect(() => {
     mutateStats();
   }, [mutateStats, update]);
 
+  if (!phases) {
+    return <FullLoading />;
+  }
   return (
     <Grid container className={classes.container}>
       <Grid item className={classes.headingBox} md={7}>
@@ -201,7 +200,7 @@ export default function Banner() {
           className={classes.spacing}
         >
           {`Etap ${
-            phases.findIndex((p) => p.id === currentPhase?.id) + 1 ||
+            phases.findIndex((p) => p.id === generalPhase?.id) + 1 ||
             phases.length
           }/${phases.length}`}
         </Typography>
@@ -211,9 +210,9 @@ export default function Banner() {
           color="primary"
           className={classes.bottomSpacing}
         >
-          {currentPhase?.name || "Nie posiadasz żadnego rozpoczętego etapu."}
+          {generalPhase?.name || "Nie posiadasz żadnego rozpoczętego etapu."}
         </Typography>
-        {currentPhase && <CuerrentTasks phase={currentPhase} />}
+        {generalPhase && <CuerrentTasks phase={generalPhase} />}
       </Grid>
       <Grid item md={12} className={classes.row}>
         <span className={classes.row}>
@@ -246,9 +245,9 @@ export default function Banner() {
               : "Brak statystyk z wszystkich zadań"}
           </Typography>
         </span>
-        <Typography component="p" color="secondary" className={classes.spacing}>
+        {/*<Typography component="p" color="secondary" className={classes.spacing}>
           Opóźnienie
-        </Typography>
+                  </Typography>*/}
       </Grid>
     </Grid>
   );

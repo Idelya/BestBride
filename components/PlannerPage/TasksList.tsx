@@ -139,8 +139,7 @@ export default function TasksList({ phase }: TasksListProps) {
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
   const [editPhase, setEditPhase] = useState<boolean>(false);
 
-  const { todoOptions, editedTask, update, setUpdate, setEditedTask } =
-    useContext(PlannerContext);
+  const { todoOptions, update, setUpdate } = useContext(PlannerContext);
   const {
     data: tasks,
     mutate,
@@ -281,16 +280,6 @@ export default function TasksList({ phase }: TasksListProps) {
         update={setUpdate}
         phase={phase}
       />
-
-      {editedTask && (
-        <EditTask
-          open={!!editedTask}
-          handleClose={() => setEditedTask(null)}
-          update={setUpdate}
-          task={editedTask}
-          phase={phase}
-        />
-      )}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
           <Typography variant="h4" color="primary" sx={{ marginRight: "8px" }}>
@@ -367,7 +356,12 @@ export default function TasksList({ phase }: TasksListProps) {
                   .filter((todo) => todo.status === filtrList)
                   .sort()
                   .map((task, index) => (
-                    <DraggableTask key={task.order} task={task} index={index} />
+                    <DraggableTask
+                      key={task.order}
+                      task={task}
+                      index={index}
+                      phase={phase}
+                    />
                   ))}
                 {droppableProvided.placeholder}
               </div>

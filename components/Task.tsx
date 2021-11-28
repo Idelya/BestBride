@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "1px solid " + theme.palette.primary.main,
       boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
       display: "flex",
+      flexDirection: "column",
       textAlign: "center",
       justifyContent: "space-around",
       height: "100px",

@@ -10,6 +10,9 @@ export const PlannerContext = createContext<{
   setUpdate: () => void;
   statsByPhase?: PhaseStat[];
   phases: Phase[];
+  generalPhase?: Phase;
+  editedPhase?: Phase | null;
+  setEditedPhase: (phase?: Phase | null) => void;
 }>({
   todoOptions: undefined,
   wedding: undefined,
@@ -19,4 +22,7 @@ export const PlannerContext = createContext<{
   setUpdate: () => {},
   statsByPhase: [],
   phases: [],
+  generalPhase: undefined,
+  editedPhase: null,
+  setEditedPhase: () => {},
 });

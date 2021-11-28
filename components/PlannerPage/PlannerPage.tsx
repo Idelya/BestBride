@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Container, Theme } from "@mui/material";
 import Banner from "./Banner";
@@ -26,6 +26,7 @@ export default function PlannerPage() {
 
   const [updated, setUpdated] = useState<boolean>(false);
   const [task, setTask] = useState<Task | null>();
+  const [editedPhase, setEditedPhase] = useState<Phase | null>();
   const { data: todoOptions } = useSWR("api/todostatus", fetcher) as {
     data: Option[];
   };
@@ -48,10 +49,33 @@ export default function PlannerPage() {
     error: any;
   };
 
+  const { data: phasesIsAfter, mutate: mutatePhaseIsAfter } = useSWR(
+    "api/phaseIsAfter",
+    fetcherAuth
+  ) as {
+    data: Phase[];
+    mutate: any;
+    error: any;
+  };
+
   useEffect(() => {
     mutateStats();
     mutatePhase();
   }, [mutateStats, mutatePhase, updated]);
+
+  const currentPhase = useMemo(
+    () =>
+      phases
+        ? phases.find((p) => {
+            const stats = statsByPhase?.find((s) => s.phaseId === p.id);
+            if (stats) {
+              return stats.inProgress !== 0 || stats.notStarted !== 0;
+            }
+            return false;
+          })
+        : undefined,
+    [phases, statsByPhase]
+  );
 
   return (
     <PlannerContext.Provider
@@ -63,6 +87,9 @@ export default function PlannerPage() {
         setEditedTask: setTask,
         update: updated,
         setUpdate: () => setUpdated(!updated),
+        generalPhase: currentPhase,
+        editedPhase: editedPhase,
+        setEditedPhase: setEditedPhase,
       }}
     >
       <Container className={classes.container}>

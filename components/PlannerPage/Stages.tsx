@@ -20,6 +20,7 @@ import axios from "axios";
 import useSWR from "swr";
 import Loading from "../Loading";
 import { PlannerContext } from "./PlannerContext";
+import EditTask from "./EditTask";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,7 +80,14 @@ export default function Stages() {
     setCurrPhase(stage === currPhase ? null : stage);
   };
 
-  const { statsByPhase, phases, setUpdate } = useContext(PlannerContext);
+  const {
+    statsByPhase,
+    phases,
+    setUpdate,
+    editedTask,
+    setEditedTask,
+    editedPhase,
+  } = useContext(PlannerContext);
 
   useEffect(() => {
     if (phases && currPhase) {
@@ -106,6 +114,16 @@ export default function Stages() {
         handleClose={() => setOpenPhaseAdd(false)}
         update={setUpdate}
       />
+
+      {editedTask && editedPhase && (
+        <EditTask
+          open={!!editedTask}
+          handleClose={() => setEditedTask(null)}
+          update={setUpdate}
+          task={editedTask}
+          phase={editedPhase}
+        />
+      )}
       <Box
         sx={{ width: currPhase ? "30%" : "100%" }}
         className={classes.container}
