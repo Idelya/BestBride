@@ -168,6 +168,14 @@ export type Phase = {
   doneTasks?: number;
 };
 
+export type PhaseStat = {
+  done: number;
+  inProgress: number;
+  name: string;
+  notStarted: number;
+  phaseId: number;
+};
+
 export type Task = {
   id: number;
   order: number;

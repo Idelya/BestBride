@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "1px solid " + theme.palette.primary.main,
       boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
       display: "flex",
-      flexDirection: "column",
       textAlign: "center",
       justifyContent: "space-around",
       height: "100px",
@@ -21,15 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface TaskProps {
-  children?: string;
+  children?: JSX.Element;
 }
-export default function Task({ children }: TaskProps) {
+export function Task({ children }: TaskProps) {
   const classes = useStyles();
-  return (
-    <div className={classes.container}>
-      <Typography variant="h6" color="primary">
-        {children}
-      </Typography>
-    </div>
-  );
+  return <div className={classes.container}>{children}</div>;
 }

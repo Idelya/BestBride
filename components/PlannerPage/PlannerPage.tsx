@@ -6,7 +6,7 @@ import Stages from "./Stages";
 import request from "../../config/requests";
 import useSWR from "swr";
 import { PlannerContext } from "./PlannerContext";
-import { Option, Task, Wedding } from "../../config/types";
+import { Option, Phase, PhaseStat, Task, Wedding } from "../../config/types";
 import axios from "axios";
 import EditTask from "./EditTask";
 
@@ -30,24 +30,35 @@ export default function PlannerPage() {
     data: Option[];
   };
 
-  const { update } = useContext(PlannerContext);
-
-  const { data: stats, mutate: mutateStats } = useSWR(
-    "api/todophaseStats",
+  const { data: statsByPhase, mutate: mutateStats } = useSWR(
+    "api/todoStatsByPhase",
     fetcherAuth
   ) as {
-    data: any;
+    data: PhaseStat[];
     mutate: () => void;
+  };
+
+  const {
+    data: phases,
+    mutate: mutatePhase,
+    error: errorPhase,
+  } = useSWR("api/phases", fetcherAuth) as {
+    data: Phase[];
+    mutate: any;
+    error: any;
   };
 
   useEffect(() => {
     mutateStats();
-  }, [mutateStats, update]);
+    mutatePhase();
+  }, [mutateStats, mutatePhase, updated]);
 
   return (
     <PlannerContext.Provider
       value={{
         todoOptions: todoOptions,
+        statsByPhase: statsByPhase,
+        phases: phases,
         editedTask: task,
         setEditedTask: setTask,
         update: updated,
