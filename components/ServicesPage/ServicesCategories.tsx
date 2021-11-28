@@ -111,10 +111,14 @@ export default function ServicesCategories({
   const { data: locations } = useSWR("/api/servicesPublic", fetcher) as {
     data: Service[];
   };
-
+  console.log(locations);
   useEffect(() => {
-    setServicesList(locations);
-  }, [locations]);
+    setServicesList(
+      locations && currentCategory
+        ? locations.filter((l) => l.category === currentCategory)
+        : []
+    );
+  }, [currentCategory, locations]);
 
   if (!expenseOptions || !locations) {
     return (

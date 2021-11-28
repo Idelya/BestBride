@@ -20,11 +20,11 @@ import { ExpenseCategory, Service, Option } from "../../config/types";
 import useSWR from "swr";
 import axios from "axios";
 import request from "../../config/requests";
-import { ServiceContext } from "../LocationPage/ServiceContext";
-import Banner from "../LocationPage/Banner";
-import Contact from "../LocationPage/Contact";
-import Gallery from "../LocationPage/Gallery";
-import Offer from "../LocationPage/Offer";
+import { ServiceContext } from "../ServiceComponent/ServiceContext";
+import Banner from "../ServiceComponent/Banner";
+import Contact from "../ServiceComponent/Contact";
+import Gallery from "../ServiceComponent/Gallery";
+import Offer from "../ServiceComponent/Offer";
 import { schema } from "../../schema/ServiceSchema";
 import { store } from "react-notifications-component";
 
