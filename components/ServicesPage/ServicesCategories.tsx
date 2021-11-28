@@ -111,14 +111,6 @@ export default function ServicesCategories({
   const { data: locations } = useSWR("/api/servicesPublic", fetcher) as {
     data: Service[];
   };
-  console.log(locations);
-  useEffect(() => {
-    setServicesList(
-      locations && currentCategory
-        ? locations.filter((l) => l.category === currentCategory)
-        : []
-    );
-  }, [currentCategory, locations]);
 
   if (!expenseOptions || !locations) {
     return (
@@ -131,7 +123,10 @@ export default function ServicesCategories({
     <Container className={classes.container}>
       <div className={classes.search}>
         {currentCategory != null && (
-          <Search handleChange={setServicesList} list={locations || []} />
+          <Search
+            handleChange={setServicesList}
+            list={locations.filter((l) => l.category === currentCategory) || []}
+          />
         )}
       </div>
       <Grid
