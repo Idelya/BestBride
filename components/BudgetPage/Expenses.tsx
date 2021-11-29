@@ -14,7 +14,7 @@ import useSWR from "swr";
 import Loading from "../Loading";
 import RectangularButton from "../RectangularButton";
 import { groupBy } from "lodash";
-import { formatDate } from "../../utils/helpers";
+import { formatDate, getLocalDate } from "../../utils/helpers";
 import { ExpenseContext } from "./ExpenseContext";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,25 +65,27 @@ export default function Expenses() {
             .filter((exp) => exp.price > exp.paid)
             .sort((a, b) =>
               a.finalDate && b.finalDate
-                ? new Date(a.finalDate).getTime() -
-                  new Date(b.finalDate).getTime()
+                ? getLocalDate(a.finalDate).getTime() -
+                  getLocalDate(b.finalDate).getTime()
                 : 0
             )
         : expenses
             .filter((exp) => exp.price <= exp.paid)
             .sort((a, b) =>
               b.paymentDate && a.paymentDate
-                ? new Date(b.paymentDate).getTime() -
-                  new Date(a.paymentDate).getTime()
+                ? getLocalDate(b.paymentDate).getTime() -
+                  getLocalDate(a.paymentDate).getTime()
                 : 0
             );
       const grouped = planned
         ? groupBy(sorted, (e) =>
-            e.finalDate ? formatDate(new Date(e.finalDate)) : "Nieznana data"
+            e.finalDate
+              ? formatDate(getLocalDate(e.finalDate))
+              : "Nieznana data"
           )
         : groupBy(sorted, (e) =>
             e.paymentDate
-              ? formatDate(new Date(e.paymentDate))
+              ? formatDate(getLocalDate(e.paymentDate))
               : "Nieznana data"
           );
       const toArray = Object.keys(grouped).map((key) => {

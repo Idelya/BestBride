@@ -29,6 +29,7 @@ import axios from "axios";
 import { PlannerContext } from "./PlannerContext";
 import useSWR from "swr";
 import { Expense, Option, Phase, Task, UserPlanner } from "../../config/types";
+import { getLocalDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -108,7 +109,7 @@ export default function EditTask({
   const { wedding, weddingUsers, todoOptions } = useContext(PlannerContext);
   const classes = useStyles();
   const [value, setValue] = useState<Date | null>(
-    task.date && new Date(task.date).getFullYear() >= 1900
+    task.date && getLocalDate(task.date).getFullYear() >= 1900
       ? task.date
       : wedding?.date || new Date()
   );

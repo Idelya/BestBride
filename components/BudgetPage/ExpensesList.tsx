@@ -19,7 +19,7 @@ import { Expense } from "../../config/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpenseDetails from "./ExpenseDetails";
 import { useRouter } from "next/dist/client/router";
-import { formatDate, getDiffInHours } from "../../utils/helpers";
+import { formatDate, getDiffInHours, getLocalDate } from "../../utils/helpers";
 import ExpenseEdit from "./ExpenseEdit";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -93,7 +93,8 @@ export default function ExpensesList({ data, update }: ExpensesListProps) {
               const isdeadline =
                 !!expense.finalDate &&
                 expense.price > expense.paid &&
-                getDiffInHours(new Date(), new Date(expense.finalDate)) <= 24;
+                getDiffInHours(new Date(), getLocalDate(expense.finalDate)) <=
+                  24;
               return (
                 <Accordion
                   key={expense.id}

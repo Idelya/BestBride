@@ -14,7 +14,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Task, UserPlanner } from "../config/types";
-import { formatDate, formatDateWithHour, getValue } from "../utils/helpers";
+import { formatDateWithHour, getLocalDate, getValue } from "../utils/helpers";
 import { PlannerContext } from "./PlannerPage/PlannerContext";
 import axios from "axios";
 import { update } from "lodash";
@@ -97,6 +97,7 @@ export default function TaskDetails({
       console.log(error);
     }
   };
+
   return (
     <Grid container columnSpacing={15}>
       <Grid item md={12}>
@@ -116,7 +117,7 @@ export default function TaskDetails({
             Termin:
           </Typography>
           <Typography color={isAfter ? "error" : "primary"} variant="subtitle1">
-            {task.date ? formatDateWithHour(new Date(task.date)) : "Brak"}
+            {task.date ? formatDateWithHour(getLocalDate(task.date)) : "Brak"}
           </Typography>
         </div>
         <div className={classes.inline}>

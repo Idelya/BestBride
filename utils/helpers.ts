@@ -55,3 +55,17 @@ export const toBase64 = (str: any) =>
   typeof window === "undefined"
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
+
+export const getLocalDate = (userDate: Date) => {
+  const date = new Date(userDate);
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    )
+  );
+};

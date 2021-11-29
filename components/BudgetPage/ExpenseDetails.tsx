@@ -18,6 +18,7 @@ import {
   formatDate,
   formatDateWithHour,
   getDiffInHours,
+  getLocalDate,
   getValueFromExpenseCategory,
 } from "../../utils/helpers";
 import { ExpenseContext } from "./ExpenseContext";
@@ -66,7 +67,7 @@ export default function ExpenseDetails({
     return (
       !!expense.finalDate &&
       expense.price > expense.paid &&
-      getDiffInHours(new Date(), new Date(expense.finalDate)) <= 24
+      getDiffInHours(new Date(), getLocalDate(expense.finalDate)) <= 24
     );
   }, [expense.finalDate, expense.paid, expense.price]);
 
@@ -134,7 +135,7 @@ export default function ExpenseDetails({
           <Typography color="primary" variant="subtitle1">
             {expense.paymentDate &&
             new Date(expense.paymentDate).getFullYear() > 1000
-              ? formatDateWithHour(new Date(expense.paymentDate))
+              ? formatDateWithHour(getLocalDate(expense.paymentDate))
               : "Nieopłacone"}
           </Typography>
         </div>
@@ -150,8 +151,8 @@ export default function ExpenseDetails({
             variant="subtitle1"
           >
             {expense.finalDate &&
-            new Date(expense.finalDate).getFullYear() > 1000
-              ? formatDateWithHour(new Date(expense.finalDate))
+            new Date(expense.finalDate).getFullYear() > 1899
+              ? formatDateWithHour(getLocalDate(expense.finalDate))
               : "Brak"}
           </Typography>
         </div>

@@ -18,6 +18,7 @@ import { OurStore } from "../../store/store";
 import FullLoading from "../FullLoading";
 import { toBase64 } from "../../utils/helpers";
 import { ImgPlaceholder } from "../ImgPlaceholder";
+import { getLocalDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -101,7 +102,7 @@ export default function Banner() {
 
   useEffect(() => {
     if (wedding && wedding.date) {
-      const weddingDate = new Date(wedding.date);
+      const weddingDate = getLocalDate(wedding.date);
       const timer = setTimeout(() => {
         setLeft(getTime(weddingDate));
       }, 1000);

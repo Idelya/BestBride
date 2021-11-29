@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         httpOnly: true,
         expires: new Date(
           // @ts-ignore
-          Date.now() + 10 * 60 * 60 * 1000
+          Date.now() + 10 * 60 * 60 * 10000
         ),
       });
 
