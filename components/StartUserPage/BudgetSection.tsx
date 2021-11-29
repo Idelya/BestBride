@@ -11,7 +11,6 @@ import {
   Divider,
   Tooltip,
 } from "@mui/material";
-import Task from "../Task";
 import UnderlinedLink from "../UnderlinedLink";
 
 const data = [
