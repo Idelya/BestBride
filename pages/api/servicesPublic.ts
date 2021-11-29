@@ -8,13 +8,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = cookies.get("jwt");
 
   try {
-    const response = await request.get("api/publicservice", {
+    const response = await request.get("api/publicserviceweb", {
       headers: { Cookie: `jwt=${token}`, Authorization: `Bearer ${token}` },
     });
 
     return res.status(200).json(response.data);
   } catch (e: any) {
-    console.log(e);
     return res.status(401).json({
       status: "fail",
       response: e.response.data,
