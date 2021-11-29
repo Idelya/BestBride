@@ -87,7 +87,7 @@ export default function PublicLocationPage() {
   const [rejectModal, setRejectModal] = useState<boolean>(false);
   const { id } = router.query;
 
-  const { data, mutate } = useSWR("api/serviceinnerkey/" + id, fetcher) as {
+  const { data, mutate } = useSWR("/api/serviceinnerkey/" + id, fetcher) as {
     data: Service;
     mutate: () => void;
   };

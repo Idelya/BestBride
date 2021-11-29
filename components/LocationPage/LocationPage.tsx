@@ -200,22 +200,11 @@ export default function LocationPage() {
               //galleryFile: galleryLinks.join(";"),
             }
       );
-      console.log("sended");
-      console.log(
-        urlToProfile
-          ? {
-              ...editedService,
-              fileLink: urlToProfile,
-              //galleryFile: galleryLinks.join(";"),
-            }
-          : {
-              ...editedService,
-              //galleryFile: galleryLinks.join(";"),
-            }
-      );
-      console.log("edycja");
-      console.log(x);
-      console.log(x.data);
+      //@ts-ignore
+      if (x?.data.data.id) {
+        //@ts-ignore
+        await router.push(`/services/` + x?.data.data.id);
+      }
       mutate();
       store.addNotification({
         title: "Sukces",

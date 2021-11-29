@@ -95,7 +95,9 @@ export default function ServicesList({ list }: { list: Service[] }) {
         <ListItem key={loc.id}>
           <Card className={classes.card}>
             <CardActionArea
-              onClick={async () => await router.push("/location/" + loc.id)}
+              onClick={async () =>
+                await router.push("/location/" + loc.innerKey)
+              }
               className={classes.content}
             >
               <CardMedia
