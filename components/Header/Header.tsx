@@ -1,4 +1,4 @@
-import { AppBar, styled, Toolbar } from "@mui/material";
+import { AppBar, styled, Toolbar, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import React from "react";
 import { GUEST_ROUTES_NAV } from "../../config/configNav";
@@ -7,6 +7,7 @@ import Account from "./Account";
 import Nav from "./Nav";
 import NavLink from "./NavLink";
 import ReactNotification from "react-notifications-component";
+import Link from "next/link";
 
 const useStyles = makeStyles({
   root: {
@@ -33,7 +34,11 @@ const Header = () => {
     >
       <ReactNotification className={classes.marginNotification} />
       <Toolbar variant="dense" className={classes.toolbar}>
-        <Logo />
+        <Link href="/" passHref>
+          <Typography sx={{ cursor: "pointer" }}>
+            <Logo />
+          </Typography>
+        </Link>
         <Nav />
         <Account />
       </Toolbar>

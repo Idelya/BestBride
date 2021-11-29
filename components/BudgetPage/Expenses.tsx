@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Heading from "../Heading";
 import { Theme } from "@mui/system";
@@ -15,6 +15,7 @@ import Loading from "../Loading";
 import RectangularButton from "../RectangularButton";
 import { groupBy } from "lodash";
 import { formatDate } from "../../utils/helpers";
+import { ExpenseContext } from "./ExpenseContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +46,7 @@ export default function Expenses() {
   const classes = useStyles();
   const [addExpense, setAddExpense] = useState(false);
   const [planned, setPlanned] = useState<boolean>(true);
+  const { mutateBudget } = useContext(ExpenseContext);
 
   const {
     data: expenses,
@@ -149,7 +151,13 @@ export default function Expenses() {
           </Button>
         </Grid>
         <Grid item md={12}>
-          <ExpensesList data={groupedExpenses} />
+          <ExpensesList
+            data={groupedExpenses}
+            update={() => {
+              mutate();
+              mutateBudget();
+            }}
+          />
         </Grid>
       </Grid>
     </div>

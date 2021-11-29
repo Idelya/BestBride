@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Accordion,
@@ -9,14 +9,16 @@ import {
   ButtonGroup,
   IconButton,
   List,
+  Modal,
   Theme,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Phase, Task } from "../../config/types";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import RectangularButton from "../RectangularButton";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TaskDetails from "../TaskDetails";
 import {
   DragDropContext,
   Droppable,
@@ -31,6 +33,9 @@ import useSWR from "swr";
 import Loading from "../Loading";
 import axios from "axios";
 import { PlannerContext } from "./PlannerContext";
+import EditTask from "./EditTask";
+import { store } from "react-notifications-component";
+import EditPhase from "./EditPhase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,6 +96,21 @@ const useStyles = makeStyles((theme: Theme) =>
     box: {
       width: "250px",
     },
+    modal: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      width: "60vw",
+      backgroundColor: theme.palette.background.default,
+      border: "solid thin " + theme.palette.primary.main,
+      margin: "auto",
+      position: "absolute",
+      top: "30%",
+      left: "50%",
+      transform: "translate(-50%, -30%)",
+      padding: theme.spacing(5, 10),
+      borderRadius: theme.spacing(5),
+    },
   })
 );
 
@@ -116,8 +136,10 @@ export default function TasksList({ phase }: TasksListProps) {
   const classes = useStyles();
   const [filtrList, setFiltrList] = useState<number>(1);
   const [openTaskAdd, setOpenTaskAdd] = useState<boolean>(false);
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+  const [editPhase, setEditPhase] = useState<boolean>(false);
 
-  const { todoOptions } = useContext(PlannerContext);
+  const { todoOptions, update, setUpdate } = useContext(PlannerContext);
   const {
     data: tasks,
     mutate,
@@ -127,9 +149,50 @@ export default function TasksList({ phase }: TasksListProps) {
     mutate: any;
     error: any;
   };
+  console.log(tasks);
+  useEffect(() => {
+    mutate();
+  }, [mutate, update]);
 
   const [localItems, setLocalItems] = useState<Array<Task>>(tasks || []);
 
+  const handleDelete = async () => {
+    try {
+      const x = await axios.delete("/api/phaseDel/" + phase.id);
+      if (x.data) {
+        store.addNotification({
+          title: "Success",
+          message: "Usunieto etap.",
+          type: "success",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+        setUpdate();
+      } else {
+        store.addNotification({
+          title: "Bląd",
+          message: "Spróbuj ponownie później",
+          type: "danger",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleDragEnd = (result: DropResult, provided?: ResponderProvided) => {
     if (!result.destination) {
       return;
@@ -170,6 +233,7 @@ export default function TasksList({ phase }: TasksListProps) {
         sx={{
           display: "flex",
           margin: "32px",
+          height: "100vh",
         }}
       >
         <Loading />
@@ -178,16 +242,61 @@ export default function TasksList({ phase }: TasksListProps) {
 
   return (
     <div className={classes.container}>
+      {editPhase && (
+        <EditPhase
+          open={editPhase}
+          handleClose={() => setEditPhase(false)}
+          update={setUpdate}
+          phase={phase}
+        />
+      )}
+      <Modal open={confirmDelete} onClose={() => setConfirmDelete(false)}>
+        <Box className={classes.modal}>
+          <Typography>
+            Czy na pewno chcesz usunąć etap? Zostanie usunięty wraz ze
+            wszystkimi zadaniami.
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              marginTop: "32px",
+            }}
+          >
+            <Button onClick={handleDelete} className={classes.btn}>
+              Usuń
+            </Button>
+            <Button
+              onClick={() => setConfirmDelete(false)}
+              className={classes.btn}
+            >
+              Anuluj
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
       <AddTask
         open={openTaskAdd}
         handleClose={() => setOpenTaskAdd(false)}
-        update={mutate}
+        update={setUpdate}
         phase={phase}
       />
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h4" color="primary">
-          {phase.name}
-        </Typography>
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h4" color="primary" sx={{ marginRight: "8px" }}>
+            {phase.name}
+          </Typography>
+          <Tooltip title="Edytuj etap" color="primary">
+            <IconButton onClick={() => setEditPhase(true)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Usuń etap" color="primary">
+            <IconButton onClick={() => setConfirmDelete(true)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
         <div>
           <Button
             startIcon={<AddIcon />}
@@ -244,9 +353,17 @@ export default function TasksList({ phase }: TasksListProps) {
                 {...droppableProvided.droppableProps}
                 ref={droppableProvided.innerRef}
               >
-                {tasks.sort().map((task, index) => (
-                  <DraggableTask key={task.order} task={task} index={index} />
-                ))}
+                {tasks
+                  .filter((todo) => todo.status === filtrList)
+                  .sort()
+                  .map((task, index) => (
+                    <DraggableTask
+                      key={task.order}
+                      task={task}
+                      index={index}
+                      phase={phase}
+                    />
+                  ))}
                 {droppableProvided.placeholder}
               </div>
             )}

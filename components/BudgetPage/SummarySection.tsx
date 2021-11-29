@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Divider from "../Divider";
 import Image from "next/image";
@@ -8,12 +8,19 @@ import {
   Theme,
   Button,
   Grid,
+  Box,
+  TextField,
 } from "@mui/material";
 import { EditLocation } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import btnImg from "../../public/btn.png";
 import { PieChart, Pie, Sector, Cell, Legend } from "recharts";
 import { ExpenseContext } from "./ExpenseContext";
+import axios from "axios";
+import useSWR, { mutate } from "swr";
+import { Wedding } from "../../config/types";
+import { store } from "react-notifications-component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
       "& *": {
         textTransform: "none",
+      },
+      "& input": {
+        padding: 0,
       },
     },
     buttonImg: {
@@ -58,8 +68,65 @@ const COLORS = ["#64150F", "#C8291E", "#F2ABA6"];
 
 export default function SummarySection() {
   const classes = useStyles();
+  const [editBudget, setEditBudget] = useState(false);
+  const { budgetStats, mutateBudget, wedding } = useContext(ExpenseContext);
+  const [budget, setBudget] = useState(budgetStats?.budget || 0);
+  console.log(budgetStats);
+  const handleSaveBudget = async () => {
+    if (!wedding) return;
+    try {
+      const x = await axios.put("/api/weddingEdit/" + wedding.id, {
+        ...wedding,
+        budget: budget,
+      });
+      setEditBudget(false);
+      mutateBudget();
+      if (x.data) {
+        store.addNotification({
+          title: "Success",
+          message: "Zmieniono budżet.",
+          type: "success",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      } else {
+        store.addNotification({
+          title: "Bląd",
+          message: "Spróbuj ponownie później",
+          type: "danger",
+          insert: "top",
+          container: "bottom-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true,
+          },
+        });
+      }
+    } catch (err) {
+      store.addNotification({
+        title: "Bląd",
+        message: "Spróbuj ponownie później",
+        type: "danger",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true,
+        },
+      });
+    }
+  };
 
-  const { budgetStats } = useContext(ExpenseContext);
   return (
     <section>
       <Divider component="h2">Podsumowanie</Divider>
@@ -85,9 +152,27 @@ export default function SummarySection() {
             <Typography variant="h6" color="primary">
               Budżet
             </Typography>
-            <Typography variant="h6" color="primary">{`${
-              budgetStats?.budget || 0
-            } zł`}</Typography>
+            {editBudget ? (
+              <Box>
+                <TextField
+                  id="budget"
+                  name="budget"
+                  size="small"
+                  InputProps={{
+                    inputProps: { min: 0 },
+                    style: { padding: "3px 5px" },
+                  }}
+                  InputLabelProps={{ style: { padding: "3px 5px" } }}
+                  type="number"
+                  value={budget}
+                  onChange={(e) => setBudget(parseInt(e.target.value))}
+                />
+              </Box>
+            ) : (
+              <Typography variant="h6" color="primary">{`${
+                budgetStats?.budget || 0
+              } zł`}</Typography>
+            )}
           </div>
           <Seperate color="primary" />
           <div className={classes.inline}>
@@ -102,7 +187,7 @@ export default function SummarySection() {
         <Grid item md={6}>
           <div className={classes.stats}>
             <PieChart
-              width={300}
+              width={400}
               height={300}
               data={data
                 .map((key) => {
@@ -159,8 +244,16 @@ export default function SummarySection() {
         </Grid>
       </Grid>
       <div className={classes.inline}>
-        <Button startIcon={<EditIcon />}>Edytuj budżet</Button>
-        <Button
+        {editBudget ? (
+          <Button startIcon={<SaveIcon />} onClick={handleSaveBudget}>
+            Zapisz budżet
+          </Button>
+        ) : (
+          <Button startIcon={<EditIcon />} onClick={() => setEditBudget(true)}>
+            Edytuj budżet
+          </Button>
+        )}
+        {/*<Button
           className={classes.buttonImg}
           disableRipple
           disableFocusRipple
@@ -170,7 +263,7 @@ export default function SummarySection() {
           <Typography className={classes.buttonTxt}>
             Zobacz inne statystyki
           </Typography>
-        </Button>
+        </Button>*/}
       </div>
     </section>
   );

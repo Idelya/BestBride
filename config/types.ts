@@ -30,8 +30,9 @@ export type Guest = {
   children: number;
   isWitness: boolean;
   partner?: number;
+  partnerId?: number;
   partnerName?: string;
-  accommodation: boolean;
+  accomodation: boolean;
   transport: boolean;
   age?: number;
   gender?: number;
@@ -166,6 +167,14 @@ export type Phase = {
   name?: string;
   tasks?: number;
   doneTasks?: number;
+};
+
+export type PhaseStat = {
+  done: number;
+  inProgress: number;
+  name: string;
+  notStarted: number;
+  phaseId: number;
 };
 
 export type Task = {

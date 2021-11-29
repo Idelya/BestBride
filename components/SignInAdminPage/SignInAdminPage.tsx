@@ -6,6 +6,8 @@ import Logo from "../Logo";
 import { Theme } from "@mui/material";
 import SignInForm from "../SignInForm";
 import DecorationTypography from "../DecorationTypography";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,6 +76,10 @@ export default function SignInAdminPage() {
           layout="fill"
           objectFit="contain"
           objectPosition="left top"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
         />
       </div>
       <div className={classes.contentBanner}>

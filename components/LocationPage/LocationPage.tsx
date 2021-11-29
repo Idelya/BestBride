@@ -19,15 +19,15 @@ import {
 import Divider from "../Divider";
 import { number } from "yup";
 import { useRouter } from "next/router";
-import Banner from "./Banner";
+import Banner from "../ServiceComponent/Banner";
 import { ExpenseCategory, Service, Option } from "../../config/types";
-import Offer from "./Offer";
-import Gallery from "./Gallery";
-import Contact from "./Contact";
+import Offer from "../ServiceComponent/Offer";
+import Gallery from "../ServiceComponent/Gallery";
+import Contact from "../ServiceComponent/Contact";
 import useSWR from "swr";
 import axios from "axios";
 import request from "../../config/requests";
-import { ServiceContext } from "./ServiceContext";
+import { ServiceContext } from "../ServiceComponent/ServiceContext";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import Loading from "../Loading";
 import { store } from "react-notifications-component";
@@ -185,6 +185,7 @@ export default function LocationPage() {
         await Promise.all(uploaders);
       }
       */
+      console.log(urlToProfile);
       const { id, version, images, status, ...editedService } = service;
       const x = await axios.post(
         "/api/serviceAdd",
@@ -199,6 +200,19 @@ export default function LocationPage() {
               //galleryFile: galleryLinks.join(";"),
             }
       );
+      console.log(
+        urlToProfile
+          ? {
+              ...editedService,
+              fileLink: urlToProfile,
+              //galleryFile: galleryLinks.join(";"),
+            }
+          : {
+              ...editedService,
+              //galleryFile: galleryLinks.join(";"),
+            }
+      );
+      console.log(x);
       mutate();
       store.addNotification({
         title: "Sukces",

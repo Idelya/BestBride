@@ -73,11 +73,13 @@ export default function ExpenseAdd({
   handleClose,
   update,
 }: ExpenseAddProps) {
+  const { expenseOptions, wedding } = useContext(ExpenseContext);
+
   const classes = useStyles();
   const [paymentDate, setPaymentDate] = useState<Date | null>(null);
-  const [deadline, setDeadline] = useState<Date | null>(new Date());
-
-  const { expenseOptions } = useContext(ExpenseContext);
+  const [deadline, setDeadline] = useState<Date | null>(
+    wedding ? wedding.date || new Date() : new Date()
+  );
 
   const formik = useFormik({
     initialValues: initialValues,

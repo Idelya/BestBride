@@ -47,7 +47,9 @@ export default function StartPageCompanies() {
         <Typography color="primary" variant="h6">
           Dołącz do nas i zareklamuj swoja firme na Best Bride!
         </Typography>
-        <SignInForm routeSignUp={ROUTES.signUpCompanies} />
+        <Box>
+          <SignInForm routeSignUp={ROUTES.signUpCompanies} />
+        </Box>
       </Box>
     </div>
   );

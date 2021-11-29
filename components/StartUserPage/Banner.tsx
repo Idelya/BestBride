@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import startUsers from "../../public/img/startUsers.jpg";
@@ -9,6 +9,15 @@ import { ROUTES } from "../../config/configNav";
 import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import useSWR from "swr";
+import { Wedding } from "../../config/types";
+import { AuthStates } from "../../store/slices/auth";
+import { OurStore } from "../../store/store";
+import FullLoading from "../FullLoading";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,23 +76,78 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
+
+const getTime = (weddingDate: Date) => {
+  const diff = weddingDate.getTime() - new Date().getTime();
+  if (diff > 0) {
+    const left = {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((diff / 1000 / 60) % 60),
+      seconds: Math.floor((diff / 1000) % 60),
+    };
+    return `${left.days} dni ${left.hours} godzin ${left.minutes} minut ${left.seconds} sekund`;
+  }
+  return "";
+};
 export default function Banner() {
   const classes = useStyles();
+  const [left, setLeft] = useState("");
+  const { loading, me } = useSelector((state: OurStore) => state.authReducer);
+  const { data: wedding } = useSWR("api/wedding", fetcherAuth) as {
+    data: Wedding;
+  };
+
+  useEffect(() => {
+    if (wedding && wedding.date) {
+      const weddingDate = new Date(wedding.date);
+      const timer = setTimeout(() => {
+        setLeft(getTime(weddingDate));
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  });
+
+  if (!me || loading === AuthStates.LOADING || !wedding) {
+    return <FullLoading />;
+  }
+
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
-        <Image src={startUsers} alt="" layout="fill" objectFit="cover" />
+        <Image
+          src={startUsers}
+          alt=""
+          layout="fill"
+          objectFit="cover"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
+        />
       </div>
       <div className={classes.contentBanner}>
         <DecorationTypography variant="h5" className={classes.spacing}>
-          Agnieszka i Mateusz
+          {me.name || me.email}
         </DecorationTypography>
-        <Typography variant="h5" className={classes.spacing}>
-          Do waszego ślubu zostało:
-        </Typography>
-        <DecorationTypography variant="h5" className={classes.spacing}>
-          75 dni 13 godzin 45 minut
-        </DecorationTypography>
+        {wedding.date && (
+          <>
+            <Typography variant="h5" className={classes.spacing}>
+              Do Twojego ślubu zostało:
+            </Typography>
+            <DecorationTypography variant="h5" className={classes.spacing}>
+              {left}
+            </DecorationTypography>
+          </>
+        )}
+        <UnderlinedLink
+          route={{
+            ...ROUTES.organizer,
+            name: "Zobacz co zostało jeszcze do zrobienia",
+          }}
+        />
       </div>
     </div>
   );

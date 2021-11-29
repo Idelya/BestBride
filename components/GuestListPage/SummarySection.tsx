@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Grid,
@@ -12,6 +12,7 @@ import Divider from "../Divider";
 import axios from "axios";
 import useSWR from "swr";
 import Loading from "../Loading";
+import { GuestContext } from "./GuestContext";
 
 const names = {
   accomodation: "Z noclegiem:",
@@ -225,19 +226,31 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function SummarySection() {
   const classes = useStyles();
 
-  const { data: stats } = useSWR("api/statsGuestFull", fetcher) as {
+  const { update } = useContext(GuestContext);
+  const { data: stats, mutate: mutateStats } = useSWR(
+    "api/statsGuestFull",
+    fetcher
+  ) as {
     data: Stats;
     mutate: any;
     error: any;
   };
 
-  const { data: dietsStats } = useSWR("api/diets", fetcher) as {
+  const { data: dietsStats, mutate: mutateDiets } = useSWR(
+    "api/diets",
+    fetcher
+  ) as {
     data: {
       name: string;
       count: number;
     }[];
+    mutate: () => void;
   };
 
+  useEffect(() => {
+    mutateStats();
+    mutateDiets();
+  }, [mutateDiets, mutateStats, update]);
   const grouped = useMemo(
     () => group(Object.keys(stats || {}), stats || {}),
     [stats]

@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { SignInCompaniesPage } from "../components/SignInCompaniesPage";
 import { User } from "../config/types";
@@ -19,7 +19,9 @@ const SignInCompanies: NextPage<{ user: User; children?: ReactNode }> = ({
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
-  dispatch(setUser({ me: user }));
+  useEffect(() => {
+    dispatch(setUser({ me: user }));
+  });
   return (
     <UnauthGuard>
       <SignInCompaniesPage />

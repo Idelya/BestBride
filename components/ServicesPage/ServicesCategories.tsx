@@ -86,15 +86,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const servicesMock = [
-  {
-    id: 1,
-    name: "Usługa",
-    category: 1,
-    fileLink:
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1974&q=80",
-  },
-];
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function ServicesCategories({
   currentCategory,
@@ -112,11 +103,7 @@ export default function ServicesCategories({
     data: Service[];
   };
 
-  useEffect(() => {
-    setServicesList(locations);
-  }, [locations]);
-
-  if (!expenseOptions || !locations) {
+  if (!expenseOptions) {
     return (
       <Container sx={{ display: "flex", minHeight: "50vh" }}>
         <Loading />
@@ -127,7 +114,13 @@ export default function ServicesCategories({
     <Container className={classes.container}>
       <div className={classes.search}>
         {currentCategory != null && (
-          <Search handleChange={setServicesList} list={locations || []} />
+          <Search
+            handleChange={setServicesList}
+            list={
+              (locations || []).filter((l) => l.category === currentCategory) ||
+              []
+            }
+          />
         )}
       </div>
       <Grid

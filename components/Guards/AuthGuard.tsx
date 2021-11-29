@@ -23,7 +23,6 @@ export const AuthGuard: React.FC = ({ children }) => {
       await router.push("/admin");
     }
 
-    console.log(me);
     if (loading != AuthStates.LOADING && !me) {
       redirect();
     } else if (

@@ -6,22 +6,40 @@ import { useDispatch } from "react-redux";
 import { CompaniesLocationsListPage } from "../../components/CompaniesLocationsListPage";
 import { User } from "../../config/types";
 import { setUser } from "../../store/slices/auth";
-import { authPage } from "../../store/auth";
+import { authServicePage } from "../../store/auth";
 import { LocationPage } from "../../components/LocationPage";
 
-export const getServerSideProps = authPage;
+export const getServerSideProps = authServicePage;
 
-const Location: NextPage<{ user: User; children?: ReactNode }> = ({
+const AdminAuthGuard = dynamic<{}>(() =>
+  import("../../components/Guards/AdminAuthGuard").then(
+    (mod) => mod.AdminAuthGuard
+  )
+);
+
+const Location: NextPage<{
+  user: User;
+  isOwner: { isMyService: boolean };
+  children?: ReactNode;
+}> = ({
   user,
+  isOwner,
 }: {
   user: User;
+  isOwner: { isMyService: boolean };
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setUser({ me: user }));
   });
-  return <LocationPage />;
+  return isOwner.isMyService ? (
+    <LocationPage />
+  ) : (
+    <AdminAuthGuard>
+      <LocationPage />
+    </AdminAuthGuard>
+  );
 };
 
 export default Location;

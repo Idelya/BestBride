@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Grid, Theme, Typography } from "@mui/material";
@@ -7,6 +7,9 @@ import Heading from "../Heading";
 import DecorationTypography from "../DecorationTypography";
 import axios from "axios";
 import useSWR from "swr";
+import { GuestContext } from "./GuestContext";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,11 +74,20 @@ interface StatsBasic {
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export default function Banner() {
   const classes = useStyles();
-  const { data: stats } = useSWR("api/statsGuestBasic", fetcher) as {
+
+  const { update } = useContext(GuestContext);
+  const { data: stats, mutate: mutateStats } = useSWR(
+    "api/statsGuestBasic",
+    fetcher
+  ) as {
     data: StatsBasic;
     mutate: any;
     error: any;
   };
+
+  useEffect(() => {
+    mutateStats();
+  }, [mutateStats, update]);
 
   return (
     <Grid container className={classes.container}>
@@ -102,7 +114,14 @@ export default function Banner() {
           </DecorationTypography>
         </div>
         <div className={classes.img}>
-          <Image alt="" src={img} />
+          <Image
+            alt=""
+            src={img}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              ImgPlaceholder(400, 475)
+            )}`}
+          />
         </div>
       </Grid>
     </Grid>

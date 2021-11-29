@@ -21,15 +21,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface TaskProps {
-  children?: string;
+  children?: JSX.Element;
 }
-export default function Task({ children }: TaskProps) {
+export function Task({ children }: TaskProps) {
   const classes = useStyles();
-  return (
-    <div className={classes.container}>
-      <Typography variant="h6" color="primary">
-        {children}
-      </Typography>
-    </div>
-  );
+  return <div className={classes.container}>{children}</div>;
 }

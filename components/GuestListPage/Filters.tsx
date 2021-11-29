@@ -65,7 +65,7 @@ interface ValuesTypes {
   city: string[];
   status: number[];
   diet: number[];
-  accommodation: boolean;
+  accomodation: boolean;
   transport: boolean;
 }
 
@@ -107,7 +107,7 @@ export default function Filters({
             (guest) =>
               values.diet.length === 0 || values.diet.includes(guest.diet)
           )
-          .filter((guest) => !values.accommodation || guest.accommodation)
+          .filter((guest) => !values.accomodation || guest.accomodation)
           .filter((guest) => !values.transport || guest.transport),
       };
     });
@@ -143,7 +143,7 @@ export default function Filters({
             city: [],
             status: [],
             diet: [],
-            accommodation: false,
+            accomodation: false,
             transport: false,
           }}
           onSubmit={handleSubmitFilters}
@@ -251,9 +251,9 @@ export default function Filters({
                   <div className={classes.inline}>
                     <Typography color="GrayText">Tylko z noclegiem:</Typography>
                     <Checkbox
-                      id="accommodation"
-                      name="accommodation"
-                      value={values.accommodation}
+                      id="accomodation"
+                      name="accomodation"
+                      value={values.accomodation}
                       onChange={handleChange}
                     />
                   </div>

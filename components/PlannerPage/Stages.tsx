@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -19,6 +19,8 @@ import AddPhase from "./AddPhase";
 import axios from "axios";
 import useSWR from "swr";
 import Loading from "../Loading";
+import { PlannerContext } from "./PlannerContext";
+import EditTask from "./EditTask";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,35 +71,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const data = [
-  {
-    id: 1,
-    name: "Etap 1",
-    tasks: 10,
-    doneTasks: 10,
-  },
-  {
-    id: 2,
-    name: "Etap 2",
-    tasks: 10,
-    doneTasks: 8,
-  },
-  {
-    id: 3,
-    name: "Etap 3",
-    tasks: 15,
-    doneTasks: 3,
-  },
-  {
-    id: 4,
-    name: "Etap 4",
-    tasks: 10,
-    doneTasks: 0,
-  },
-];
-
-const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-
 export default function Stages() {
   const classes = useStyles();
   const [currPhase, setCurrPhase] = useState<Phase | null>(null);
@@ -108,30 +81,30 @@ export default function Stages() {
   };
 
   const {
-    data: phases,
-    mutate,
-    error: errorPhase,
-  } = useSWR("api/phases", fetcher) as {
-    data: Phase[];
-    mutate: any;
-    error: any;
-  };
+    statsByPhase,
+    phases,
+    setUpdate,
+    editedTask,
+    setEditedTask,
+    editedPhase,
+  } = useContext(PlannerContext);
 
-  if (errorPhase)
+  useEffect(() => {
+    if (phases && currPhase) {
+      setCurrPhase(phases.find((p) => p.id === currPhase.id) || null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phases]);
+
+  if (!phases)
     return (
       <Box
         sx={{
           display: "flex",
-        }}
-      >
-        Nie można pobrać danych. Odśwież stronę.
-      </Box>
-    );
-  if (!data)
-    return (
-      <Box
-        sx={{
-          display: "flex",
+          height: "100vh",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Loading />
@@ -143,8 +116,18 @@ export default function Stages() {
       <AddPhase
         open={openPhaseAdd}
         handleClose={() => setOpenPhaseAdd(false)}
-        update={mutate}
+        update={setUpdate}
       />
+
+      {editedTask && editedPhase && (
+        <EditTask
+          open={!!editedTask}
+          handleClose={() => setEditedTask(null)}
+          update={setUpdate}
+          task={editedTask}
+          phase={editedPhase}
+        />
+      )}
       <Box
         sx={{ width: currPhase ? "30%" : "100%" }}
         className={classes.container}
@@ -156,32 +139,45 @@ export default function Stages() {
         >
           Dodaj etap
         </Button>
-        {(phases || []).map((stage) => (
-          <Card
-            className={
-              classes.stage +
-              " " +
-              (currPhase !== stage ? "" : classes.picked) +
-              " " +
-              (stage?.doneTasks === stage?.tasks ? classes.finished : "")
-            }
-            key={stage.id}
-          >
-            <CardActionArea
-              className={classes.stageButton}
-              onClick={() => handleChange(stage)}
+        {(phases || []).map((stage) => {
+          const stats = statsByPhase?.find(
+            (stat) => stat.phaseId === stage.id
+          ) || {
+            done: 0,
+            inProgress: 0,
+            notStarted: 0,
+          };
+          return (
+            <Card
+              className={
+                classes.stage +
+                " " +
+                (currPhase !== stage ? "" : classes.picked) +
+                " " +
+                (stats.notStarted === 0 && stats.inProgress === 0
+                  ? classes.finished
+                  : "")
+              }
+              key={stage.id}
             >
-              <CardContent className={classes.stageContent}>
-                <Typography variant="h6" color="primary">
-                  {stage.name}
-                </Typography>
-                <Typography variant="h6" color="primary">{`${
-                  stage?.doneTasks || 0
-                }/${stage?.tasks || 0}`}</Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
+              <CardActionArea
+                className={classes.stageButton}
+                onClick={() => handleChange(stage)}
+              >
+                <CardContent className={classes.stageContent}>
+                  <Typography variant="h6" color="primary">
+                    {stage.name}
+                  </Typography>
+                  <Typography variant="h6" color="primary">{`${
+                    stats.done || 0
+                  }/${
+                    stats.done + stats.inProgress + stats.notStarted || 0
+                  }`}</Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          );
+        })}
       </Box>
       <Box
         sx={{

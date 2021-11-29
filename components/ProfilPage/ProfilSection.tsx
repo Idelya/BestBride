@@ -32,7 +32,7 @@ import useSWR from "swr";
 import FullLoading from "../FullLoading";
 import { omit } from "lodash";
 import { store } from "react-notifications-component";
-        
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     form: {

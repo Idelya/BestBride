@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
     footer: {
       display: "flex",
       padding: theme.spacing(1),
-      justifyContent: "center",
+      justifyContent: "space-between",
     },
   })
 );
@@ -188,9 +188,14 @@ export default function GuestList({
         </List>
 
         <div className={classes.footer}>
+          <Typography
+            variant="body1"
+            sx={{ width: "100px" }}
+          >{`Suma: ${data.length}`}</Typography>
           <IconButton aria-label="add" onClick={addGuest}>
             <AddCircleRoundedIcon color="primary" />
           </IconButton>
+          <Typography sx={{ width: "100px" }} />
         </div>
       </div>
     </>

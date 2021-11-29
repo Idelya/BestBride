@@ -4,6 +4,8 @@ import Heading from "../Heading";
 import service from "../../public/img/service.jpg";
 import Image from "next/image";
 import { Theme } from "@mui/system";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,7 +51,16 @@ export default function Banner({
         <Heading>Usługi</Heading>
       </div>
       <div className={classes.img}>
-        <Image src={service} alt="" layout="fill" objectFit="cover" />
+        <Image
+          src={service}
+          alt=""
+          layout="fill"
+          objectFit="cover"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
+        />
       </div>
     </div>
   );

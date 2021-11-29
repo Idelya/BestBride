@@ -22,8 +22,9 @@ const Profil: NextPage<{ user: User; children?: ReactNode }> = ({
   children?: ReactNode;
 }) => {
   const dispatch = useDispatch();
-  dispatch(setUser({ me: user }));
-
+  useEffect(() => {
+    dispatch(setUser({ me: user }));
+  });
   return (
     <AuthGuard>
       <ProfilPage />

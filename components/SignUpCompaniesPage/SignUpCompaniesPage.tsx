@@ -7,6 +7,8 @@ import { TextField, Theme, Typography } from "@mui/material";
 import { ROUTES } from "../../config/configNav";
 import SignUpForm from "../SignUpForm";
 import { ROLE } from "../../config/types";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,6 +71,10 @@ export default function SignUpCompaniesPage() {
           layout="fill"
           objectFit="contain"
           objectPosition="left top"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
         />
       </div>
       <div className={classes.contentBanner}>

@@ -1,12 +1,36 @@
-import React from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { createStyles, makeStyles } from "@mui/styles";
-import { Grid, Theme, Typography } from "@mui/material";
+import { Box, Grid, Modal, Theme, Typography } from "@mui/material";
 import img from "../../public/img/planner.jpg";
 import Heading from "../Heading";
-import Task from "../Task";
+import { Task as TaskComponent } from "../Task";
+import axios from "axios";
+import useSWR from "swr";
+import { PlannerContext } from "./PlannerContext";
+import { sortBy } from "lodash";
+import { Phase, Task } from "../../config/types";
+import Loading from "../Loading";
+import { getValue, toBase64 } from "../../utils/helpers";
+import TaskDetails from "../TaskDetails";
+import Divider from "../Divider";
+import FullLoading from "../FullLoading";
+import { ImgPlaceholder } from "../ImgPlaceholder";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    modal: {
+      width: "80vw",
+      backgroundColor: theme.palette.background.default,
+      border: "solid thin " + theme.palette.primary.main,
+      margin: "auto",
+      position: "absolute",
+      top: "30%",
+      left: "50%",
+      transform: "translate(-50%, -30%)",
+      padding: theme.spacing(0, 5, 5),
+      borderRadius: theme.spacing(5),
+    },
     decorator: {
       backgroundColor: "#FFEFE9",
       position: "absolute",
@@ -56,25 +80,140 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const tasks = ["zadanie 1", "zadanie 2", "zadanie 3"];
+const fetcherAuth = (url: string) => axios.get(url).then((res) => res.data);
+const CuerrentTasks = ({ phase }: { phase: Phase }) => {
+  const classes = useStyles();
+  const [currTask, setCurrTask] = useState<Task | null>();
+  const {
+    update,
+    todoOptions,
+    setUpdate,
+    setEditedTask,
+    setEditedPhase,
+    generalPhase,
+  } = useContext(PlannerContext);
+  const { data: tasks, mutate } = useSWR(
+    `api/task/${phase.id}`,
+    fetcherAuth
+  ) as {
+    data: Task[];
+    mutate: any;
+    error: any;
+  };
+
+  useEffect(() => {
+    mutate();
+  }, [mutate, update]);
+  if (!tasks || !todoOptions) {
+    return <Loading />;
+  }
+  return (
+    <>
+      {currTask && (
+        <Modal open={!!currTask} onClose={() => setCurrTask(null)}>
+          <Box className={classes.modal}>
+            <Divider>{currTask.name}</Divider>
+            <TaskDetails
+              task={currTask}
+              update={setUpdate}
+              onEditClick={() => {
+                setCurrTask(null);
+                setEditedPhase(generalPhase);
+                setEditedTask(currTask);
+              }}
+            />
+          </Box>
+        </Modal>
+      )}
+      <Typography component="h3" variant="h4" className={classes.spacing}>
+        Bieżące zadania
+      </Typography>
+      {(sortBy(tasks || [], ["date", "status"]) || [])
+        .filter((t) => t.status != 2)
+        .filter((_, i) => i < 3)
+        .map((task, i) => (
+          <TaskComponent key={i}>
+            <Box
+              sx={{
+                width: "100%",
+                padding: "15px",
+                display: "flex",
+                justifyContent: "space-between",
+                textAlign: "center",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => setCurrTask(task)}
+            >
+              <Typography color="primary" variant="h6">
+                {task.name}
+              </Typography>
+              <Box>
+                <Typography color="primary" variant="subtitle1">
+                  {getValue(todoOptions || [], task.status)}
+                </Typography>
+              </Box>
+            </Box>
+          </TaskComponent>
+        ))}
+    </>
+  );
+};
 
 export default function Banner() {
   const classes = useStyles();
+
+  const { data: statsGeneral, mutate: mutateStats } = useSWR(
+    "api/phaseStatsGeneral",
+    fetcherAuth
+  ) as {
+    data: any;
+    mutate: () => void;
+  };
+  const { update, phases, statsByPhase, generalPhase } =
+    useContext(PlannerContext);
+
+  const currentPhaseStats = useMemo(
+    () => statsByPhase?.find((s) => s.phaseId === generalPhase?.id),
+    [generalPhase, statsByPhase]
+  );
+
+  useEffect(() => {
+    mutateStats();
+  }, [mutateStats, update]);
+
+  if (!phases) {
+    return null;
+  }
   return (
     <Grid container className={classes.container}>
       <Grid item className={classes.headingBox} md={7}>
         <Heading>Planner</Heading>
         <div className={classes.decorator} />
-        <div className={classes.img}>{img && <Image alt="" src={img} />}</div>
+        <div className={classes.img}>
+          {img && (
+            <Image
+              alt=""
+              src={img}
+              placeholder="blur"
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                ImgPlaceholder(400, 475)
+              )}`}
+            />
+          )}
+        </div>
       </Grid>
-      <Grid item md={5} className={classes.summary}>
+      <Grid item md={5} className={classes.summary} sx={{ minHeight: "70vh" }}>
         <Typography
           component="p"
           variant="h5"
           color="sceondary"
           className={classes.spacing}
         >
-          Etap 30/34
+          {`Etap ${
+            phases.findIndex((p) => p.id === generalPhase?.id) + 1 ||
+            phases.length
+          }/${phases.length}`}
         </Typography>
         <Typography
           component="h2"
@@ -82,14 +221,9 @@ export default function Banner() {
           color="primary"
           className={classes.bottomSpacing}
         >
-          Sala
+          {generalPhase?.name || "Nie posiadasz żadnego rozpoczętego etapu."}
         </Typography>
-        <Typography component="h3" variant="h4" className={classes.spacing}>
-          Bieżące zadania
-        </Typography>
-        {tasks.map((t, i) => (
-          <Task key={i}>{t}</Task>
-        ))}
+        {generalPhase && <CuerrentTasks phase={generalPhase} />}
       </Grid>
       <Grid item md={12} className={classes.row}>
         <span className={classes.row}>
@@ -98,19 +232,33 @@ export default function Banner() {
             color="GrayText"
             className={classes.spacing}
           >
-            W tym etapie wykonano: 30%
+            {currentPhaseStats
+              ? `W tym etapie wykonano: ${
+                  (currentPhaseStats.done * 100) /
+                  (currentPhaseStats.done +
+                    currentPhaseStats.inProgress +
+                    currentPhaseStats.notStarted)
+                }%`
+              : "Brak statystyk z bierzącego etapu"}
           </Typography>
           <Typography
             component="p"
             color="GrayText"
             className={classes.spacing}
           >
-            Wykonano 12% wszystkich zadań
+            {statsGeneral
+              ? `Wykonano ${(
+                  (statsGeneral.done * 100) /
+                  (statsGeneral.done +
+                    statsGeneral.inProgress +
+                    statsGeneral.notStarted)
+                ).toFixed(0)}% wszystkich zadań`
+              : "Brak statystyk z wszystkich zadań"}
           </Typography>
         </span>
-        <Typography component="p" color="secondary" className={classes.spacing}>
+        {/*<Typography component="p" color="secondary" className={classes.spacing}>
           Opóźnienie
-        </Typography>
+                  </Typography>*/}
       </Grid>
     </Grid>
   );

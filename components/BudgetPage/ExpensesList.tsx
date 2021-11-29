@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import Divider from "../Divider";
 import Image from "next/image";
@@ -20,6 +20,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpenseDetails from "./ExpenseDetails";
 import { useRouter } from "next/dist/client/router";
 import { formatDate, getDiffInHours } from "../../utils/helpers";
+import ExpenseEdit from "./ExpenseEdit";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,10 +59,12 @@ interface ExpensesListProps {
     date: string;
     list: Expense[];
   }[];
+  update: () => void;
 }
 
-export default function ExpensesList({ data }: ExpensesListProps) {
+export default function ExpensesList({ data, update }: ExpensesListProps) {
   const classes = useStyles();
+  const [expense, setExpense] = useState<Expense | null>();
 
   if (data.length === 0) {
     return (
@@ -72,6 +75,14 @@ export default function ExpensesList({ data }: ExpensesListProps) {
   }
   return (
     <div className={classes.list}>
+      {expense && (
+        <ExpenseEdit
+          open={!!expense}
+          handleClose={() => setExpense(null)}
+          expense={expense}
+          update={update}
+        />
+      )}
       {data.map((ele) => (
         <>
           <Typography variant="h5" color="secondary">
@@ -112,7 +123,11 @@ export default function ExpensesList({ data }: ExpensesListProps) {
                     </div>
                   </AccordionSummary>
                   <AccordionDetails className={classes.details}>
-                    <ExpenseDetails expense={expense} />
+                    <ExpenseDetails
+                      expense={expense}
+                      onEditClick={() => setExpense(expense)}
+                      update={update}
+                    />
                   </AccordionDetails>
                 </Accordion>
               );
