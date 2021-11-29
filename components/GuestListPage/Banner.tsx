@@ -8,6 +8,8 @@ import DecorationTypography from "../DecorationTypography";
 import axios from "axios";
 import useSWR from "swr";
 import { GuestContext } from "./GuestContext";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -112,7 +114,14 @@ export default function Banner() {
           </DecorationTypography>
         </div>
         <div className={classes.img}>
-          <Image alt="" src={img} />
+          <Image
+            alt=""
+            src={img}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              ImgPlaceholder(400, 475)
+            )}`}
+          />
         </div>
       </Grid>
     </Grid>

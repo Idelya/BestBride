@@ -4,6 +4,8 @@ import { makeStyles } from "@mui/styles";
 import start from "../../public/img/start.jpg";
 import Logo from "../Logo";
 import { flexbox } from "@mui/system";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles({
   root: {
@@ -47,7 +49,16 @@ export default function StartPage() {
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
-        <Image src={start} alt="" layout="fill" objectFit="contain" />
+        <Image
+          src={start}
+          alt=""
+          layout="fill"
+          objectFit="contain"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
+        />
       </div>
       <div className={classes.contentBanner}>
         <Logo variantLogo="h4" />

@@ -16,6 +16,8 @@ import { Wedding } from "../../config/types";
 import { AuthStates } from "../../store/slices/auth";
 import { OurStore } from "../../store/store";
 import FullLoading from "../FullLoading";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -115,7 +117,16 @@ export default function Banner() {
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
-        <Image src={startUsers} alt="" layout="fill" objectFit="cover" />
+        <Image
+          src={startUsers}
+          alt=""
+          layout="fill"
+          objectFit="cover"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
+        />
       </div>
       <div className={classes.contentBanner}>
         <DecorationTypography variant="h5" className={classes.spacing}>

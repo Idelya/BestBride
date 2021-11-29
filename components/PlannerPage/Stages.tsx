@@ -102,7 +102,7 @@ export default function Stages() {
         sx={{
           display: "flex",
           height: "100vh",
-          width: "100vw",
+          width: "100%",
           justifyContent: "center",
           alignItems: "center",
         }}

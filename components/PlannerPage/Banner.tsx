@@ -11,10 +11,12 @@ import { PlannerContext } from "./PlannerContext";
 import { sortBy } from "lodash";
 import { Phase, Task } from "../../config/types";
 import Loading from "../Loading";
-import { getValue } from "../../utils/helpers";
+import { getValue, toBase64 } from "../../utils/helpers";
 import TaskDetails from "../TaskDetails";
 import Divider from "../Divider";
 import FullLoading from "../FullLoading";
+import { ImgPlaceholder } from "../ImgPlaceholder";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
@@ -188,7 +190,18 @@ export default function Banner() {
       <Grid item className={classes.headingBox} md={7}>
         <Heading>Planner</Heading>
         <div className={classes.decorator} />
-        <div className={classes.img}>{img && <Image alt="" src={img} />}</div>
+        <div className={classes.img}>
+          {img && (
+            <Image
+              alt=""
+              src={img}
+              placeholder="blur"
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                ImgPlaceholder(400, 475)
+              )}`}
+            />
+          )}
+        </div>
       </Grid>
       <Grid item md={5} className={classes.summary} sx={{ minHeight: "70vh" }}>
         <Typography

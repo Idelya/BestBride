@@ -12,6 +12,8 @@ import DecorationTypography from "../DecorationTypography";
 import Banner from "./Banner";
 import photo1 from "../../public/img/companies1.jpg";
 import photo2 from "../../public/img/companies2.jpg";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,12 +64,26 @@ export default function ArticleBestBride() {
           ))}
         </Grid>
         <Grid item xs={12} md={6} className={classes.spacing}>
-          <Image alt="" src={articles[0].photo} />
+          <Image
+            alt=""
+            src={articles[0].photo}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              ImgPlaceholder(400, 475)
+            )}`}
+          />
         </Grid>
       </Grid>
       <Grid container spacing={8}>
         <Grid item xs={12} md={6} className={classes.spacing}>
-          <Image alt="" src={articles[1].photo} />
+          <Image
+            alt=""
+            src={articles[1].photo}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              ImgPlaceholder(400, 475)
+            )}`}
+          />
         </Grid>
         <Grid item xs={12} md={6} className={classes.spacing}>
           {articles[1].text.map((text, i) => (

@@ -9,6 +9,8 @@ import { ROUTES } from "../../config/configNav";
 import RectangularButton from "../RectangularButton";
 import UnderlinedLink from "../UnderlinedLink";
 import DecorationTypography from "../DecorationTypography";
+import { toBase64 } from "../../utils/helpers";
+import { ImgPlaceholder } from "../ImgPlaceholder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,7 +64,16 @@ export default function Banner() {
   return (
     <div className={classes.banner}>
       <div className={classes.img}>
-        <Image src={startCompanies} alt="" layout="fill" objectFit="cover" />
+        <Image
+          src={startCompanies}
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            ImgPlaceholder(400, 475)
+          )}`}
+          alt=""
+          layout="fill"
+          objectFit="cover"
+        />
       </div>
       <div className={classes.contentBanner}>
         <div className={classes.logo}>

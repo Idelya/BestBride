@@ -32,7 +32,7 @@ export default function FullLoading() {
     <Box className={classes.container}>
       <Box className={classes.loadinerBox}>
         <Image
-          alt="zium"
+          alt="Pobieranie..."
           src={flower}
           layout="responsive"
           width={200}

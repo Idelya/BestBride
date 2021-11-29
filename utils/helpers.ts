@@ -49,3 +49,8 @@ export const blockToText = (content: any) => {
     return toStr;
   }
 };
+
+export const toBase64 = (str: any) =>
+  typeof window === "undefined"
+    ? Buffer.from(str).toString("base64")
+    : window.btoa(str);
