@@ -24,8 +24,6 @@ import {
   ListItemText,
   Grid,
 } from "@mui/material";
-import Task from "../Task";
-import UnderlinedLink from "../UnderlinedLink";
 
 type GuestData = {
   name: string;

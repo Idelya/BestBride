@@ -2,8 +2,6 @@ import React from "react";
 import { chunk } from "lodash";
 import { createStyles, makeStyles } from "@mui/styles";
 import { IconButton, Container, Theme, Typography } from "@mui/material";
-import { Event } from "../../config/types";
-import Task from "../Task";
 
 const tasks = [
   {
@@ -70,11 +68,7 @@ export default function TasksSection() {
             Kościół
           </Typography>
         </div>
-        <div className={classes.tasks}>
-          <Task />
-          <Task />
-          <Task />
-        </div>
+        <div className={classes.tasks}></div>
       </div>
     </Container>
   );
