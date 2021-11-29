@@ -258,28 +258,6 @@ export default function AddTask({
                 )}
               />
             </div>
-            <div className={classes.block}>
-              <Typography component="label" color="GrayText" variant="h6">
-                Wydatek powiązany z zadaniem:
-              </Typography>
-              <Autocomplete
-                size="small"
-                key={clear.toString()}
-                options={searchableExpenses}
-                value={searchedExpense}
-                className={classes.select}
-                getOptionLabel={(option) => option.name}
-                //@ts-ignore
-                onChange={(e, v) => setSearchedExpense(v)}
-                renderInput={(params) => (
-                  <TextField
-                    name="expenses"
-                    placeholder="wybierz powiązany wydatek"
-                    {...params}
-                  />
-                )}
-              />
-            </div>
             {/*<div className={classes.block}>
               <Typography component="label" color="GrayText" variant="h6">
                 Wydatki powiązane z zadaniem:

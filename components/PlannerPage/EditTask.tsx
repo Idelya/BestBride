@@ -108,7 +108,9 @@ export default function EditTask({
   const { wedding, weddingUsers, todoOptions } = useContext(PlannerContext);
   const classes = useStyles();
   const [value, setValue] = useState<Date | null>(
-    task.date || wedding?.date || new Date()
+    task.date && new Date(task.date).getFullYear() >= 1900
+      ? task.date
+      : wedding?.date || new Date()
   );
   const [user, setUser] = useState<UserPlanner | null>(
     weddingUsers?.find((u) => u.id === task.assigned) || null
@@ -251,28 +253,6 @@ export default function EditTask({
                 onChange={(e, v) => setUser(v)}
                 renderInput={(params) => (
                   <TextField name="assigned" {...params} />
-                )}
-              />
-            </div>
-            <div className={classes.block}>
-              <Typography component="label" color="GrayText" variant="h6">
-                Wydatek powiązany z zadaniem:
-              </Typography>
-              <Autocomplete
-                size="small"
-                key={clear.toString()}
-                options={searchableExpenses}
-                value={searchedExpense}
-                className={classes.select}
-                getOptionLabel={(option) => option.name}
-                //@ts-ignore
-                onChange={(e, v) => setSearchedExpense(v)}
-                renderInput={(params) => (
-                  <TextField
-                    name="expenses"
-                    placeholder="wybierz powiązany wydatek"
-                    {...params}
-                  />
                 )}
               />
             </div>
