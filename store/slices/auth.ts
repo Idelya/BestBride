@@ -54,7 +54,7 @@ export const register = createAsyncThunk(
       });
       const user = await axios.get("api/user");
       return {
-        me: user,
+        me: (user?.data as any).user,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: (error as Error).message });
