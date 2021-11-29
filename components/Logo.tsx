@@ -49,7 +49,7 @@ const Logo = ({
   const classes = useStyles();
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Typography color="primary" variant={variantLogo}>
+      <Typography color="primary" variant={variantLogo} component="span">
         Best Bride
       </Typography>
       {isForCompanies && (

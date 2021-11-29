@@ -186,7 +186,7 @@ export default function LocationPage() {
       }
       */
       console.log(urlToProfile);
-      const { id, version, images, status, ...editedService } = service;
+      const { id, images, status, ...editedService } = service;
       const x = await axios.post(
         "/api/serviceAdd",
         urlToProfile
@@ -200,6 +200,7 @@ export default function LocationPage() {
               //galleryFile: galleryLinks.join(";"),
             }
       );
+      console.log("sended");
       console.log(
         urlToProfile
           ? {
@@ -212,7 +213,9 @@ export default function LocationPage() {
               //galleryFile: galleryLinks.join(";"),
             }
       );
+      console.log("edycja");
       console.log(x);
+      console.log(x.data);
       mutate();
       store.addNotification({
         title: "Sukces",

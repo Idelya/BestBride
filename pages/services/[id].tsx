@@ -33,6 +33,7 @@ const Location: NextPage<{
   useEffect(() => {
     dispatch(setUser({ me: user }));
   });
+  console.log(isOwner);
   return isOwner.isMyService ? (
     <LocationPage />
   ) : (
