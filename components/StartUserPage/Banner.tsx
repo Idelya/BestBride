@@ -145,7 +145,7 @@ export default function Banner() {
         <UnderlinedLink
           route={{
             ...ROUTES.organizer,
-            name: "Zobacz co zostało jescze do zrobienia",
+            name: "Zobacz co zostało jeszcze do zrobienia",
           }}
         />
       </div>

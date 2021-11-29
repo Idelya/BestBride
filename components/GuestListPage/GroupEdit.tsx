@@ -26,7 +26,7 @@ import {
 import Divider from "../Divider";
 import { Form, useFormik } from "formik";
 import { groupSchemaValidation, initialValues } from "../../schema/GroupSchema";
-import { Guest } from "../../config/types";
+import { Group, Guest } from "../../config/types";
 import axios from "axios";
 import { store } from "react-notifications-component";
 
@@ -89,14 +89,16 @@ interface GroupEditProps {
   open: boolean;
   handleClose: () => void;
   guests: Guest[];
+  group: Group;
 }
 export default function GroupEdit({
   open,
   handleClose,
   guests,
+  group,
 }: GroupEditProps) {
   const classes = useStyles();
-  const [guestInList, setGuestInList] = useState<Guest[]>([]);
+  const [guestInList, setGuestInList] = useState<Guest[]>(group.guests);
   const searchableGuests = useMemo(
     () => guests.filter((o) => !guestInList.includes(o)),
     [guestInList, guests]
@@ -106,18 +108,16 @@ export default function GroupEdit({
   const [clear, setClear] = useState(false);
 
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: { ...initialValues, name: group.name },
     validationSchema: groupSchemaValidation,
     onSubmit: async (values) => {
       try {
-        const x = (await axios.post("api/groupAdd", {
-          ...values,
-          guests: guestInList.map((g) => g.id),
-        })) as any;
-        const y = await axios.post("/api/guestToGroup", {
-          group: x?.data?.data.id,
+        const x = (await axios.put("api/groupName/" + group.id, values)) as any;
+        const y = await axios.post("/api/groupEdit", {
+          group: group.id,
           guests: guestInList.map((g) => g.id),
         });
+        console.log(x, y);
         if (x.data) {
           handleClose();
           store.addNotification({
@@ -158,7 +158,7 @@ export default function GroupEdit({
     <Modal open={open} onClose={handleClose}>
       <form onSubmit={formik.handleSubmit} className={classes.main}>
         <Divider component="p" variant="h5" textMargin="64px">
-          Dodawanie grupy
+          Edycja grupy
         </Divider>
         <Grid container>
           <Grid item xs={12}>

@@ -187,6 +187,7 @@ export default function GuestSection() {
           error={!!errorGuests}
           updateGuest={mutate}
           updateGroups={updateGroups}
+          allGuests={guests}
         />
       ) : (
         <GuestList

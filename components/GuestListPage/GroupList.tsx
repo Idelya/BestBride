@@ -98,12 +98,14 @@ export default function GroupList({
   error,
   updateGuest,
   updateGroups,
+  allGuests,
 }: {
   addGroup: () => void;
   data: Group[];
   error: boolean;
   updateGuest: () => void;
   updateGroups: () => void;
+  allGuests: Guest[];
 }) {
   const classes = useStyles();
   const [showGroup, setShowGroup] = useState<Group | undefined>();
@@ -178,8 +180,13 @@ export default function GroupList({
       {showGroup && (
         <GroupEdit
           open={!!showGroup}
-          handleClose={() => setShowGroup(undefined)}
+          handleClose={() => {
+            setShowGroup(undefined);
+            updateGuest();
+            updateGroups();
+          }}
           group={showGroup}
+          guests={allGuests}
         />
       )}
       <div className={classes.main}>
