@@ -47,12 +47,14 @@ interface TaskProps {
   onEditClick?: () => void;
   update: () => void;
   users?: UserPlanner[];
+  isAfter?: boolean;
 }
 export default function TaskDetails({
   task,
   onEditClick,
   update,
   users = [],
+  isAfter = false,
 }: TaskProps) {
   const classes = useStyles();
 
@@ -97,7 +99,7 @@ export default function TaskDetails({
   };
   return (
     <Grid container columnSpacing={15}>
-      <Grid item md={6}>
+      <Grid item md={12}>
         <div className={classes.inline}>
           <Typography color="GrayText" variant="subtitle1">
             Status:
@@ -107,10 +109,13 @@ export default function TaskDetails({
           </Typography>
         </div>
         <div className={classes.inline}>
-          <Typography color="GrayText" variant="subtitle1">
+          <Typography
+            color={isAfter ? "error" : "GrayText"}
+            variant="subtitle1"
+          >
             Termin:
           </Typography>
-          <Typography color="primary" variant="subtitle1">
+          <Typography color={isAfter ? "error" : "primary"} variant="subtitle1">
             {task.date ? formatDateWithHour(new Date(task.date)) : "Brak"}
           </Typography>
         </div>
@@ -125,7 +130,7 @@ export default function TaskDetails({
           </Typography>
         </div>
       </Grid>
-
+      {/*
       <Grid item md={5}>
         <div className={classes.block}>
           <Typography color="GrayText" variant="subtitle1">
@@ -144,7 +149,7 @@ export default function TaskDetails({
           </Typography>
         </div>
       </Grid>
-
+                */}
       <Grid item md={12}>
         <div className={classes.block}>
           <Typography color="GrayText" variant="subtitle1">

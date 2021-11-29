@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import {
   Draggable,
@@ -84,6 +84,9 @@ const useStyles = makeStyles((theme: Theme) =>
     box: {
       width: "250px",
     },
+    isAfter: {
+      boxShadow: "rgba(255, 0, 0, 0.50) 0px 0px 5px 0px inset",
+    },
   })
 );
 
@@ -106,7 +109,14 @@ export default function DraggableTask({
     setEditedPhase,
     setUpdate,
     weddingUsers,
+    tasksIsAfter,
   } = useContext(PlannerContext);
+
+  const isAfter = useMemo(() => {
+    const isAfterTaskData = tasksIsAfter.find((elem) => elem.id === task.id);
+    return isAfterTaskData ? isAfterTaskData.isAfter : false;
+  }, [task, tasksIsAfter]);
+
   return (
     <Draggable draggableId={task.id.toString()} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
@@ -121,11 +131,20 @@ export default function DraggableTask({
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              className={classes.summary}
+              className={
+                classes.summary + " " + (isAfter ? classes.isAfter : "")
+              }
             >
-              <Typography color="primary" variant="h6">
-                {task.name}
-              </Typography>
+              <Box sx={{ display: "inline" }}>
+                <Typography color="primary" variant="h6">
+                  {task.name}
+                </Typography>
+                {isAfter && (
+                  <Typography color="error" sx={{ marginLeft: "8px" }}>
+                    !
+                  </Typography>
+                )}
+              </Box>
               <div className={classes.box}>
                 <Typography
                   color="primary"
@@ -138,6 +157,7 @@ export default function DraggableTask({
             </AccordionSummary>
             <AccordionDetails>
               <TaskDetails
+                isAfter={isAfter}
                 task={task}
                 onEditClick={() => {
                   setEditedTask(task);

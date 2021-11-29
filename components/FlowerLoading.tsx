@@ -5,6 +5,7 @@ import { makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
 import Image from "next/image";
 import flower from "../public/flower.gif";
+import DecorationTypography from "./DecorationTypography";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -12,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     minHeight: "100vh",
     backgroundColor: "white",
     position: "fixed",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     top: 0,
@@ -40,6 +42,7 @@ export default function FullLoading() {
           objectFit="contain"
         />
       </Box>
+      <DecorationTypography>Pobieranie...</DecorationTypography>
     </Box>
   );
 }

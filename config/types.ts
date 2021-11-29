@@ -19,6 +19,7 @@ export type Event = {
   assigned?: string[];
 };
 
+export type IsAfterData = { id: number; isAfter: boolean };
 export type Guest = {
   id: number;
   surname?: string;

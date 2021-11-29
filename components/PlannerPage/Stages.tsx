@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "none",
       borderColor: theme.palette.grey[500],
     },
+    isAfter: {
+      boxShadow: "rgba(255, 0, 0, 0.50) 0px 0px 5px 0px inset",
+    },
     stageButton: {
       height: "100%",
     },
@@ -71,7 +74,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Stages() {
+export default function Stages({
+  phasesIsAfter,
+}: {
+  phasesIsAfter?: { id: number; isAfter: boolean }[];
+}) {
   const classes = useStyles();
   const [currPhase, setCurrPhase] = useState<Phase | null>(null);
   const [openPhaseAdd, setOpenPhaseAdd] = useState<boolean>(false);
@@ -96,7 +103,7 @@ export default function Stages() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phases]);
 
-  if (!phases)
+  if (!phases || !phasesIsAfter)
     return (
       <Box
         sx={{
@@ -147,10 +154,16 @@ export default function Stages() {
             inProgress: 0,
             notStarted: 0,
           };
+          const phaseDeadlineInfo = phasesIsAfter.find(
+            (phase) => phase.id === stage.id
+          );
+          const isAfter = phaseDeadlineInfo ? phaseDeadlineInfo.isAfter : false;
           return (
             <Card
               className={
                 classes.stage +
+                " " +
+                (isAfter ? classes.isAfter : "") +
                 " " +
                 (currPhase !== stage ? "" : classes.picked) +
                 " " +

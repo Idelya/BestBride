@@ -6,6 +6,7 @@ import {
   PhaseStat,
   Phase,
   UserPlanner,
+  IsAfterData,
 } from "../../config/types";
 
 export const PlannerContext = createContext<{
@@ -21,6 +22,7 @@ export const PlannerContext = createContext<{
   editedPhase?: Phase | null;
   setEditedPhase: (phase?: Phase | null) => void;
   weddingUsers?: UserPlanner[];
+  tasksIsAfter: IsAfterData[];
 }>({
   todoOptions: undefined,
   wedding: undefined,
@@ -34,4 +36,5 @@ export const PlannerContext = createContext<{
   editedPhase: null,
   setEditedPhase: () => {},
   weddingUsers: [],
+  tasksIsAfter: [],
 });

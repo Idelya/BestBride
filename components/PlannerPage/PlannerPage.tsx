@@ -7,6 +7,7 @@ import request from "../../config/requests";
 import useSWR from "swr";
 import { PlannerContext } from "./PlannerContext";
 import {
+  IsAfterData,
   Option,
   Phase,
   PhaseStat,
@@ -70,14 +71,25 @@ export default function PlannerPage() {
     "api/phaseIsAfter",
     fetcherAuth
   ) as {
-    data: Phase[];
+    data: IsAfterData[];
     mutate: any;
     error: any;
   };
+
+  const { data: tasksIsAfter, mutate: mutateIsAfter } = useSWR(
+    `api/todoIsAfter`,
+    fetcherAuth
+  ) as {
+    data: IsAfterData[];
+    mutate: any;
+    error: any;
+  };
+
   useEffect(() => {
     mutateStats();
     mutatePhase();
-  }, [mutateStats, mutatePhase, updated]);
+    mutateIsAfter();
+  }, [mutateStats, mutatePhase, updated, mutateIsAfter]);
 
   const currentPhase = useMemo(
     () =>
@@ -108,11 +120,12 @@ export default function PlannerPage() {
         setEditedPhase: setEditedPhase,
         wedding: wedding,
         weddingUsers: weddingUsers,
+        tasksIsAfter: tasksIsAfter,
       }}
     >
       <Container className={classes.container}>
         <Banner />
-        <Stages />
+        <Stages phasesIsAfter={phasesIsAfter} />
       </Container>
     </PlannerContext.Provider>
   );
