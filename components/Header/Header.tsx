@@ -1,4 +1,4 @@
-import { AppBar, styled, Toolbar, Typography } from "@mui/material";
+import { AppBar, styled, Theme, Toolbar, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import React from "react";
 import { GUEST_ROUTES_NAV } from "../../config/configNav";
@@ -9,10 +9,14 @@ import NavLink from "./NavLink";
 import ReactNotification from "react-notifications-component";
 import Link from "next/link";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     backgroundColor: "white",
     opacity: 0.87,
+
+    [theme.breakpoints.down("md")]: {
+      display: "none",
+    },
   },
   toolbar: {
     display: "flex",
@@ -21,7 +25,7 @@ const useStyles = makeStyles({
   marginNotification: {
     margin: "32px",
   },
-});
+}));
 
 const Header = () => {
   const classes = useStyles();

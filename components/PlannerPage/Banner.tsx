@@ -233,12 +233,12 @@ export default function Banner() {
             className={classes.spacing}
           >
             {currentPhaseStats
-              ? `W tym etapie wykonano: ${
+              ? `W tym etapie wykonano: ${(
                   (currentPhaseStats.done * 100) /
                   (currentPhaseStats.done +
                     currentPhaseStats.inProgress +
                     currentPhaseStats.notStarted)
-                }%`
+                ).toFixed()}%`
               : "Brak statystyk z bierzącego etapu"}
           </Typography>
           <Typography
