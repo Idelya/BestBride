@@ -206,6 +206,8 @@ export default function ExpenseEdit({
                 />
               </LocalizationProvider>
             </div>
+          </Grid>
+          <Grid item xs={12} md={6} pr={8} pl={8}>
             <div className={classes.inline}>
               <Typography variant="h6">Ostateczny termin zapłaty:</Typography>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -220,8 +222,6 @@ export default function ExpenseEdit({
                 />
               </LocalizationProvider>
             </div>
-          </Grid>
-          <Grid item xs={12} md={6} pr={8} pl={8}>
             <div className={classes.block}>
               <Typography component="label" variant="h6">
                 Kategoria:
@@ -244,18 +244,6 @@ export default function ExpenseEdit({
                   </MenuItem>
                 ))}
               </TextField>
-            </div>
-            <div className={classes.inline}>
-              <Typography variant="h6">Zadanie:</Typography>
-              <Autocomplete
-                id="toDo"
-                options={[]}
-                onChange={formik.handleChange}
-                includeInputInList
-                renderInput={(params) => (
-                  <TextField {...params} name="toDo" variant="outlined" />
-                )}
-              />
             </div>
           </Grid>
           <Grid item md={12}>

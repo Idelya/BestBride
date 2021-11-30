@@ -139,6 +139,8 @@ export default function ExpenseDetails({
               : "Nieopłacone"}
           </Typography>
         </div>
+      </Grid>
+      <Grid item md={5}>
         <div className={classes.inline}>
           <Typography
             color={isDeadline ? "error" : "GrayText"}
@@ -165,24 +167,6 @@ export default function ExpenseDetails({
               expenseOptions || [],
               expense.category
             )}
-          </Typography>
-        </div>
-      </Grid>
-      <Grid item md={5}>
-        <div className={classes.inline}>
-          <Typography color="GrayText" variant="subtitle1">
-            Link do usługi:
-          </Typography>
-          <Typography color="primary" variant="subtitle1">
-            {expense.service || "Brak"}
-          </Typography>
-        </div>
-        <div className={classes.inline}>
-          <Typography color="GrayText" variant="subtitle1">
-            Link do zadania:
-          </Typography>
-          <Typography color="primary" variant="subtitle1">
-            {expense.toDo || "Brak"}
           </Typography>
         </div>
       </Grid>
