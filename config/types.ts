@@ -57,8 +57,6 @@ export type Expense = {
   paid: number;
   category: number;
   additionalInfo?: string;
-  service?: number;
-  toDo?: number;
   whoAdded?: number;
 };
 
@@ -74,7 +72,6 @@ export type User = {
   id?: number;
   role: string;
   photo?: string;
-  gender?: null;
 };
 
 export type UserPlanner = {
@@ -112,7 +109,6 @@ export type Service = {
 export type FullService = {
   id?: number;
   innerKey?: number;
-  img?: string;
   status?: number;
   name?: string;
   details?: string;
@@ -120,10 +116,7 @@ export type FullService = {
   rejectionDetails?: string;
   fileLink?: string;
   galleryFile?: string;
-  expenseId?: number;
   category?: number;
-  contact?: Contact;
-  address?: Address;
   images?: string[];
   version?: number;
   email?: string;

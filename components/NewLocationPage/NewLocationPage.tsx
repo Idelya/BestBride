@@ -163,6 +163,20 @@ export default function LocationPage() {
         },
       });
     } catch (postErr) {
+      store.addNotification({
+        title: "Błąd",
+        //@ts-ignore
+        message: "Podczas dodawania usługi pojawił się błąd.",
+        type: "danger",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true,
+        },
+      });
     } finally {
       setLoader(false);
     }

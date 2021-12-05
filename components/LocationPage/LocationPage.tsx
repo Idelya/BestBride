@@ -94,7 +94,7 @@ export default function LocationPage() {
     data: Service;
     mutate: () => void;
   };
-  console.log(currentService);
+
   const { data: isOwnerCheck } = useSWR("/api/isOwner/" + id, fetcherAuth) as {
     data: { isMyService: boolean };
   };
